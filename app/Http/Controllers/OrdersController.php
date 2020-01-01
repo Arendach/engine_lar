@@ -33,6 +33,7 @@ class OrdersController extends Controller
 {
     public function __construct()
     {
+        // dd($_SERVER);
         $this->checkBlackDate();
     }
 
@@ -108,20 +109,9 @@ class OrdersController extends Controller
         $this->view->display('buy.create.main', $data);
     }
 
-    public function sectionUpdate(Request $request, CategoryTree $categoryTree)
+    public function sectionUpdate(CategoryTree $categoryTree, int $id)
     {
-        $id = $request->id;
-
-        $order = Order::with([
-            'products',
-            'sms_messages',
-            'author',
-            'bonuses',
-            'files',
-            'pay',
-            'products.pivot.storage',
-            'transactions'
-        ])->findOrFail($id);
+        $order = Order::findOrFail($id);
 
         $data = [
             'title'          => 'Замовлення :: Редагування',
@@ -129,18 +119,18 @@ class OrdersController extends Controller
             'type'           => $order->type,
             'order'          => $order,
             'categories'     => $categoryTree->get(),
-            'sms_templates'  => SmsTemplate::where('type', $order->type)->get(),
+            'sms_templates'  => SmsTemplate::type($order->type)->get(),
             'storage'        => Storage::where('accounted', 1)->orderBy('sort')->get(),
             'clients'        => Client::all(),
             'closedOrder'    => Report::type('order')->where('data', $id)->count(),
             'breadcrumbs'    => [
                 ['Замовлення', uri('orders/view', ['type' => 'delivery'])],
                 [$order->type_name, uri('orders/view', ['type' => $order->type])],
-                ['№<b>' . $order->id . '</b> - ' . $order->author->login]
+                ["№<b>{$order->id}</b> - {$order->author->login}"]
             ],
         ];
 
-        if ($order->type == 'sending' && $order->logistic_name == 'НоваПошта') {
+        if ($order->type == 'sending' && $order->logistic->name == 'НоваПошта') {
             $new_post = new NewPost();
             $order->city_name = $new_post->getNameCityByRef($order->city);
             $data['warehouses'] = $new_post->search_warehouses($order->city);

@@ -2,8 +2,8 @@
     <label class="alert alert-info">
         <input type="file"
                class="input-file-input"
-               name="<?= $name ?><?= $multiple ? '[]' : '' ?>"
-            <?= $multiple ? 'multiple' : '' ?>
+               name="{{ $name ?? 'file' }}{{ isset($multiple) && $multiple == true ? '[]' : '' }}"
+               {{ isset($multiple) && $multiple == true ? 'multiple' : '' }}
                style="display: none">
         Натисніть щоб вибрати файл
     </label>

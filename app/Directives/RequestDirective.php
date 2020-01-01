@@ -7,7 +7,7 @@ use Blade;
 
 class RequestDirective implements Directive
 {
-    public function apply(): void
+    public function register(): void
     {
         Blade::directive('request', function ($expression) {
             return "<?php echo request($expression); ?>";

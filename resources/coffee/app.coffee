@@ -15,6 +15,7 @@ require 'bootstrap'
 require 'jquery.cookie'
 require 'bootstrap-3-typeahead'
 require 'select2'
+require 'jquery-pjax'
 window.$.fn.select2.defaults.set "theme", "bootstrap"
 
 

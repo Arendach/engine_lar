@@ -6,26 +6,44 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateContactsRequest extends FormRequest
 {
-   /* public function validate(Request $request): void
+    private $phoneRegex = '/[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}/';
+
+    /* public function validate(Request $request): void
+     {
+         $phone_pattern = '/[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}/';
+
+         if ($this->isEmpty('fio'))
+             $this->error('fio', 'Заповніть імя!');
+
+         if ($this->isEmpty('phone'))
+             $this->error('phone', 'Заповніть телефон!');
+
+         if (!preg_match($phone_pattern, $this->get('phone')))
+             $this->error('phone', 'Заповніть телефон у правильному форматі!');
+
+         if ($this->isNotEmpty('phone2') && !preg_match($phone_pattern, $this->get('phone2')))
+             $this->error('phone2', 'Заповніть телефон у правильному форматі!');
+
+         if ($this->isNotEmpty('email') && !filter_var($this->get('email'), FILTER_VALIDATE_EMAIL))
+             $this->error('email', 'Заповніть E-Mail у правильному форматі!');
+
+     }*/
+    public function messages(): array
     {
-        $phone_pattern = '/[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}/';
+        return [];
+    }
 
-        if ($this->isEmpty('fio'))
-            $this->error('fio', 'Заповніть імя!');
+    public function rules(): array
+    {
+        $regex = $this->phoneRegex;
 
-        if ($this->isEmpty('phone'))
-            $this->error('phone', 'Заповніть телефон!');
-
-        if (!preg_match($phone_pattern, $this->get('phone')))
-            $this->error('phone', 'Заповніть телефон у правильному форматі!');
-
-        if ($this->isNotEmpty('phone2') && !preg_match($phone_pattern, $this->get('phone2')))
-            $this->error('phone2', 'Заповніть телефон у правильному форматі!');
-
-        if ($this->isNotEmpty('email') && !filter_var($this->get('email'), FILTER_VALIDATE_EMAIL))
-            $this->error('email', 'Заповніть E-Mail у правильному форматі!');
-
-    }*/
+        return [
+            'fio'    => 'required',
+            'phone'  => "required|regex:$regex",
+            'phone2' => "nullable|regex:$regex",
+            'email'  => 'nullable|email'
+        ];
+    }
 
     public function authorize(): bool
     {

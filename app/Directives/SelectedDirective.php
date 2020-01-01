@@ -2,11 +2,12 @@
 
 namespace App\Directives;
 
+use App\Interfaces\Directive;
 use Blade;
 
-class SelectedDirective
+class SelectedDirective implements Directive
 {
-    public function apply()
+    public function register(): void
     {
         Blade::directive('selected', function ($expression) {
             return "<?php echo blade_selected($expression); ?>";

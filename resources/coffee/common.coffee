@@ -1,3 +1,4 @@
+require './pjax.coffee'
 window.SuccessHandler = require './handlers/SuccessHandler.coffee'
 window.ErrorHandler = require './handlers/ErrorHandler.coffee'
 
@@ -248,7 +249,7 @@ $ document
 
         $.ajax
             type: 'post'
-            url: '/index/change_theme'
+            url: '/main/change_theme'
             data:
                 theme: theme
 

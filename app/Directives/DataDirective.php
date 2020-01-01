@@ -7,7 +7,7 @@ use Blade;
 
 class DataDirective implements Directive
 {
-    public function apply(): void
+    public function register(): void
     {
         Blade::directive('data', function ($expression) {
             return "<?= blade_data($expression) ?>";

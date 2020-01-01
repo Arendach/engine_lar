@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Category;
 use Cache;
-use Psr\SimpleCache\InvalidArgumentException;
 
 class CategoryTree
 {
@@ -15,7 +14,6 @@ class CategoryTree
 
     /**
      * CategoryTree constructor.
-     * @throws InvalidArgumentException
      */
     public function __construct()
     {
@@ -24,13 +22,14 @@ class CategoryTree
 
     /**
      * @return void
-     * @throws InvalidArgumentException
      */
     private function boot(): void
     {
         if (!Cache::has('category_list_tree')) {
             $this->createTree();
-            Cache::set('category_list_tree', $this->tree);
+            Cache::forever('category_list_tree', $this->tree);
+        } else {
+            $this->tree = Cache::get('category_list_tree');
         }
     }
 

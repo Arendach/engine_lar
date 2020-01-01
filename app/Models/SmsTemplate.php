@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -19,9 +20,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SmsTemplate whereText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SmsTemplate whereType($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SmsTemplate type($type)
  */
 class SmsTemplate extends Model
 {
     protected $table = 'sms_templates';
 
+    public function scopeType(Builder $query, string $type): void
+    {
+        $query->where('type', $type);
+    }
 }

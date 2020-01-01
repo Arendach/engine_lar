@@ -41,7 +41,7 @@ class MainController extends Controller
 
     public function actionChangeTheme(string $theme)
     {
-        User::find(user()->id)->update([
+        user()->update([
             'theme' => $theme,
         ]);
     }

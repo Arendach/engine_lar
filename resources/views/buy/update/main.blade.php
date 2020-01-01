@@ -1,5 +1,7 @@
 @extends('layout')
 
+@section('title', $title)
+
 @section('content')
     <ul class="nav nav-pills nav-justified">
         <li class="active"><a data-toggle="tab" href="#main">Основне</a></li>
@@ -43,7 +45,7 @@
         @endif
 
         <div id="transactions" class="fade tab-pane">
-            @include('buy.update.parts.transactions')
+{{--            @include('buy.update.parts.transactions')--}}
         </div>
 
         <div id="files" class="fade tab-pane">
@@ -58,6 +60,6 @@
         'id'            => $id,
         'type'          => $order->type,
         'delivery_cost' => $order->delivery_cost,
-        'closed_order'  => $closed_order
+        'closed_order'  => $closedOrder
     ])
 @stop

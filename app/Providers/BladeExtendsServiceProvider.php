@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Directives\DataDirective;
 use App\Directives\DisplayIfDirective;
+use App\Directives\FileInputDirective;
 use App\Directives\RequestDirective;
 use App\Directives\SelectedDirective;
 use App\Directives\DisabledDirective;
@@ -21,6 +22,8 @@ class BladeExtendsServiceProvider extends ServiceProvider
         UriDirective::class,
         RequestDirective::class,
         DataDirective::class,
+        FileInputDirective::class,
+
     ];
 
     public function register(): void
@@ -30,7 +33,7 @@ class BladeExtendsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         foreach ($this->directives as $directive) {
-            (new $directive)->apply();
+            (new $directive)->register();
         }
     }
 }

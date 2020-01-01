@@ -2,10 +2,10 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>{{ $title ?? 'ENTER TITLE' }}</title>
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" id="baze-theme" href="{{ asset('css/themes/' . user()->theme . '.css') }}">
+    <title>@yield('title', 'Enter Title')</title>
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?{{ rand32() }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ rand32() }}">
+    <link rel="stylesheet" id="baze-theme" href="{{ asset('css/themes/' . user()->theme . '.css') }}?{{ rand32() }}">
 </head>
 <body>
 <input style="display: none" name="login" type="text">
@@ -21,7 +21,7 @@
                         <span>{{ $item['name'] }}</span>
 
                         @isset($item['menu'])
-                            <ul class="dropdown-<?= $k ?>">
+                            <ul class="dropdown-{{ $k }}">
                                 @foreach ($item['menu'] as $key => $inner)
                                     @if(!isset($inner['access']) || $inner['access'] == false || can($inner['access']))
                                         <li>
@@ -144,42 +144,41 @@
         </div>
     </nav>
 
-    <div class="content-page">
+    <div class="content-page" id="pjax-container">
         @isset($breadcrumbs)
             @include('parts.breadcrumbs')
         @endisset
 
         @yield('content')
 
+        <div class="scripts-hidden">
+            <script type="text/javascript">
+                let pin = '{{ user()->pin }}';
+                let my_url = '{{ '' }}';
+            </script>
+
+            @yield('scripts')
+
+            @isset($toJs)
+                <script>
+                    window.JData = @json($toJs)
+                </script>
+            @endisset
+
+            <script src="{{ asset('js/app.js') }}?{{ rand32() }}?{{ rand32() }}"></script>
+
+            @if (isset($editor) && $editor == 'full')
+                <script src="{{ asset('ckeditor/ckeditor.js') }}?{{ rand32() }}"></script>
+            @else
+                <script src="{{ asset('ckeditor_basic/ckeditor.js') }}?{{ rand32() }}"></script>
+            @endif
+
+            @if (isset($controller) && is_file(public_path("js/controllers/$controller.js")))
+                <script src="{{ asset("js/controllers/$controller.js") }}?{{ rand32() }}"></script>
+            @endisset
+        </div>
     </div>
+
 </div>
-
-<div class="scripts-hidden">
-    <script type="text/javascript">
-        let pin = '{{ user()->pin }}';
-        let my_url = '{{ '' }}';
-    </script>
-
-    @yield('scripts')
-
-    @isset($toJs)
-        <script>
-            window.JData = @json($toJs)
-        </script>
-    @endisset
-
-    <script src="{{ asset('js/app.js') }}"></script>
-
-    @if (isset($editor) && $editor == 'full')
-        <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
-    @else
-        <script src="{{ asset('ckeditor_basic/ckeditor.js') }}"></script>
-    @endif
-
-    @if (isset($controller) && is_file(public_path("js/controllers/$controller.js")))
-        <script src="<?= asset("js/controllers/$controller.js") ?>"></script>
-    @endisset
-</div>
-
 </body>
 </html>

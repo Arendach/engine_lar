@@ -5,8 +5,8 @@
         </div>
         <div class="col-md-4">
             <select id="search_category" data-search="category" class="col-md-4 form-control">
-                <option value="0">Пошук по категорії</option>
-                {{ $categories }}
+                <option value="">Пошук по категорії</option>
+                {!! $categories !!}
             </select>
         </div>
     </div>

@@ -9,15 +9,16 @@
  */
 function router(string $controller, string $action, string $prefix, $params = [])
 {
-    $namespace = '\\App\\Http\\Controllers\\' . s2c($controller) . 'Controller';
-
-    Config::set('app.controller', "{$namespace}@{$prefix}{$action}");
-
     View::share('controller', $controller);
 
-    $object = new $namespace();
+    $action = s2c($prefix . $action);
+    $controller = s2c($controller);
 
-    abort_if(!method_exists($object, $prefix . $action), 404, __('common.errors.post_404'));
+    $namespace = "\\App\\Http\\Controllers\\{$controller}Controller";
 
-    return app()->call([new $namespace, $prefix . $action,], request()->all());
+    $controller = new $namespace();
+
+    abort_if(!method_exists($controller, $action), 404, __('common.errors.post_404'));
+
+    return app()->call([$controller, $action], request()->all());
 }

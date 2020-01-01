@@ -349,7 +349,7 @@
                 <option value="0">&nbsp;</option>
                 @foreach ($client->all() as $item)
                     <option @data(['fio' => $item->name, 'phone' => $item->phone, 'email' => $item->email]) @selected($order->client_id == $item->id) value="{{ $item->id }}">
-                        <?= $item->name ?>
+                        {{ $item->name }}
                     </option>
                 @endforeach
             </select>
