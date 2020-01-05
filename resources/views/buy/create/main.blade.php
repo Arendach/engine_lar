@@ -1,11 +1,21 @@
-<?php include parts('head'); ?>
+@extends('layout')
 
+@section('title', 'Замовлення :: Нове замовлення')
+
+@breadcrumbs(
+    ['Замовлення', uri('orders/view', ['type' => 'delivery'])],
+    [assets('order_types')[$type]['many'], uri('orders/view', ['type' => $type])],
+    ['Нове замовлення']
+)
+
+@section('content')
     <div class="right" style="margin-bottom: 15px;">
-       <?php foreach (assets('order_types') as $k => $item) { ?>
-           <a class="btn btn-<?= request()->is('type', $k) ? 'primary' : 'default' ?>" href="<?= uri('orders/create', ['type' => $k]) ?>">
-               <?= $item['one'] ?>
-           </a>
-       <?php } ?>
+        @foreach (assets('order_types') as $k => $item)
+            <a class="btn btn-<?= request()->is('type', $k) ? 'primary' : 'default' ?>"
+               href="<?= uri('orders/create', ['type' => $k]) ?>">
+                {{ $item['one'] }}
+            </a>
+        @endforeach
     </div>
 
     <hr>
@@ -19,15 +29,15 @@
         <hr>
 
         <form id="create_order">
-            <input type="hidden" name="type" value="<?= $type ?>">
+            <input type="hidden" name="type" value="{{ $type }}">
             <div class="tab-content">
                 <div id="main" class="tab-pane fade in active">
                     <div class="form-horizontal">
-                        <?php include t_file("buy.create.$type") ?>
+                        @include("buy.create.$type")
                     </div>
                 </div>
                 <div id="products" class="tab-pane fade">
-                    <?php include t_file('buy.create.products') ?>
+                    @include('buy.create.products')
                 </div>
             </div>
         </form>
@@ -35,4 +45,4 @@
 
     <script>window.type = '<?= $type ?>'</script>
 
-<?php include parts('foot') ?>
+@stop

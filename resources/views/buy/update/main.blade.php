@@ -2,6 +2,12 @@
 
 @section('title', $title)
 
+@breadcrumbs(
+    ['Замовлення', uri('orders/view', ['type' => 'delivery'])],
+    [$order->type_name, uri('orders/view', ['type' => $order->type])],
+    ["№<b>{$order->id}</b> - {$order->author->login}"]
+)
+
 @section('content')
     <ul class="nav nav-pills nav-justified">
         <li class="active"><a data-toggle="tab" href="#main">Основне</a></li>

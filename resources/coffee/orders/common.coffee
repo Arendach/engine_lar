@@ -38,6 +38,8 @@ $(document).on 'click', '.searched', ->
         $('#product-list tbody').append(res)
     checkPrice
 
+$('')
+
 $(document).on 'change', '#city_select', ->
     $selected = $(@)
     text = $selected.find('option:selected').text
@@ -93,17 +95,20 @@ $(document).ready ->
             console.log(p2)
             console.log(p3)
 
-    $('#city').typeahead
-        source: (query, result) ->
-            $.ajax
-                type: 'post'
-                url: "/api/search_village",
-                data:
-                    street: $('#street').val()
-                success: (data) ->
-                    result data
+    $('#sending_city').select2
+        ajax:
+            type: 'post'
+            url: '/orders/new_post_city'
+            data: (params) -> {name: params.term}
+        cache: yes
 
-        afterSelect: (p1, p2, p3) ->
-            console.log(p1)
-            console.log(p2)
-            console.log(p3)
+    $('#sending_city').on 'select2:select', (event) ->
+        $.ajax
+            type: 'post'
+            url: '/orders/new_post_warehouse'
+            data:
+                city_id: $(event.currentTarget).val()
+            success: (response) ->
+                $ '#warehouse'
+                    .attr 'disabled', off
+                    .html response.options

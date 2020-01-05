@@ -5,6 +5,7 @@ namespace App\Models;
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\Order
@@ -127,12 +128,51 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $transactions_count
  * @property-read mixed $is_c_lose
  * @property-read mixed $is_open
+ * @property-read \App\Models\NewPostCity|null $sending_city
+ * @property-read \App\Models\NewPostWarehouse|null $sending_warehouse
  */
 class Order extends Model
 {
     use EagerLoadPivotTrait;
 
     protected $table = 'orders';
+
+    protected $fillable  = [
+        'author_id',
+        'type',
+        'fio',
+        'phone',
+        'phone2',
+        'email',
+        'created_at',
+        'updated_at',
+        'date_delivery',
+        'time_with',
+        'time_to',
+        'city',
+        'address',
+        'comment_address',
+        'pay_id',
+        'courier_id',
+        'comment',
+        'warehouse',
+        'logistic_id',
+        'pay_delivery',
+        'imposed',
+        'status',
+        'discount',
+        'delivery_cost',
+        'hint_id',
+        'payment_status',
+        'prepayment',
+        'street',
+        'full_sum',
+        'order_professional_id',
+        'liable_id',
+        'site',
+        'sending_variant',
+        'client_id'
+    ];
 
     protected $dates = ['created_at', 'date_delivery', 'updated_at', 'deleted_at'];
 
@@ -211,6 +251,17 @@ class Order extends Model
         return $this->belongsTo(Client::class);
     }
 
+    public function sending_city(): BelongsTo
+    {
+        return $this->belongsTo(NewPostCity::class, 'city', 'id');
+    }
+
+    public function sending_warehouse(): BelongsTo
+    {
+        return $this->belongsTo(NewPostWarehouse::class, 'warehouse', 'id');
+    }
+
+
     public function getTypeNameAttribute()
     {
         if ($this->type == 'sending') return 'Відправка';
@@ -254,32 +305,11 @@ class Order extends Model
         return date_for_humans($this->date_delivery->format('Y-m-d'));
     }
 
-    /**
-     * @param Builder $builder
-     * @param $filters
-     * @return Builder
-     */
-    public function scopeFilter(Builder $builder, $filters): Builder
-    {
-        return $filters->apply($builder);
-    }
-
     public function getSumAttribute()
     {
         $this->products->sum(function ($item) {
             return $item->pivot->amount * $item->pivot->price;
         });
-    }
-
-    public function getSendingCityNameAttribute()
-    {
-
-    }
-
-
-    public function getSendingWarehouseNameAttribute()
-    {
-
     }
 
     public function getTimeAttribute()
@@ -308,6 +338,12 @@ class Order extends Model
     public function getPhoneFormatAttribute()
     {
         return get_number_world_format(str_replace('-', '', $this->phone));
+    }
+
+
+    public function scopeFilter(Builder $builder, $filters): Builder
+    {
+        return $filters->apply($builder);
     }
 
     public function scopeDelivery(Builder $query): void

@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Orders\UpdateSendingAddressRequest;
+use App\Models\NewPostCity;
+use App\Models\NewPostWarehouse;
+use App\Orders\OrderUpdate;
 use App\Services\CategoryTree;
 use Illuminate\Database\Eloquent\Builder;
 use SergeyNezbritskiy\PrivatBank\AuthorizedClient;
@@ -33,7 +37,6 @@ class OrdersController extends Controller
 {
     public function __construct()
     {
-        // dd($_SERVER);
         $this->checkBlackDate();
     }
 
@@ -88,25 +91,20 @@ class OrdersController extends Controller
         return view('buy.view.index', $data);
     }
 
-    public function sectionCreate(string $type = 'delivery')
+    public function sectionCreate(CategoryTree $categoryTree, string $type = 'delivery')
     {
         $data = [
-            'title'       => 'Замовлення :: Нове замовлення',
-            'categories'  => Coupon::getCategories(),
-            'type'        => $type,
-            'hints'       => OrderHint::whereIn('type', [0, $type])->get(),
-            'pays'        => Pay::all(),
-            'users'       => User::where('archive', 0)->get(),
-            'deliveries'  => Logistic::all(),
-            'storage'     => Storage::where('accounted', 1)->orderBy('sort')->get(),
-            'breadcrumbs' => [
-                ['Замовлення', uri('orders/view', ['type' => 'delivery'])],
-                [assets('order_types')[$type]['many'], uri('orders/view', ['type' => $type])],
-                ['Нове замовлення']
-            ]
+            'title'      => 'Замовлення :: Нове замовлення',
+            'categories' => $categoryTree->get(),
+            'type'       => $type,
+            'hints'      => OrderHint::type($type)->get(),
+            'pays'       => Pay::all(),
+            'users'      => User::all(),
+            'deliveries' => Logistic::all(),
+            'storage'    => Storage::accounted()->sort()->get()
         ];
 
-        $this->view->display('buy.create.main', $data);
+        return view('buy.create.main', $data);
     }
 
     public function sectionUpdate(CategoryTree $categoryTree, int $id)
@@ -114,26 +112,19 @@ class OrdersController extends Controller
         $order = Order::findOrFail($id);
 
         $data = [
-            'title'          => 'Замовлення :: Редагування',
-            'id'             => $id,
-            'type'           => $order->type,
-            'order'          => $order,
-            'categories'     => $categoryTree->get(),
-            'sms_templates'  => SmsTemplate::type($order->type)->get(),
-            'storage'        => Storage::where('accounted', 1)->orderBy('sort')->get(),
-            'clients'        => Client::all(),
-            'closedOrder'    => Report::type('order')->where('data', $id)->count(),
-            'breadcrumbs'    => [
-                ['Замовлення', uri('orders/view', ['type' => 'delivery'])],
-                [$order->type_name, uri('orders/view', ['type' => $order->type])],
-                ["№<b>{$order->id}</b> - {$order->author->login}"]
-            ],
+            'title'         => 'Замовлення :: Редагування',
+            'id'            => $id,
+            'type'          => $order->type,
+            'order'         => $order,
+            'categories'    => $categoryTree->get(),
+            'sms_templates' => SmsTemplate::type($order->type)->get(),
+            'storage'       => Storage::accounted()->sort()->get(),
+            'clients'       => Client::all(),
+            'closedOrder'   => Report::type('order')->where('data', $id)->count(),
         ];
 
         if ($order->type == 'sending' && $order->logistic->name == 'НоваПошта') {
-            $new_post = new NewPost();
-            $order->city_name = $new_post->getNameCityByRef($order->city);
-            $data['warehouses'] = $new_post->search_warehouses($order->city);
+            $data['warehouses'] = NewPostWarehouse::where('city_ref', $order->sending_city->ref)->get();
         }
 
         return view('buy.update.main', $data);
@@ -406,11 +397,18 @@ class OrdersController extends Controller
     // Оновлення адреси
     public function actionUpdateDeliveryAddress(UpdateDeliveryAddressRequest $request, OrderUpdate $orderUpdate)
     {
-        $orderUpdate->deliveryAddress($request->toCollection());
+        $orderUpdate->deliveryAddress();
 
         response()->json([
             'message' => 'Адресу вдало змінено!'
         ]);
+    }
+
+    public function actionUpdateSendingAddress(OrderUpdate $orderUpdate, UpdateSendingAddressRequest $request)
+    {
+        $orderUpdate->init($request->id)->sendingAddress($request);
+
+        return response()->json(['message' => 'Адреса оновлена!']);
     }
 
     // Оновлення інформаціїї про оплату
@@ -635,6 +633,39 @@ class OrdersController extends Controller
             ->toArray();
 
         response()->json($response);
+    }
+
+    public function actionNewPostCity(string $name = '')
+    {
+        $response = NewPostCity::select(['id', 'name'])
+            ->where('name', 'like', "$name%")
+            ->limit(100)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'text' => $item->name,
+                    'id'   => $item->id
+                ];
+            })
+            ->toArray();
+
+        return response()->json(['results' => $response]);
+    }
+
+    public function actionNewPostWarehouse(int $city_id)
+    {
+        $city = NewPostCity::findOrFail($city_id);
+
+        $warehouses = NewPostWarehouse::select(['name', 'id'])
+            ->where('city_ref', $city->ref)
+            ->get();
+
+        $response = '';
+        foreach ($warehouses as $item) {
+            $response .= "<option value='$item->id'>$item->name</option>";
+        }
+
+        return response()->json(['options' => $response]);
     }
 
 }

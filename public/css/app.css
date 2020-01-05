@@ -2803,6 +2803,7 @@ div.content-right > .navbar-close {
 }
 div.content-right {
   padding: 0 20px;
+  padding-bottom: 200px;
 }
 /* ********************************************************************** */
 .thumbnail_img .deleteImg {

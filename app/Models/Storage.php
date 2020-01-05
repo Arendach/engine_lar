@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -29,9 +30,24 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Storage whereShop($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Storage whereSort($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Storage accounted($isAccounted = true)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Storage sort($order = 'asc')
  */
 class Storage extends Model
 {
     protected $table = 'storage';
 
+    /**
+     * @param Builder $query
+     * @param string $order
+     */
+    public function scopeSort(Builder $query, string $order = 'asc'): void
+    {
+        $query->where('sort', $order);
+    }
+
+    public function scopeAccounted(Builder $query, bool $isAccounted = true): void
+    {
+        $query->where('accounted', (int)$isAccounted);
+    }
 }

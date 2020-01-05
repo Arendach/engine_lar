@@ -29,7 +29,8 @@
     <div class="form-group">
         <label class="col-md-4 control-label" for="date_delivery">Дата доставки <i class="text-danger">*</i></label>
         <div class="col-md-5">
-            <input required name="date_delivery" type="date" class="form-control" value="{{ $order->date_delivery->format('Y-m-d') }}">
+            <input required name="date_delivery" type="date" class="form-control"
+                   value="{{ $order->date_delivery->format('Y-m-d') }}">
         </div>
     </div>
 @endif
@@ -52,9 +53,9 @@
             <select name="pay_id" class="form-control">
                 @displayIf(isset($empty), '<option value="0"></option>')
                 @foreach($pay->all() as $item) { ?>
-                    <option @selected($item->id == $order->pay_method) value="{{ $item->id }}">
-                        {{ $item->name }}
-                    </option>
+                <option @selected($item->id == $order->pay_method) value="{{ $item->id }}">
+                    {{ $item->name }}
+                </option>
                 @endforeach
             </select>
         </div>
@@ -247,30 +248,21 @@
 
 @if($key == 'city_new_post')
     <div class="form-group">
-        <label class="col-md-4 control-label">Місто <i class="text-danger">*</i></label>
+        <label class="col-md-4 control-label">Місто <span class="text-danger">*</span></label>
         <div class="col-md-5">
-            <div class="input-group">
-                <input class="form-control" id="city_input" value="{{ $order->city_name }}">
-                <span class="input-group-addon">
-                    <button class="button button-default">
-                        <i class="fa fa-remove"></i>
-                    </button>
-                </span>
-            </div>
+            <select class="form-control" name="city" id="sending_city">
+                <option value="{{ $order->sending_city->id }}">{{ $order->sending_city->name }}</option>
+            </select>
         </div>
     </div>
 
-    <input type="hidden" id="city" name="city" class="form-control" value="<?= $order->city ?>">
-
     <div class="form-group">
-        <label class="col-md-4 control-label" for="warehouse">Відділення <i class="text-danger">*</i></label>
+        <label class="col-md-4 control-label">Відділення <span class="text-danger">*</span></label>
         <div class="col-md-5">
-            <select <?= $order->warehouses['disabled'] ? 'disabled' : '' ?> name="warehouse" class="form-control">
-                <?php foreach ($data['warehouses']['data'] as $item) { ?>
-                <option <?= $item['Ref'] == $order->warehouse ? 'selected' : '' ?> value="<?= $item['Ref'] ?>">
-                    <?= $item['Description'] ?>
-                </option>
-                <?php } ?>
+            <select id="warehouse" name="warehouse" class="form-control">
+                @foreach($warehouses as $item)
+                    <option @selected($order->warehouse == $item->id)>{{ $item->name }}</option>
+                @endforeach
             </select>
         </div>
     </div>

@@ -29,11 +29,11 @@ class NewPost
             ->method('getCities')
             ->params([
                 'FindByString' => $name,
-                'Limit' => '500',
+                'Limit'        => '500',
             ])
             ->execute();
 
-        if (count($result['errors']) > 0){
+        if (count($result['errors']) > 0) {
             $str = '';
             foreach ($result['errors'] as $error) {
                 if ($error == 'API key expired')
@@ -167,7 +167,7 @@ class NewPost
             $war = 'not_found';
 
         $data = [
-            'city' => $this->getNameCityByRef($city),
+            'city'      => $this->getNameCityByRef($city),
             'warehouse' => $war
         ];
 
@@ -182,7 +182,7 @@ class NewPost
     {
         $documents = [];
         foreach ($data as $item) {
-            if(preg_match('/[0-9]{14}/', $item['street'])) {
+            if (preg_match('/[0-9]{14}/', $item['street'])) {
                 $temp = [];
                 $temp['DocumentNumber'] = trim($item['street']);
                 $temp['Phone'] = '';
@@ -201,4 +201,32 @@ class NewPost
         return $result;
     }
 
+    public function getCities($page)
+    {
+        $result = $this->nova
+            ->model('Address')
+            ->method('getCities')
+            ->params([
+                'Page'  => $page,
+                'Limit' => 500
+            ])
+            ->execute();
+
+        return count($result['data']) == 0 ? false : $result['data'];
+    }
+
+
+    public function getWarehouses($page)
+    {
+        $result = $this->nova
+            ->model('AddressGeneral')
+            ->method('getWarehouses')
+            ->params([
+                'Page' => $page,
+                'Limit' => 500
+            ])
+            ->execute();
+
+        return count($result['data']) == 0 ? false : $result['data'];
+    }
 }

@@ -152,6 +152,8 @@ $(document).on('click', '.searched', function() {
   return checkPrice;
 });
 
+$('');
+
 $(document).on('change', '#city_select', function() {
   var $selected, text, value;
   $selected = $(this);
@@ -226,24 +228,29 @@ $(document).ready(function() {
       return console.log(p3);
     }
   });
-  return $('#city').typeahead({
-    source: function(query, result) {
-      return $.ajax({
-        type: 'post',
-        url: "/api/search_village",
-        data: {
-          street: $('#street').val()
-        },
-        success: function(data) {
-          return result(data);
-        }
-      });
+  $('#sending_city').select2({
+    ajax: {
+      type: 'post',
+      url: '/orders/new_post_city',
+      data: function(params) {
+        return {
+          name: params.term
+        };
+      }
     },
-    afterSelect: function(p1, p2, p3) {
-      console.log(p1);
-      console.log(p2);
-      return console.log(p3);
-    }
+    cache: true
+  });
+  return $('#sending_city').on('select2:select', function(event) {
+    return $.ajax({
+      type: 'post',
+      url: '/orders/new_post_warehouse',
+      data: {
+        city_id: $(event.currentTarget).val()
+      },
+      success: function(response) {
+        return $('#warehouse').attr('disabled', false).html(response.options);
+      }
+    });
   });
 });
 
