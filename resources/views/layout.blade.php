@@ -10,6 +10,7 @@
 <body>
 <input style="display: none" name="login" type="text">
 <input style="display: none" name="password" type="password">
+<a style="display: none" id="pjax_reload" href="{{ url()->current() }}"></a>
 
 <div class="content-left content-left-{{ $_COOKIE['left-content-state'] ?? 'open' }}">
     <ul>
@@ -152,20 +153,24 @@
         @yield('content')
 
         <div class="scripts-hidden">
-            <script type="text/javascript">
-                let pin = '{{ user()->pin }}';
-                let my_url = '{{ '' }}';
+            <script>
+                @if(session('success'))
+                    window.successSessionMessage = true;
+                @else
+                    window.successSessionMessage = false;
+                @endif
+
+                @isset($toJs)
+                    window.JData = @json($toJs)
+                @endisset
+
+                window.pin = '{{ user()->pin }}';
+                window.my_url = '{{ '' }}';
             </script>
 
             @yield('scripts')
 
-            @isset($toJs)
-                <script>
-                    window.JData = @json($toJs)
-                </script>
-            @endisset
-
-            <script src="{{ asset('js/app.js') }}?{{ rand32() }}?{{ rand32() }}"></script>
+            <script src="{{ asset('js/app.js') }}?{{ rand32() }}"></script>
 
             @if (isset($editor) && $editor == 'full')
                 <script src="{{ asset('ckeditor/ckeditor.js') }}?{{ rand32() }}"></script>

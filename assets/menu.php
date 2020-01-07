@@ -25,7 +25,7 @@ return [
             ],
             [
                 'name' => 'Категорії',
-                'url' => uri('category'),
+                'url' => uri('category/main'),
                 'access' => 'category',
             ],
             [
@@ -35,7 +35,7 @@ return [
             ],
             [
                 'name' => 'Товари',
-                'url' => uri('product'),
+                'url' => uri('product/main'),
                 'access' => 'product',
             ],
             [
@@ -78,7 +78,7 @@ return [
         'menu' => [
             [
                 'name' => 'Налаштування',
-                'url' => uri('settings'),
+                'url' => uri('settings/main'),
                 'access' => 'settings'
             ],
             [

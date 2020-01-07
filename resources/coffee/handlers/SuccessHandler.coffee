@@ -38,17 +38,11 @@ class SuccessHandler
         else if @driver is 'sweetalert' then @applySweetalert()
 
     applyToastr: () ->
-        toastr.options.escapeHtml = true
-        toastr.options.closeButton = true
-        toastr.options.closeMethod = 'fadeOut'
-        toastr.options.closeDuration = 300
-        toastr.options.closeEasing = 'swing'
-        toastr.options.onHidden = @callable
-        toastr.options.showMethod = 'slideDown';
-        toastr.options.hideMethod = 'slideUp';
-        toastr.options.closeMethod = 'slideUp';
-
-        toastr.success @message, @title
+        if @after is 'reload'
+            new Modal().close()
+            PjaxReload()
+        else
+            SuccessToastr(@title, @message)
 
     applySweetalert: () ->
         swal.fire

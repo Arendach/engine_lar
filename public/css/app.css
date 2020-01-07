@@ -2,12 +2,10 @@
  *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
  */
-/* FONT PATH
- * -------------------------- */
 @font-face {
   font-family: 'FontAwesome';
-  src: url([object Module]);
-  src: url([object Module]?#iefix&v=4.7.0) format('embedded-opentype'), url([object Module]) format('woff2'), url([object Module]) format('woff'), url([object Module]) format('truetype'), url([object Module]#fontawesomeregular) format('svg');
+  src: url('/fonts/fontawesome-webfont.eot?v=1');
+  src: url('/fonts/fontawesome-webfont.eot?#iefix&v=1') format('embedded-opentype'), url('/fonts/fontawesome-webfont.woff2?v=1') format('woff2'), url('/fonts/fontawesome-webfont.woff?v=1') format('woff'), url('/fonts/fontawesome-webfont.ttf?v=1') format('truetype'), url('/fonts/fontawesome-webfont.svg?v=1#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -2646,23 +2644,21 @@ a.order-file:hover {
   background: #eee;
   text-decoration: none;
 }
-a.order-file img {
-  height: 150px;
+.order-file-image {
+  width: 150px;
+  vertical-align: top;
 }
-a.order-file div {
+.order-file-info {
   margin-left: 15px;
   display: inline-block;
 }
-a.order-file .delete_image {
+.order-file-buttons {
   position: absolute;
   top: 10px;
   right: 15px;
-  color: red;
   display: block;
-  width: 20px;
   height: 20px;
   text-align: center;
-  font-size: 140%;
 }
 .input-file-container label {
   margin-bottom: 0;
@@ -2678,6 +2674,38 @@ a.order-file .delete_image {
 }
 .dropdown:hover .dropdown-menu {
   display: block;
+}
+.product-pts-more:hover > .product-pts-more-inner {
+  position: absolute;
+  border: 1px solid black;
+  border-radius: 10px 10px 0 10px;
+  padding: 10px;
+  background-color: #ccc;
+  right: 37px;
+  bottom: 10px;
+  width: 400px;
+  display: block;
+}
+.product-pts-more-inner table {
+  width: 100%;
+}
+.product-pts-more-inner table tr {
+  border-bottom: 1px solid;
+}
+.product-pts-more-inner table tr:last-child {
+  border-bottom: none;
+}
+.product-pts-more-inner table td:last-child {
+  font-weight: bolder;
+  text-align: right;
+}
+.product-pts-more-inner table td {
+  padding: 5px;
+}
+.product-filters {
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  padding: 10px;
 }
 body {
   background: #fff;
@@ -3035,10 +3063,12 @@ table.table > tbody > tr > td.vertical-centered {
   left: 0;
   opacity: 0;
 }
-.orders-table {
+.orders-table,
+.products-table {
   font-size: 12px;
 }
-.orders-table .form-control {
+.orders-table .form-control,
+.products-table .form-control {
   height: 25px;
   padding: 0;
 }

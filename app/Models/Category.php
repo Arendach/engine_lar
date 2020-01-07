@@ -26,5 +26,19 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Category extends Model
 {
-    //
+    protected $table = 'categories';
+
+    protected $fillable = [
+        'name',
+        'parent_id',
+        'sort',
+        'service_code'
+    ];
+
+    public $timestamps = false;
+
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
 }

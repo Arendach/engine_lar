@@ -15,7 +15,7 @@ class UserController extends Controller
 
     public function sectionLogin()
     {
-        $this->view->display('login');
+        return view('login');
     }
 
     public function section_list()

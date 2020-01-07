@@ -2,77 +2,70 @@
 
 namespace App\Http\Controllers;
 
-use Web\Model\Category;
-
-use Web\Model\Coupon;
-use Web\Tools\Categories;
+use App\Http\Requests\Categories\UniversalRequest;
+use App\Models\Category;
+use App\Services\CategoryTree;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     public $access = 'category';
 
-    public function section_main()
+    public function sectionMain(CategoryTree $categoryTree)
+    {
+        $categoryTree->forgetCache();
+
+        return view('category.main', [
+            'categories' => $categoryTree->table()
+        ]);
+    }
+
+    public function actionCreateForm(CategoryTree $categoryTree)
+    {
+        return view('category.create_form', [
+            'categories' => $categoryTree->option()
+        ]);
+    }
+
+    public function actionUpdateForm(Request $request, CategoryTree $categoryTree)
     {
         $data = [
-            'title' => 'Каталог :: Категорії товарів',
-            'components' => ['modal'],
-            'categories' => Category::getCategories(),
-            'breadcrumbs' => [['Товари', uri('product')], ['Категорії']]
+            'categories' => $categoryTree->option(),
+            'category' => Category::findOrFail($request->id)
         ];
 
-        $this->view->display('category.main', $data);
+        return view('category.update_form', $data);
     }
 
-    public function action_create_form()
+    public function actionCreate(UniversalRequest $request, CategoryTree $categoryTree)
     {
-        $data = [
-            'title' => 'Створити категорію',
-            'categories' => Coupon::getCategories()
-        ];
+        Category::create($request->all());
 
-        $this->view->display('category.create_form', $data);
+        $categoryTree->forgetCache();
+
+        session()->flash('success', true);
     }
 
-    public function action_update_form($post)
+    public function actionUpdate(UniversalRequest $request, CategoryTree $categoryTree)
     {
-        $data = [
-            'title' => 'Редагувати категорію',
-            'categories' => Coupon::getCategories(),
-            'category' => Category::getOne($post->id)
-        ];
+        Category::findOrFail($request->id)->update($request->all());
 
-        $this->view->display('category.update_form', $data);
+        $categoryTree->forgetCache();
+
+        session()->flash('success', true);
     }
 
-    public function action_create($post)
+    public function actionDelete(Request $request, CategoryTree $categoryTree)
     {
-        Category::insert($post);
+        Category::findOrFail($request->id)->delete();
 
-        Categories::clear_cache();
+        $categoryTree->forgetCache();
 
-        response(200, 'Категорія вдало створена!');
+        return response()->json(['message' => 'Дані успішно видалені!']);
     }
 
-    public function action_update($post)
+    public function apiAll(CategoryTree $categoryTree)
     {
-        Category::update($post, $post->id);
-
-        Categories::clear_cache();
-
-        response(200, 'Категорія вдало відредагована!');
-    }
-
-    public function action_delete($data)
-    {
-        Category::delete_parent($data->id);
-
-        Categories::clear_cache();
-
-        response(200, 'Категорія вдало видалена!');
-    }
-
-    public function api_all()
-    {
-        echo Coupon::getCategories();
+        echo $categoryTree->option();
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+Route::get('login', 'UserController@sectionLogin');
 Route::post('login', 'UserController@actionAuthorize')->name('login');
 Route::get('exit', 'UserController@sectionunAuthorize')->name('exit');
 

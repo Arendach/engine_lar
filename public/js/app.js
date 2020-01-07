@@ -30631,6 +30631,48 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/coffee/Modal.coffee":
+/*!***************************************!*\
+  !*** ./resources/coffee/Modal.coffee ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var Modal;
+
+Modal = class Modal {
+  open(html) {
+    $('#pjax-container').append(html);
+    $('.modal').modal();
+    return this.handlers();
+  }
+
+  handlers() {
+    $(document).on('click', '#modal_close', this.close);
+    $(document).on('click', '.poster', this.close);
+    return $(document).on('keydown', function() {
+      return function(event) {
+        if (event.which === 27) {
+          return this.close();
+        }
+      };
+    });
+  }
+
+  close() {
+    $('.modal').modal('hide');
+    return setTimeout(function() {
+      return $('.modal').remove();
+    }, 400);
+  }
+
+};
+
+module.exports = Modal;
+
+
+/***/ }),
+
 /***/ "./resources/coffee/UrlGenerator.coffee":
 /*!**********************************************!*\
   !*** ./resources/coffee/UrlGenerator.coffee ***!
@@ -30761,11 +30803,17 @@ __webpack_require__(/*! ./common.coffee */ "./resources/coffee/common.coffee");
 
 var patterns;
 
-__webpack_require__(/*! ./pjax.coffee */ "./resources/coffee/pjax.coffee");
+window.Modal = __webpack_require__(/*! ./Modal.coffee */ "./resources/coffee/Modal.coffee");
+
+window.PjaxReload = __webpack_require__(/*! ./pjax.coffee */ "./resources/coffee/pjax.coffee");
+
+window.SuccessToastr = __webpack_require__(/*! ./handlers/SuccessToastr.coffee */ "./resources/coffee/handlers/SuccessToastr.coffee");
 
 window.SuccessHandler = __webpack_require__(/*! ./handlers/SuccessHandler.coffee */ "./resources/coffee/handlers/SuccessHandler.coffee");
 
 window.ErrorHandler = __webpack_require__(/*! ./handlers/ErrorHandler.coffee */ "./resources/coffee/handlers/ErrorHandler.coffee");
+
+window.DeleteOnClick = __webpack_require__(/*! ./handlers/DeleteOnClick.coffee */ "./resources/coffee/handlers/DeleteOnClick.coffee");
 
 patterns = {
   comma: /\,/,
@@ -30777,9 +30825,31 @@ patterns = {
   number: /\D/
 };
 
-document.ElementsExists = false;
+window.ElementsExists = false;
 
-document.inputCache = '';
+window.inputCache = '';
+
+window.str_to_int = function(str) {
+  return str.replace(/\D+/g, "");
+};
+
+window.getParameters = function() {
+  var Pattern, params;
+  Pattern = /[\?][\w\W]+/;
+  params = document.location.href.match(Pattern);
+  if (params != null) {
+    return params = '';
+  }
+};
+
+window.redirect = function(url) {
+  return window.location.href = url;
+};
+
+window.url = function(path) {
+  path = path.replace(/^\//, '');
+  return `${my_url}/${path}`;
+};
 
 String.prototype.replaceAll = function(search, replace) {
   return this.split(search).join(replace);
@@ -30789,6 +30859,9 @@ $(document).ready(function() {
   var url;
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
+  if (window.successSessionMessage) {
+    SuccessToastr('Виконано', 'Дані успішно збережені');
+  }
   url = document.location.toString();
   if (url.match('#')) {
     return $('.nav-pills a[href="#' + url.split('#')[1] + '"]').tab('show');
@@ -30863,16 +30936,13 @@ $(document).on('keyup', '[data-inspect="integer"]', function() {
 $(document).on('submit', '[data-type="ajax"]', function(event) {
   var after, data, error, redirectTo, send, success, type, url;
   event.preventDefault();
-  
-  //data = $(event.currentTarget).serializeJSON()
-  url = $(event.currentTarget).attr('action');
-  type = $(event.currentTarget).attr('method');
-  redirectTo = $(event.currentTarget).data('redirect-to');
-  success = $(event.currentTarget).data('success');
-  error = $(event.currentTarget).data('error');
-  after = $(event.currentTarget).data('after');
+  url = $(this).attr('action');
+  type = $(this).attr('method');
+  redirectTo = $(this).data('redirect-to');
+  success = $(this).data('success');
+  error = $(this).data('error');
+  after = $(this).data('after');
   data = new FormData(this);
-  console.log(data);
   if (url == null) {
     url = window.location;
   }
@@ -30891,9 +30961,8 @@ $(document).on('submit', '[data-type="ajax"]', function(event) {
   if (redirectTo == null) {
     redirectTo = window.location;
   }
-  //data = Elements.customFormSerializePush data, @
-  $(event.currentTarget).find('[name]').attr('disabled', true);
-  $(event.currentTarget).find('button').attr('disabled', true).prepend('<i class="fa fa-circle-o-notch fa-spin"></i> ');
+  $(this).find('[name]').attr('disabled', true);
+  $(this).find('button').attr('disabled', true).prepend('<i class="fa fa-circle-o-notch fa-spin"></i> ');
   send = function() {
     return $.ajax({
       type: type,
@@ -30922,68 +30991,45 @@ $(document).on('submit', '[data-type="ajax"]', function(event) {
   }
 });
 
-$(document).on('click', '[data-type="delete"]', function(event) {
-  var action, data, id, url;
-  event.preventDefault();
-  id = $(this).data('id');
-  url = $(this).data('uri');
-  action = $(this).data('action');
-  data = $(this).data('post');
-  data = data !== void 0 ? `${data}&action=${action}` : {id, action};
-  return delete_on_click(function() {
-    return $.ajax({
-      type: 'post',
-      url: url,
-      data: data,
-      success: function(answer) {
-        return successHandler(answer);
-      },
-      error: function(answer) {
-        return errorHandler(answer);
-      }
-    });
-  });
-});
-
 $(document).on('click', '[data-type="get_form"]', function(event) {
-  var action, data, post, url;
+  var data, url;
   event.preventDefault();
   url = $(this).data('uri');
-  action = $(this).data('action');
-  post = $(this).data('post');
-  data = post === void 0 ? `action=${action}` : `${post}&action=${action}`;
+  data = $(this).data('post');
   $(this).attr('disabled', true);
   return $.ajax({
     type: 'post',
     url: url,
     data: data,
-    success: function(answer) {
-      myModalOpen(answer);
-      return $(this).attr('disabled', false);
+    success: (answer) => {
+      $(this).attr('disabled', false);
+      return new Modal().open(answer);
     },
-    error: function(answer) {
-      errorHandler(answer);
-      return $(this).attr('disabled', false);
+    error: (answer) => {
+      $(this).attr('disabled', false);
+      return new ErrorHandler(answer).apply();
     }
   });
 });
 
 $(document).on('click', '[data-type="ajax_request"]', function(event) {
-  var action, data, url;
+  var after, data, url;
   event.preventDefault();
   url = $(this).data('uri');
   data = $(this).data('post');
-  action = $(this).data('action');
-  data = `${data}&action=${action}`;
+  after = $(this).data('after');
+  $(this).attr('disabled', true);
   return $.ajax({
     type: 'post',
     url: url,
     data: data,
-    success: function(answer) {
-      return successHandler(answer);
+    success: (answer, status, xhr) => {
+      $(this).attr('disabled', false);
+      return new SuccessHandler(answer, xhr).setAfter(after).apply();
     },
-    error: function(answer) {
-      return errorHandler(answer);
+    error: (answer) => {
+      $(this).attr('disabled', false);
+      return new ErrorHandler(answer).apply();
     }
   });
 });
@@ -31028,52 +31074,65 @@ $('a[data-type="pin_code"]').on('click', function() {
 $(document).on('click', '.change-theme', function(event) {
   var href, name, theme;
   event.preventDefault();
-  name = $(event.currentTarget).data('name');
-  href = $(event.currentTarget).data('href');
-  theme = $(event.currentTarget).data('theme');
+  name = $(this).data('name');
+  href = $(this).data('href');
+  theme = $(this).data('theme');
   $('#baze-theme').attr('href', href);
   $('#theme-name').text(name);
-  return $.ajax({
-    type: 'post',
-    url: '/main/change_theme',
-    data: {
-      theme: theme
-    }
+  return $.post('/main/change_theme', {
+    theme: theme
   });
 });
 
-window.str_to_int = function(str) {
-  return str.replace(/\D+/g, "");
-};
 
-window.getParameters = function() {
-  var Pattern, params;
-  Pattern = /[\?][\w\W]+/;
-  params = document.location.href.match(Pattern);
-  if (params != null) {
-    return params = '';
-  }
-};
+/***/ }),
 
-window.log = function(type, desc) {
-  return $.ajax({
-    type: 'post',
-    url: '/log',
-    data: {type, desc}
+/***/ "./resources/coffee/handlers/DeleteOnClick.coffee":
+/*!********************************************************!*\
+  !*** ./resources/coffee/handlers/DeleteOnClick.coffee ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var DeleteOnClick;
+
+$(document).on('click', '[data-type="delete"]', function(event) {
+  var data, id, url;
+  event.preventDefault();
+  id = $(this).data('id');
+  url = $(this).data('uri');
+  data = $(this).data('post');
+  data = data !== void 0 ? data + "&id=" + id : {id};
+  return DeleteOnClick(() => {
+    return $.ajax({
+      type: 'post',
+      url: url,
+      data: data,
+      success: (answer, status, jqXHR) => {
+        new SuccessHandler(answer, jqXHR).apply();
+        $(this).parents('tr').remove();
+        return $(this).parents('.item-row').remove();
+      },
+      error: function(answer) {
+        return new ErrorHandler(answer).apply();
+      }
+    });
   });
-};
+});
 
-window.elog = function(desc) {
-  return log('error_in_javascript_file', desc);
-};
-
-window.redirect = function(url) {
-  return window.location.href = url;
-};
-
-window.url = function(path) {
-  path = path.replace(/^\//, '');
-  return `${my_url}/${path}`;
+DeleteOnClick = function(handler) {
+  return swal.fire({
+    title: "Видалити?",
+    text: "Дану дію відмінити буде неможливо!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Так, я хочу видалити!"
+  }).then(function(value) {
+    if (value) {
+      return handler();
+    }
+  });
 };
 
 
@@ -31105,7 +31164,7 @@ ErrorHandler = (function() {
     setMessages() {
       if (this.answer.status === 0) {
         return this.error0Handler();
-      } else if (this.answer.status === 400) {
+      } else if (this.answer.status === 400 || this.answer.status === 422) {
         return this.error400Handler();
       } else if (this.answer.status === 401) {
         return this.error401Handler();
@@ -31363,16 +31422,12 @@ SuccessHandler = class SuccessHandler {
   }
 
   applyToastr() {
-    toastr.options.escapeHtml = true;
-    toastr.options.closeButton = true;
-    toastr.options.closeMethod = 'fadeOut';
-    toastr.options.closeDuration = 300;
-    toastr.options.closeEasing = 'swing';
-    toastr.options.onHidden = this.callable;
-    toastr.options.showMethod = 'slideDown';
-    toastr.options.hideMethod = 'slideUp';
-    toastr.options.closeMethod = 'slideUp';
-    return toastr.success(this.message, this.title);
+    if (this.after === 'reload') {
+      new Modal().close();
+      return PjaxReload();
+    } else {
+      return SuccessToastr(this.title, this.message);
+    }
   }
 
   applySweetalert() {
@@ -31390,6 +31445,32 @@ module.exports = SuccessHandler;
 
 /***/ }),
 
+/***/ "./resources/coffee/handlers/SuccessToastr.coffee":
+/*!********************************************************!*\
+  !*** ./resources/coffee/handlers/SuccessToastr.coffee ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var SuccessToastr;
+
+SuccessToastr = function(title, message) {
+  toastr.options.escapeHtml = true;
+  toastr.options.closeButton = true;
+  toastr.options.closeMethod = 'fadeOut';
+  toastr.options.closeDuration = 300;
+  toastr.options.closeEasing = 'swing';
+  toastr.options.showMethod = 'slideDown';
+  toastr.options.hideMethod = 'slideUp';
+  toastr.options.closeMethod = 'slideUp';
+  return toastr.success(message, title);
+};
+
+module.exports = SuccessToastr;
+
+
+/***/ }),
+
 /***/ "./resources/coffee/pjax.coffee":
 /*!**************************************!*\
   !*** ./resources/coffee/pjax.coffee ***!
@@ -31397,10 +31478,19 @@ module.exports = SuccessHandler;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-//$.pjax.reload {container: '#pjax-container', timeout: false}
+var reload;
+
 $(document).pjax('a', '#pjax-container', {
   fragment: '#pjax-container'
 });
+
+reload = function() {
+  return window.location.reload();
+};
+
+//  $.pjax.defaults.timeout = false
+//  $.pjax.reload({container: '#pjax-container', fragment: '#pjax-container'})
+module.exports = reload;
 
 
 /***/ }),

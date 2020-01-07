@@ -1,5 +1,5 @@
 <div class="input-file-container">
-    <label class="alert alert-info">
+    <label class="alert alert-info" style="width: 100%">
         <input type="file"
                class="input-file-input"
                name="{{ $name ?? 'file' }}{{ isset($multiple) && $multiple == true ? '[]' : '' }}"

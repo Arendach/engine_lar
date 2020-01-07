@@ -17,7 +17,8 @@
         "lis-dev/nova-poshta-api-2": "^0.1.1",
         "mobizon/mobizon-php": "^2.0",
         "sergeynezbritskiy/privatbank-api": "^3.0",
-        "symfony/dom-crawler": "^5.0"
+        "symfony/dom-crawler": "^5.0",
+      "ext-json": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",

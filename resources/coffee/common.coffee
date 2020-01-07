@@ -1,6 +1,9 @@
-require './pjax.coffee'
+window.Modal = require './Modal.coffee'
+window.PjaxReload = require './pjax.coffee'
+window.SuccessToastr = require './handlers/SuccessToastr.coffee'
 window.SuccessHandler = require './handlers/SuccessHandler.coffee'
 window.ErrorHandler = require './handlers/ErrorHandler.coffee'
+window.DeleteOnClick = require './handlers/DeleteOnClick.coffee'
 
 patterns =
   comma: /\,/
@@ -11,14 +14,32 @@ patterns =
   hyphen: /\-/
   number: /\D/
 
-document.ElementsExists = false
-document.inputCache = ''
+window.ElementsExists = false
+window.inputCache = ''
+
+window.str_to_int = (str) -> str.replace(/\D+/g, "")
+
+window.getParameters = ->
+    Pattern = /[\?][\w\W]+/
+    params = document.location.href.match(Pattern)
+    params = '' if params?
+
+window.redirect = (url) -> window.location.href = url
+
+
+window.url = (path) ->
+    path = path.replace(/^\//, '')
+    "#{my_url}/#{path}"
 
 String::replaceAll = (search, replace) -> @.split(search).join(replace)
+
 
 $(document).ready ->
     $('[data-toggle="tooltip"]').tooltip()
     $('[data-toggle="popover"]').popover()
+
+    if window.successSessionMessage
+        SuccessToastr('Виконано', 'Дані успішно збережені')
 
     url = document.location.toString()
     if url.match '#'
@@ -78,18 +99,15 @@ $(document).on 'keyup', '[data-inspect="integer"]', ->
 
 $(document).on 'submit', '[data-type="ajax"]', (event) ->
     event.preventDefault()
-    
-    #data = $(event.currentTarget).serializeJSON()
-    url = $(event.currentTarget).attr 'action'
-    type = $(event.currentTarget).attr 'method'
-    redirectTo = $(event.currentTarget).data 'redirect-to'
-    success = $(event.currentTarget).data 'success'
-    error = $(event.currentTarget).data 'error'
-    after = $(event.currentTarget).data 'after'
 
-    data = new FormData(this)
+    url = $(@).attr 'action'
+    type = $(@).attr 'method'
+    redirectTo = $(@).data 'redirect-to'
+    success = $(@).data 'success'
+    error = $(@).data 'error'
+    after = $(@).data 'after'
 
-    console.log(data)
+    data = new FormData(@)
 
     url ?= window.location
     type ?= 'post'
@@ -98,16 +116,8 @@ $(document).on 'submit', '[data-type="ajax"]', (event) ->
     after ?= 'close'
     redirectTo ?= window.location
 
-    #data = Elements.customFormSerializePush data, @
-
-    $ event.currentTarget
-        .find '[name]'
-        .attr 'disabled', yes
-
-    $ event.currentTarget
-        .find 'button'
-        .attr 'disabled', yes
-        .prepend '<i class="fa fa-circle-o-notch fa-spin"></i> '
+    $(@).find('[name]').attr('disabled', yes)
+    $(@).find('button').attr('disabled', yes).prepend('<i class="fa fa-circle-o-notch fa-spin"></i> ')
 
     send = ->
         $.ajax
@@ -150,40 +160,24 @@ $(document).on 'submit', '[data-type="ajax"]', (event) ->
 
     if typeof $(@).data('pin_code') != "undefined" then pin_code -> send() else send()
 
-$(document).on 'click', '[data-type="delete"]', (event) ->
-    event.preventDefault()
-
-    id = $(@).data 'id'
-    url = $(@).data 'uri'
-    action = $(@).data 'action'
-    data = $(@).data 'post'
-
-    data = if data isnt undefined then "#{data}&action=#{action}" else {id, action}
-
-    delete_on_click ->
-        $.ajax
-            type: 'post', url: url, data: data
-            success: (answer) -> successHandler(answer)
-            error: (answer) -> errorHandler(answer)
-
 $(document).on 'click', '[data-type="get_form"]', (event) ->
     event.preventDefault()
 
     url = $(@).data 'uri'
-    action = $(@).data 'action'
-    post = $(@).data 'post'
-    data = if post is undefined then "action=#{action}" else "#{post}&action=#{action}"
+    data = $(@).data 'post'
 
-    $(@).attr 'disabled', yes
+    $(@).attr('disabled', on)
 
     $.ajax
-        type: 'post', url: url, data: data
-        success: (answer) ->
-            myModalOpen answer
-            $(@).attr 'disabled', no
-        error: (answer) ->
-            errorHandler answer
-            $(@).attr 'disabled', no
+        type: 'post'
+        url: url
+        data: data
+        success: (answer) =>
+            $(@).attr('disabled', no)
+            new Modal().open(answer)
+        error: (answer) =>
+            $(@).attr('disabled', no)
+            new ErrorHandler(answer).apply()
 
 
 $(document).on 'click', '[data-type="ajax_request"]', (event) ->
@@ -191,14 +185,20 @@ $(document).on 'click', '[data-type="ajax_request"]', (event) ->
 
     url = $(@).data 'uri'
     data = $(@).data 'post'
-    action = $(@).data 'action'
+    after = $(@).data('after')
 
-    data = "#{data}&action=#{action}"
+    $(@).attr('disabled', yes)
 
     $.ajax
-        type: 'post', url: url, data: data
-        success: (answer) -> successHandler answer
-        error: (answer) -> errorHandler answer
+        type: 'post'
+        url: url
+        data: data
+        success: (answer, status, xhr) =>
+            $(@).attr('disabled', no)
+            new SuccessHandler(answer, xhr).setAfter(after).apply()
+        error: (answer) =>
+            $(@).attr('disabled', no)
+            new ErrorHandler(answer).apply()
 
 $(document).on 'click', '.map-signs', (event) ->
     current = $(event.currentTarget)
@@ -228,55 +228,14 @@ $('a[data-type="pin_code"]').on 'click', ->
     href = $(@).data('href')
     pin_code -> window.location.href = href
 
-$ document
-    .on 'click', '.change-theme', (event) ->
-        event.preventDefault()
+$(document).on 'click', '.change-theme', (event) ->
+    event.preventDefault()
 
-        name = $ event.currentTarget
-            .data 'name'
+    name = $(@).data('name')
+    href = $(@).data('href')
+    theme = $(@).data('theme')
 
-        href = $ event.currentTarget
-            .data 'href'
+    $('#baze-theme').attr('href', href)
+    $('#theme-name').text(name)
 
-        theme = $ event.currentTarget
-            .data 'theme'
-
-        $ '#baze-theme'
-            .attr 'href', href
-
-        $ '#theme-name'
-            .text name
-
-        $.ajax
-            type: 'post'
-            url: '/main/change_theme'
-            data:
-                theme: theme
-
-
-
-
-window.str_to_int = (str) -> str.replace(/\D+/g, "")
-
-window.getParameters = ->
-    Pattern = /[\?][\w\W]+/
-    params = document.location.href.match(Pattern)
-    params = '' if params?
-
-window.log = (type, desc) ->
-    $.ajax
-        type: 'post',
-        url: '/log'
-        data: {type, desc}
-
-
-window.elog = (desc) -> log('error_in_javascript_file', desc)
-
-
-window.redirect = (url) ->
-    window.location.href = url
-
-
-window.url = (path) ->
-    path = path.replace(/^\//, '')
-    "#{my_url}/#{path}"
+    $.post '/main/change_theme', {theme: theme}

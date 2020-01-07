@@ -2,58 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use RedBeanPHP\R;
-
-use Cocur\Slugify\Slugify;
+use App\Models\OrderHint;
+use Illuminate\Http\Request;
 use Web\Model\Attributes;
 use Web\Model\OrderSettings;
 use Web\Model\Storage;
 
 class SettingsController extends Controller
 {
-    public $access = 'settings';
-
-    public function section_main()
+    public function sectionMain()
     {
-        $data = [
-            'title' => 'Налаштування',
-            'breadcrumbs' => [['Налаштування']]
-        ];
-
-        $this->view->display('settings.main', $data);
+        return view('settings.main');
     }
 
     /***************************************************************************/
     /* Color hints                                                             */
     /***************************************************************************/
 
-    public function section_colors()
+    public function sectionHints()
     {
-        $data = [
-            'title' => 'Налаштування :: Кольорові підказки',
-            'items' => OrderSettings::getAll('colors'),
-            'scripts' => ['settings/colors.js'],
-            'components' => ['color_picker', 'modal'],
-            'breadcrumbs' => [['Налаштування', uri('settings')], ['Кольорові підказки']]
-        ];
-
-        $this->view->display('settings.colors.main', $data);
+        return view('settings.hints.main', ['hints' => OrderHint::all()]);
     }
 
-    public function action_color_create($post)
+    public function actionHintCreate(Request $request)
     {
-        if (empty($post->description)) response(400, 'Заповніть опис');
-
-        OrderSettings::insert($post, 'colors');
-
-        response(200, DATA_SUCCESS_CREATED);
+        OrderHint::insert($request->all());
     }
 
     public function action_color_form_update($post)
     {
         $data = [
             'title' => 'Редагування підказки',
-            'item' => OrderSettings::getOne($post->id, 'colors')
+            'item'  => OrderSettings::getOne($post->id, 'colors')
         ];
 
         $this->view->display('settings.colors.form_update', $data);
@@ -80,9 +60,9 @@ class SettingsController extends Controller
     public function section_delivery()
     {
         $data = [
-            'title' => 'Налаштування :: Доставка',
-            'items' => OrderSettings::getAll('logistics'),
-            'components' => ['modal'],
+            'title'       => 'Налаштування :: Доставка',
+            'items'       => OrderSettings::getAll('logistics'),
+            'components'  => ['modal'],
             'breadcrumbs' => [['Налаштування', uri('settings')], ['Доставка']]
         ];
 
@@ -102,7 +82,7 @@ class SettingsController extends Controller
     {
         $data = [
             'title' => 'Редагування доставки',
-            'item' => OrderSettings::getOne($post->id, 'logistics')
+            'item'  => OrderSettings::getOne($post->id, 'logistics')
         ];
 
         $this->view->display('settings.delivery.form_update', $data);
@@ -129,10 +109,10 @@ class SettingsController extends Controller
     public function section_pay()
     {
         $data = [
-            'title' => 'Налаштування :: Оплата',
-            'items' => OrderSettings::getAll('pays'),
-            'merchants' => OrderSettings::getAll('merchant'),
-            'components' => ['modal'],
+            'title'       => 'Налаштування :: Оплата',
+            'items'       => OrderSettings::getAll('pays'),
+            'merchants'   => OrderSettings::getAll('merchant'),
+            'components'  => ['modal'],
             'breadcrumbs' => [['Налаштування', uri('settings')], ['Оплата']]
         ];
 
@@ -151,8 +131,8 @@ class SettingsController extends Controller
     public function action_pay_form_update($post)
     {
         $data = [
-            'title' => 'Редагування оплати',
-            'pay' => OrderSettings::getOne($post->id, 'pays'),
+            'title'     => 'Редагування оплати',
+            'pay'       => OrderSettings::getOne($post->id, 'pays'),
             'merchants' => OrderSettings::getAll('merchant')
         ];
 
@@ -182,9 +162,9 @@ class SettingsController extends Controller
     public function section_attribute()
     {
         $data = [
-            'title' => 'Налаштування :: Атрибути',
-            'components' => ['modal'],
-            'items' => OrderSettings::getWithPaginate('attributes'),
+            'title'       => 'Налаштування :: Атрибути',
+            'components'  => ['modal'],
+            'items'       => OrderSettings::getWithPaginate('attributes'),
             'breadcrumbs' => [['Налаштування', uri('settings')], ['Атрибути']]
         ];
 
@@ -194,7 +174,7 @@ class SettingsController extends Controller
     public function action_update_attribute_form($post)
     {
         $data = [
-            'title' => 'Редагувати аттрибут',
+            'title'     => 'Редагувати аттрибут',
             'attribute' => OrderSettings::getOne($post->id, 'attributes'),
         ];
 
@@ -245,7 +225,7 @@ class SettingsController extends Controller
 
         foreach ($attributes as $attribute) {
             $result[] = [
-                'id' => $attribute->id,
+                'id'      => $attribute->id,
                 'name_uk' => $attribute->name,
                 'name_ru' => $attribute->name_ru
             ];
@@ -261,9 +241,9 @@ class SettingsController extends Controller
     public function section_order_type()
     {
         $data = [
-            'title' => 'Налаштування :: Типи замовлень',
-            'components' => ['modal', 'color_picker'],
-            'items' => OrderSettings::getAll('order_type'),
+            'title'       => 'Налаштування :: Типи замовлень',
+            'components'  => ['modal', 'color_picker'],
+            'items'       => OrderSettings::getAll('order_type'),
             'breadcrumbs' => [['Налаштування', uri('settings')], ['Типи замовлень']]
         ];
 
@@ -287,7 +267,7 @@ class SettingsController extends Controller
     public function action_update_order_type_form($post)
     {
         $data = [
-            'title' => 'Редагування типу замовлення',
+            'title'      => 'Редагування типу замовлення',
             'order_type' => OrderSettings::getOne($post->id, 'order_type')
         ];
 
@@ -318,10 +298,10 @@ class SettingsController extends Controller
     public function section_course()
     {
         $data = [
-            'title' => 'Налаштування :: Курс валют',
+            'title'       => 'Налаштування :: Курс валют',
             'breadcrumbs' => [['Налаштування', uri('settings')], ['Курс валют']],
-            'items' => OrderSettings::getAll('course'),
-            'scripts' => ['exchange.js']
+            'items'       => OrderSettings::getAll('course'),
+            'scripts'     => ['exchange.js']
         ];
 
         $this->view->display('settings.exchange.main', $data);
@@ -341,9 +321,9 @@ class SettingsController extends Controller
     public function section_sites()
     {
         $data = [
-            'title' => 'Налаштування :: Сайти',
-            'components' => ['modal'],
-            'items' => OrderSettings::getAll('sites'),
+            'title'       => 'Налаштування :: Сайти',
+            'components'  => ['modal'],
+            'items'       => OrderSettings::getAll('sites'),
             'breadcrumbs' => [['Налаштування', uri('settings')], ['Сайти']]
         ];
 
@@ -369,7 +349,7 @@ class SettingsController extends Controller
     {
         $data = [
             'title' => 'Редагування сайту',
-            'site' => OrderSettings::getOne($post->id, 'sites')
+            'site'  => OrderSettings::getOne($post->id, 'sites')
         ];
 
         $this->view->display('settings.sites.update_form', $data);
@@ -400,11 +380,11 @@ class SettingsController extends Controller
     public function section_ids()
     {
         $data = [
-            'title' => 'Налаштування :: Ідентифікатори складів',
-            'components' => ['modal'],
-            'items' => Storage::getIdsToEdit(),
-            'scripts' => ['elements.js'],
-            'css' => ['elements.css'],
+            'title'       => 'Налаштування :: Ідентифікатори складів',
+            'components'  => ['modal'],
+            'items'       => Storage::getIdsToEdit(),
+            'scripts'     => ['elements.js'],
+            'css'         => ['elements.css'],
             'breadcrumbs' => [['Налаштування', uri('settings')], ['Ідентифікатори складів']]
         ];
 
@@ -440,7 +420,7 @@ class SettingsController extends Controller
     {
         $data = [
             'title' => 'Редагування ідентифікатора складу',
-            'ids' => OrderSettings::getOne($post->id, 'ids_storage')
+            'ids'   => OrderSettings::getOne($post->id, 'ids_storage')
         ];
 
         $this->view->display('settings.ids.update_form', $data);
@@ -479,11 +459,11 @@ class SettingsController extends Controller
     public function section_shops()
     {
         $data = [
-            'title' => 'Налаштування :: Магазини',
-            'components' => ['modal'],
-            'items' => OrderSettings::getAll('shops'),
-            'scripts' => ['elements.js'],
-            'css' => ['elements.css'],
+            'title'       => 'Налаштування :: Магазини',
+            'components'  => ['modal'],
+            'items'       => OrderSettings::getAll('shops'),
+            'scripts'     => ['elements.js'],
+            'css'         => ['elements.css'],
             'breadcrumbs' => [['Налаштування', uri('settings')], ['Магазини']]
         ];
 
@@ -509,7 +489,7 @@ class SettingsController extends Controller
     {
         $data = [
             'title' => 'Редагування магазину',
-            'shop' => OrderSettings::getOne($post->id, 'shops')
+            'shop'  => OrderSettings::getOne($post->id, 'shops')
         ];
 
         $this->view->display('settings.shops.update_form', $data);
@@ -540,11 +520,11 @@ class SettingsController extends Controller
     public function section_characteristics()
     {
         $data = [
-            'title' => 'Налаштування :: Характеристики',
-            'components' => ['modal'],
-            'items' => OrderSettings::getWithPaginate('characteristics'),
-            'scripts' => ['elements.js'],
-            'css' => ['elements.css'],
+            'title'       => 'Налаштування :: Характеристики',
+            'components'  => ['modal'],
+            'items'       => OrderSettings::getWithPaginate('characteristics'),
+            'scripts'     => ['elements.js'],
+            'css'         => ['elements.css'],
             'breadcrumbs' => [['Налаштування', uri('settings')], ['Характеристики']]
         ];
 
@@ -569,7 +549,7 @@ class SettingsController extends Controller
     public function action_update_characteristic_form($post)
     {
         $data = [
-            'title' => 'Редагування характеристики',
+            'title'          => 'Редагування характеристики',
             'characteristic' => OrderSettings::getOne($post->id, 'characteristics')
         ];
 
@@ -608,13 +588,13 @@ class SettingsController extends Controller
     public function section_merchant()
     {
         $data = [
-            'title' => 'Налаштування :: Мерчанти',
+            'title'       => 'Налаштування :: Мерчанти',
             'breadcrumbs' => [
                 ['Налаштування', uri('settings')],
                 ['Мерчанти']
             ],
-            'components' => ['modal'],
-            'items' => OrderSettings::getAll('merchant')
+            'components'  => ['modal'],
+            'items'       => OrderSettings::getAll('merchant')
         ];
 
         $this->view->display('settings.merchant.main', $data);
@@ -623,14 +603,14 @@ class SettingsController extends Controller
     public function section_merchant_card()
     {
         $data = [
-            'title' => 'Налаштування :: Карточки мерчанта',
+            'title'       => 'Налаштування :: Карточки мерчанта',
             'breadcrumbs' => [
                 ['Налаштування', uri('settings')],
                 ['Мерчанти', uri('settings', ['section' => 'merchant'])],
                 ['Карточки мерчанта']
             ],
-            'components' => ['modal'],
-            'items' => OrderSettings::findAll('merchant_card', 'merchant_id = ?', [get('id')])
+            'components'  => ['modal'],
+            'items'       => OrderSettings::findAll('merchant_card', 'merchant_id = ?', [get('id')])
         ];
 
         $this->view->display('settings.merchant.merchant_card', $data);
@@ -666,7 +646,7 @@ class SettingsController extends Controller
     public function action_update_merchant_form($post)
     {
         $data = [
-            'title' => 'Оновлення мерчанта',
+            'title'    => 'Оновлення мерчанта',
             'merchant' => OrderSettings::getOne($post->id, 'merchant')
         ];
 
@@ -677,7 +657,7 @@ class SettingsController extends Controller
     {
         $data = [
             'merchant_id' => $post->merchant_id,
-            'title' => 'Нова карточка'
+            'title'       => 'Нова карточка'
         ];
 
         $this->view->display('settings.merchant.forms.create_merchant_card', $data);
@@ -686,7 +666,7 @@ class SettingsController extends Controller
     public function action_update_merchant_card_form($post)
     {
         $data = [
-            'card' => OrderSettings::getOne($post->id, 'merchant_card'),
+            'card'  => OrderSettings::getOne($post->id, 'merchant_card'),
             'title' => 'Редагування карточки'
         ];
 
@@ -719,11 +699,11 @@ class SettingsController extends Controller
         $file = ROOT . '/server/black_dates.txt';
 
         $dates = '';
-        if (is_file($file))  $dates = file_get_contents($file);
+        if (is_file($file)) $dates = file_get_contents($file);
 
         $data = [
-            'title' => 'Налаштування :: Чорна дата',
-            'dates' => $dates,
+            'title'       => 'Налаштування :: Чорна дата',
+            'dates'       => $dates,
             'breadcrumbs' => [
                 ['Налаштування', uri('settings')],
                 ['Чорна дата']

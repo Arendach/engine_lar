@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Directives\BreadcrumbsDirective;
+use App\Directives\CheckedDirective;
 use App\Directives\DataDirective;
 use App\Directives\DisplayIfDirective;
 use App\Directives\FileInputDirective;
@@ -25,6 +26,7 @@ class BladeExtendsServiceProvider extends ServiceProvider
         DataDirective::class,
         FileInputDirective::class,
         BreadcrumbsDirective::class,
+        CheckedDirective::class,
     ];
 
     public function register(): void

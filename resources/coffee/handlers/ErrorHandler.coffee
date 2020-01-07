@@ -14,7 +14,7 @@ class ErrorHandler
     setMessages: ->
         if @answer.status is 0
             @error0Handler()
-        else if @answer.status is 400
+        else if @answer.status is 400 or @answer.status is 422
             @error400Handler()
         else if @answer.status is 401
             @error401Handler()
