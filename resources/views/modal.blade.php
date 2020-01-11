@@ -13,3 +13,5 @@
         </div>
     </div>
 </div>
+
+@yield('scripts')

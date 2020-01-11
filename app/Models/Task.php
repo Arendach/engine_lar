@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Traits\DateHuman;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\Task
@@ -39,9 +42,19 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task whereIsSuccess($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task whereUserId($value)
+ * @property int $author_id
+ * @property int $is_approve
+ * @property-read string $created_date_human
+ * @property-read mixed $status_name
+ * @property-read string $updated_date_human
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task my()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task whereAuthorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Task whereIsApprove($value)
  */
 class Task extends Model
 {
+    use DateHuman;
+
     protected $table = 'tasks';
 
     protected $fillable = [
@@ -54,7 +67,7 @@ class Task extends Model
         'is_success',
         'comment',
         'price',
-        'approve'
+        'is_approve'
     ];
 
     protected $dates = [
@@ -64,13 +77,29 @@ class Task extends Model
 
     public $timestamps = true;
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function getStatusNameAttribute()
+    {
+        if ($this->success == 0) {
+            return '<span class="text-primary">Чекає на виконання</span>';
+        } elseif ($this->success == 1) {
+            return '<span class="text-success">Виконано</span>';
+        } else {
+            return '<span class="text-danger">Не виконано</span>';
+        }
+    }
+
+    public function scopeMy(Builder $query): void
+    {
+        $query->where('user_id', user()->id);
     }
 }

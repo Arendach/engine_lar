@@ -2,85 +2,53 @@
 
 namespace App\Http\Controllers;
 
-
-use Web\Model\Task;
-use Web\Model\User;
+use App\Http\Requests\Task\CreateUpdateTaskRequest;
+use App\Models\Task;
+use App\Models\User;
 
 class TaskController extends Controller
 {
-    public $access = 'task';
-
-    public function section_list($get)
+    public function sectionMain(int $user = 0)
     {
-        if (!get('user')) $this->display_404();
+        $user = user($user);
 
-        $data = [
-            'title' => 'Менеджер задач',
-            'user' => User::getOne($get->user),
-            'tasks' => Task::findByUser($get->user),
-            'components' => ['modal'],
-            'scripts' => ['ckeditor/ckeditor'],
-            'breadcrumbs' => [
-                ['Менеджери', uri('user')],
-                [user(get('user'))->login, uri('user', ['section' => 'view', 'id' => get('user')])],
-                ['Задачі']
-            ]
-        ];
-
-        $this->view->display('task.list', $data);
+        return view('task.main', [
+            'user'  => $user,
+            'tasks' => Task::my()->orderByDesc('id')->get()
+        ]);
     }
 
-
-    public function action_create_form($post)
+    public function actionCreateForm(int $user_id)
     {
         $data = [
-            'title' => 'Створити задачу',
-            'users' => Task::findAll('user', 'archive = 0'),
-            'modal_size' => 'lg',
-            'user_id' => $post->user_id
+            'users'   => User::all(),
+            'user_id' => $user_id
         ];
 
-        $this->view->display('task.create_form', $data);
+        return view('task.create_form', $data);
     }
 
-    public function action_create($post)
+    public function actionCreate(CreateUpdateTaskRequest $request)
     {
-        if (!isset($post->content) || mb_strlen($post->content) < 10)
-            response(400, 'Задача не може бити коротшою 10-ти символів');
+        $data = $request->all();
+        $data['author_id'] = user()->id;
 
-        if (!User::exists($post->user, 'user'))
-            response(400, 'Такого менеджера не існує!');
+        Task::create($data);
 
-        $post->date = date('Y-m-d H:i:s');
-        $post->success = 0;
-        $post->comment = '';
-        $post->author = user()->id;
-
-        Task::insert($post);
-
-        response(200, 'Задача вдало створена!');
+        session()->flash('success', true);
     }
 
-
-    public function action_update($post)
+    public function actionUpdate(CreateUpdateTaskRequest $request)
     {
-        Task::update($post, $post->id);
-
-        response(200, 'Задача вдало відредагована!');
+        Task::findOrFail($request->id)->update($request->all());
     }
 
-    public function action_update_form($post)
+    public function actionUpdateForm(int $id)
     {
-        $data = [
-            'task' => Task::getOne($post->id),
-            'title' => 'Редагувати задачу',
-            'modal_size' => 'lg'
-        ];
-
-        $this->view->display('task.update_form', $data);
+        return view('task.update_form', ['task' => Task::findOrFail($id)]);
     }
 
-
+    // todo
     public function action_close($post)
     {
         Task::update(['comment' => $post->comment, 'success' => $post->type == 'success' ? '1' : '2'], $post->id);
@@ -88,22 +56,20 @@ class TaskController extends Controller
         response(200, 'Задача вдало закрита!');
     }
 
+    // todo
     public function action_close_form($post)
     {
         echo $this->view->render('task.close_form', ['id' => $post->id, 'type' => $post->type]);
     }
 
-
-    public function action_delete($post)
+    public function actionDelete(int $id)
     {
-        Task::delete($post->id);
-
-        response(200, 'Задача вдало видалена!');
+        Task::findOrFail($id)->delete();
     }
 
-
-    public function action_approve_task($post)
+    // todo
+    public function actionApprove($post)
     {
-        Task::approve_task($post);
+        // Task::approve_task($post);
     }
 }

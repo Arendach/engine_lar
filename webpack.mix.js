@@ -16,6 +16,7 @@ mix
     .js('resources/coffee/login.coffee', 'public/js/login.js')
     .js('resources/coffee/orders/orders.coffee', 'public/js/controllers/orders.js')
     .js('resources/coffee/product/product.coffee', 'public/js/controllers/product.js')
+    .js('resources/coffee/task/task.coffee', 'public/js/controllers/task.js')
 
 
     .less('resources/less/login.less', 'public/css/login.css')

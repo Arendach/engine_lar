@@ -173,9 +173,9 @@
             <script src="{{ asset('js/app.js') }}?{{ rand32() }}"></script>
 
             @if (isset($editor) && $editor == 'full')
-                <script src="{{ asset('ckeditor/ckeditor.js') }}?{{ rand32() }}"></script>
+                <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
             @else
-                <script src="{{ asset('ckeditor_basic/ckeditor.js') }}?{{ rand32() }}"></script>
+                <script src="{{ asset('ckeditor_basic/ckeditor.js') }}"></script>
             @endif
 
             @if (isset($controller) && is_file(public_path("js/controllers/$controller.js")))

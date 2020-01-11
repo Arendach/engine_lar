@@ -98,6 +98,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read int|null $images_count
  * @property-read mixed $level1
  * @property-read mixed $level2
+ * @property-read \App\Models\ProductImage $image
  */
 class Product extends Model
 {

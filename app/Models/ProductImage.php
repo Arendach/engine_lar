@@ -27,6 +27,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $is_main
+ * @property-read mixed $base_name
+ * @property-read mixed $create_date
+ * @property-read mixed $icon
+ * @property-read mixed $image_size
+ * @property-read mixed $public_path
+ * @property-read mixed $size
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage whereIsMain($value)
  */
 class ProductImage extends Model
 {

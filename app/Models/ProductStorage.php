@@ -21,6 +21,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductStorage whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductStorage whereStorageId($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ProductStorage onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductStorage whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ProductStorage withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\ProductStorage withoutTrashed()
  */
 class ProductStorage extends Model
 {

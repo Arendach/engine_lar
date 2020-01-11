@@ -7,6 +7,7 @@ use App\Directives\CheckedDirective;
 use App\Directives\DataDirective;
 use App\Directives\DisplayIfDirective;
 use App\Directives\FileInputDirective;
+use App\Directives\ParamsDirective;
 use App\Directives\RequestDirective;
 use App\Directives\SelectedDirective;
 use App\Directives\DisabledDirective;
@@ -27,6 +28,7 @@ class BladeExtendsServiceProvider extends ServiceProvider
         FileInputDirective::class,
         BreadcrumbsDirective::class,
         CheckedDirective::class,
+        ParamsDirective::class,
     ];
 
     public function register(): void

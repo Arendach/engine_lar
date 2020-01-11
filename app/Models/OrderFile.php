@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OrderFile whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OrderFile wherePath($value)
  * @mixin \Eloquent
+ * @property-read mixed $image_size
+ * @property-read mixed $public_path
  */
 class OrderFile extends Model
 {
