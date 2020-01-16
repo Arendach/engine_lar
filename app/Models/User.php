@@ -69,6 +69,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUserAccessId($value)
  * @property-read \App\Models\UserAccess $user_access
  * @property-read mixed $full_name
+ * @property-read mixed $online_color
+ * @property-read mixed $online_text
  */
 class User extends Model
 {
@@ -161,6 +163,21 @@ class User extends Model
         return Order::self()->iCourier()->opened()->count();
     }
 
+    public function getCountAttachDeliveryUser(int $user_id): int
+    {
+        return Order::whereCourierId($user_id)->delivery()->opened()->count();
+    }
+
+    public function getCountAttachSelfUser(int $user_id): int
+    {
+        return Order::whereCourierId($user_id)->self()->opened()->count();
+    }
+
+    public function getCountAttachSendingUser(int $user_id): int
+    {
+        return Order::whereCourierId($user_id)->sending()->opened()->count();
+    }
+
     public function getThemePathAttribute(): string
     {
         $theme = $this->theme;
@@ -191,6 +208,16 @@ class User extends Model
     public function getIsOnlineAttribute(): bool
     {
         return time() - $this->updated_at->timestamp < 300;
+    }
+
+    public function getOnlineTextAttribute()
+    {
+        return $this->is_online ? 'Online' : 'Offline';
+    }
+
+    public function getOnlineColorAttribute()
+    {
+        return $this->is_online ? 'green' : 'red';
     }
 
     public function getFullNameAttribute(): string

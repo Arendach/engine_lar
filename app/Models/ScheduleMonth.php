@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\ScheduleMonth
@@ -32,6 +34,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleMonth whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleMonth whereYear($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleMonth my()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Schedule[] $items
+ * @property-read int|null $items_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleMonth concrete($year = null, $month = null, $user = null)
  */
 class ScheduleMonth extends Model
 {
@@ -49,8 +55,33 @@ class ScheduleMonth extends Model
         'coefficient'
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function scopeMy(Builder $query): void
+    {
+        $query->where('user_id', user()->id);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
+    public function scopeConcrete(Builder $query, int $year = null, int $month = null, int $user = null)
+    {
+        if (!is_null($year)) {
+            $query->where('year', $year);
+        }
+
+        if (!is_null($month)) {
+            $query->where('month', $month);
+        }
+
+        if (!is_null($user)) {
+            $query->where('user_id', $user);
+        }
     }
 }

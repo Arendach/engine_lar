@@ -27,15 +27,28 @@ function params(array $parameters)
  * @param string $hash
  * @return string
  */
-function uri($part, $parameters = '', $hash = '')
+function uri($part, $parameters = null, $hash = null): string
 {
-    $str = trim($part, '/');
+    $url = trim($part, '/');
+
+    if (preg_match('~@~', $url)) {
+        [$controller, $action] = explode('@', $url);
+
+        $controller = preg_replace('~Controller$~', '', $controller);
+        $action = preg_replace('~^(action|section|api)~', '', $action);
+
+        $controller = c2s($controller);
+        $action = c2s($action);
+
+        $url = "$controller/$action";
+    }
 
     if (is_array($parameters))
-        $str .= parameters($parameters);
+        $url .= parameters($parameters);
 
     if ($hash != '')
-        $str .= '#' . $hash;
+        $url .= '#' . $hash;
 
-    return '/' . $str;
+
+    return '/' . $url;
 }

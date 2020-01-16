@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -29,6 +30,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereWentAway($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereWorkDay($value)
  * @mixin \Eloquent
+ * @property int|null $schedule_month_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereScheduleMonthId($value)
  */
 class Schedule extends Model
 {
@@ -41,8 +44,11 @@ class Schedule extends Model
         'went_away',
         'work_day',
         'dinner_break',
-        'user_id'
+        'user_id',
+        'schedule_month_id'
     ];
+
+    public $timestamps = false;
 
     private $types = [
         0 => '',
@@ -59,5 +65,15 @@ class Schedule extends Model
     public function getTypeNameAttribute()
     {
         return $this->types[$this->type] ?? null;
+    }
+
+    public function getDayAttribute()
+    {
+        return date('d', strtotime($this->date));
+    }
+
+    public function scopeWorking(Builder $query)
+    {
+        $query->where('type', 0);
     }
 }

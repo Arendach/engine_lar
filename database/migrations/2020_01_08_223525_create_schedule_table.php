@@ -16,6 +16,7 @@ class CreateScheduleTable extends Migration
             $table->tinyInteger('work_day')->default(8);
             $table->tinyInteger('dinner_break')->default(1);
             $table->integer('user_id')->unsigned();
+            $table->integer('schedule_month_id')->unsigned();
 
             $table->timestamps();
         });

@@ -2,90 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use RedBeanPHP\R;
-
-use Web\Model\Reports;
-use Web\Model\Schedule;
+use App\Models\ScheduleMonth;
 
 class ScheduleController extends Controller
 {
-    public function section_main()
+    public function sectionMain(int $user = 0)
     {
-        $user_id = get('user') ? get('user') : user()->id;
+        $user = user($user);
 
-        $user = user($user_id);
+        abort_if(cannot('schedule') && $user->id != user()->id, 403);
 
-        if (cannot('schedule') && $user->id != user()->id)
-            $this->display_403();
+        $schedules = ScheduleMonth::my()->orderByDesc('year')->get()->mapToGroups(function (ScheduleMonth $item) {
+            return [$item->year => $item];
+        });
 
-        if ($user->id == user()->id) {
-            $title = 'Мій профіль :: Мої графіки роботи';
-
-            $breadcrumbs = [
-                ['Мій профіль', uri('user', ['section' => 'profile'])],
-                ['Мої графіки роботи']
-            ];
-
-        } else {
-            $title = "Менеджери :: Графіки роботи {$user->login}";
-
-            $breadcrumbs = [
-                ['Менеджери', uri('user')],
-                [$user->login, uri('user', ['section' => 'view', 'id' => $user->id])],
-                ['Графіки роботи']
-            ];
-        }
-
-        $data = [
-            'title' => $title,
-            'schedules' => Schedule::getScheduleMonthByUser($user->id),
-            'breadcrumbs' => $breadcrumbs
-        ];
-
-        $this->view->display('schedule.main', $data);
+        return view('schedule.main', compact('schedules', 'user'));
     }
 
-    public function section_view()
+    public function sectionView(int $user = 0, int $month = null, int $year = null)
     {
-        $user_id = get('user') ? get('user') : user()->id;
-        $user = user($user_id);
+        $user = user($user);
 
         if (user()->id != $user->id && cannot('schedule')) $this->display_403();
 
-        $year = get('year') ? get('year') : date('Y');
-        $month = get('month') ? get('month') : date('m');
+        $year = $year ? $year : date('Y');
+        $month = $month ? $month : date('m');
 
-        if ($user_id == user()->id) {
-            $title = 'Мій профіль :: Мій графік роботи';
+        $schedules = ScheduleMonth::concrete($year, $month, $user->id)->get()->load('items');
 
-            $breadcrumbs = [
-                ['Мій профіль', uri('user', ['section' => 'profile'])],
-                ['Графіки роботи', uri('schedule')],
-                [int_to_month($month) . ' ' . $year]
-            ];
-        } else {
-            $title = 'Менеджери :: Графік роботи ' . $user->login;
-
-            $breadcrumbs = [
-                ['Менеджери', uri('user')],
-                [$user->login, uri('user', ['section' => 'view', 'id' => $user->id])],
-                ['Графіки роботи', uri('schedule', ['user' => $user->id])],
-                [int_to_month($month) . ' ' . $year]
-            ];
-        }
-
-        $items = get_object(Schedule::getUserWorkSchedule($year, $month, $user_id));
-
-        $new = []; // пункти графіку
-
-        $working = 0; // робочих днів (фактичних)
+        $working = $schedules->; // робочих днів (фактичних)
         $holidays = 0; // вихідних днів (фактичних)
         $hospital = 0; // лікарняних
         $vacation = 0; // у відпустці
 
-        foreach ($items->schedules as $item) {
-            $new[date_parse($item->date)['day']] = $item;
-
+        foreach ($schedules->items as $item) {
             if ($item->type == 0) $holidays++;
             elseif ($item->type == 1) $working++;
             elseif ($item->type == 2) $vacation++;
@@ -103,32 +53,32 @@ class ScheduleController extends Controller
         unset($items->schedules);
 
         $data = [
-            'title' => $title,
-            'data' => $items,
-            'components' => ['modal', 'jquery'],
-            'scripts' => ['work_schedule/user.js'],
-            'schedules' => $new,
-            'bonus' => $bonus,
-            'salary' => $salary,
-            'bonuses' => Schedule::get_bonuses($year, $month, $user_id),
+            'title'       => $title,
+            'data'        => $items,
+            'components'  => ['modal', 'jquery'],
+            'scripts'     => ['work_schedule/user.js'],
+            'schedules'   => $new,
+            'bonus'       => $bonus,
+            'salary'      => $salary,
+            'bonuses'     => Schedule::get_bonuses($year, $month, $user_id),
             'breadcrumbs' => $breadcrumbs,
-            'payouts' => Schedule::getPayouts($year, $month, $user_id),
+            'payouts'     => Schedule::getPayouts($year, $month, $user_id),
             'payouts_sum' => Schedule::getPayoutsSum($year, $month, $user_id),
-            'working' => $working,
-            'holidays' => $holidays,
-            'vacation' => $vacation,
-            'hospital' => $hospital,
+            'working'     => $working,
+            'holidays'    => $holidays,
+            'vacation'    => $vacation,
+            'hospital'    => $hospital,
             'price_month' => $price_month
         ];
 
-        $this->view->display('schedule.view', $data);
+        return view('schedule.view', $data);
     }
 
     public function section_users()
     {
         $data = [
-            'title' => 'Менеджери :: Звіти',
-            'users' => Schedule::getDistinctUsers(),
+            'title'       => 'Менеджери :: Звіти',
+            'users'       => Schedule::getDistinctUsers(),
             'breadcrumbs' => [
                 ['Менеджери', uri('user')],
                 ['Графіки роботи']
@@ -141,7 +91,7 @@ class ScheduleController extends Controller
     public function action_update_day_form($post)
     {
         $data = [
-            'wsd' => Schedule::getOne($post->id, 'work_schedule_day'),
+            'wsd'   => Schedule::getOne($post->id, 'work_schedule_day'),
             'title' => 'Редагувати графік'
         ];
 
@@ -152,10 +102,10 @@ class ScheduleController extends Controller
     {
         $data = [
             'title' => 'Заповнити графік',
-            'year' => $post->year,
+            'year'  => $post->year,
             'month' => $post->month,
-            'user' => $post->user,
-            'day' => $post->day
+            'user'  => $post->user,
+            'day'   => $post->day
         ];
 
         $this->view->display('schedule.forms.create_day', $data);
@@ -221,10 +171,10 @@ class ScheduleController extends Controller
     public function action_create_payout_form($post)
     {
         $data = [
-            'title' => 'Нова виплата',
-            'year' => $post->year,
-            'month' => $post->month,
-            'user' => $post->user,
+            'title'      => 'Нова виплата',
+            'year'       => $post->year,
+            'month'      => $post->month,
+            'user'       => $post->user,
             'max_payout' => $this->maxPayout($post->year, $post->month, $post->user)
         ];
 
@@ -236,8 +186,8 @@ class ScheduleController extends Controller
         $payout = Schedule::getOne($post->id, 'payouts');
 
         $data = [
-            'title' => 'Редагування виплати',
-            'payout' => Schedule::getOne($post->id, 'payouts'),
+            'title'      => 'Редагування виплати',
+            'payout'     => Schedule::getOne($post->id, 'payouts'),
             'max_payout' => $this->maxPayout($payout->year, $payout->month, $payout->user)
         ];
 
@@ -297,7 +247,7 @@ class ScheduleController extends Controller
         $data = [
             'bonus' => Schedule::getOne($post->id, 'bonuses'),
             'title' => 'Редагування бонуса',
-            'post' => $post
+            'post'  => $post
         ];
 
         $this->view->display('schedule.forms.update_bonus', $data);
@@ -344,9 +294,9 @@ class ScheduleController extends Controller
         $payouts_sum = Schedule::getPayoutsSum($year, $month, $user_id);
 
         return [
-            'salary' => $salary,
+            'salary'      => $salary,
             'payouts_sum' => $payouts_sum,
-            'max' => $salary - $payouts_sum
+            'max'         => $salary - $payouts_sum
         ];
     }
 
@@ -372,7 +322,6 @@ class ScheduleController extends Controller
         }
 
 
-        
         $h = $hour_price;
         $hh = $hospital_hours;
 
@@ -383,12 +332,11 @@ class ScheduleController extends Controller
         elseif ($hh > 56 && $hh <= 120)
             $matrix = [24 * $h, 32 * $h * 0.8, ($hh - 56) * $h * 0.5];
         elseif ($hh > 120 && $hh <= 184)
-            $matrix = [24 * $h, 32 * $h * 0.8, 64 * $h * 0.5, ($hh - 120) * $h * 0.3 ];
+            $matrix = [24 * $h, 32 * $h * 0.8, 64 * $h * 0.5, ($hh - 120) * $h * 0.3];
         else
             $matrix = [24 * $h, 32 * $h * 0.8, 64 * $h * 0.5, 64 * $h * 0.3, 0];
 
         $hospital_price = array_sum($matrix);
-
 
 
         // перерахування ставки

@@ -95,7 +95,7 @@ class OrdersController extends Controller
     {
         $data = [
             'title'      => 'Замовлення :: Нове замовлення',
-            'categories' => $categoryTree->get(),
+            'categories' => $categoryTree->option(),
             'type'       => $type,
             'hints'      => OrderHint::type($type)->get(),
             'pays'       => Pay::all(),
@@ -116,7 +116,7 @@ class OrdersController extends Controller
             'id'            => $id,
             'type'          => $order->type,
             'order'         => $order,
-            'categories'    => $categoryTree->get(),
+            'categories'    => $categoryTree->option(),
             'sms_templates' => SmsTemplate::type($order->type)->get(),
             'storage'       => Storage::accounted()->sort()->get(),
             'clients'       => Client::all(),

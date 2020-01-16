@@ -105,7 +105,7 @@ return [
     ],
     [
         'name' => 'Менеджери',
-        'url' => uri('users'),
+        'url' => uri('user/list'),
         'icon' => 'users',
         'access' => 'users',
         'menu' => [
@@ -116,7 +116,7 @@ return [
             ],
             [
                 'name' => 'Список',
-                'url' => uri('user',['section' => 'list']),
+                'url' => uri('user/list'),
                 'access' => 'ROOT'
             ],
             [

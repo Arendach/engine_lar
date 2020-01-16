@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\LoginRequest;
+use App\Http\Requests\User\UpdateInfoRequest;
+use App\Models\UserAccess;
+use App\Models\UserPosition;
 use UserAuth;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -18,18 +22,10 @@ class UserController extends Controller
         return view('login');
     }
 
-    public function section_list()
+    public function sectionList()
     {
-        $data = [
-            'title' => 'Менеджери',
-            'css' => ['users.css'],
-            'breadcrumbs' => [['Менеджери']],
-            'items' => User::getItems()
-        ];
-
-        $this->view->display('users.list', $data);
+        return view('user.list', ['users' => User::all()]);
     }
-
 
     public function section_archive()
     {
@@ -68,25 +64,15 @@ class UserController extends Controller
         $this->view->display('users.view', $data);
     }
 
-    public function section_update()
+    public function sectionUpdate(int $id)
     {
-        if (!get('id')) $this->display_404();
-        $manager = User::getOne(get('id'));
-
-
         $data = [
-            'title' => 'Менеджери :: Редагування даних',
-            'scripts' => ['ckeditor/ckeditor.js'],
-            'manager' => $manager,
-            'access_groups' => get_object(Access::get_all_groups()),
-            'positions' => Position::getAll(),
-            'breadcrumbs' => [
-                ['Менеджери', uri('user', ['section' => 'list'])],
-                [$manager->first_name . ' ' . $manager->last_name]
-            ]
+            'user' => User::findOrFail($id),
+            'access' => UserAccess::all(),
+            'positions' => UserPosition::all()
         ];
 
-        $this->view->display('users.update', $data);
+        return view('user.update', $data);
     }
 
     public function section_register()
@@ -133,17 +119,14 @@ class UserController extends Controller
         $this->view->display('users.profile.update_password', $data);
     }
 
-
     public function actionAuthorize(LoginRequest $request)
     {
         if (UserAuth::authorize($request->login, $request->password)){
             return response(null, 200);
         } else {
-            return response()->json([
-                'message' => 'Не вдалось авторизуватись!'
-            ], 400);
+            return response()->json(['message' => 'Не вдалось авторизуватись!'], 400);
         }
-    }
+}
 
     public function sectionUnAuthorize()
     {
@@ -152,13 +135,9 @@ class UserController extends Controller
         return redirect()->route('home');
     }
 
-    public function action_update($post)
+    public function actionUpdateInfo(UpdateInfoRequest $request)
     {
-        if (cannot('managers')) response(403, 'У вас немає доступу до даної дії!');
-
-        User::update($post, $post->id);
-
-        response(200, ['message' => 'Дані вдало оновлено!', 'action' => 'close']);
+        User::findOrFail($request->id)->update($request->all());
     }
 
     public function action_register($post)
@@ -216,41 +195,6 @@ class UserController extends Controller
         User::update(['pin' => $post->pin], $post->id);
 
         response(200, 'Пін код вдало змінений!');
-    }
-
-    public function get_reset_password()
-    {
-        $this->view->display('/pages/reset_password');
-    }
-
-    public function post_reset_password($post)
-    {
-        if (!isset($post->email) || !filter_var($post->email, FILTER_VALIDATE_EMAIL))
-            response(200, 'Введіть коректний E-Mail');
-
-        User::reset($post->email);
-    }
-
-    /**
-     * Функція вертає назву групи доступу менеджера
-     */
-    private function get_access($manager)
-    {
-        if ($manager->access == 9999)
-            $manager->access_name = 'ROOT';
-        elseif ($manager->access == 0)
-            $manager->access_name = 'Безправний';
-        else {
-            $access = User::getAccess($manager->access);
-            if (!$access)
-                $manager->access_name = 'Незнайдено';
-            else {
-                $manager->access_name = $access->name;
-                $manager->access_link = true;
-            }
-        }
-
-        return $manager;
     }
 
     public function api_all_users()

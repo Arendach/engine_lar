@@ -1,32 +1,32 @@
 <table class="table  table-bordered">
     <tr>
         <td class="centered">
-            Вихідних: <?= $holidays ?> дн.
+            Вихідних: {{ $holidays }} дн.
         </td>
 
         <td class="centered">
-            Робочих: <?= $working ?> дн.
+            Робочих: {{ $working }} дн.
         </td>
 
         <td class="centered">
-            У відпустці: <?= $vacation ?> дн.
+            У відпустці: {{ $vacation }} дн.
         </td>
 
         <td class="centered">
-            Лікарняних: <?= $hospital ?> дн.
+            Лікарняних: {{ $hospital }} дн.
         </td>
     </tr>
     <tr>
         <td class="centered">
-            Робочих: <?= $working_hours - $up_working_hours ?> год.
+            Робочих: {{ $working_hours - $up_working_hours }} год.
         </td>
 
         <td class="centered">
-            Лікарняних: <?= $hospital_hours ?> год.
+            Лікарняних: {{ $hospital_hours }} год.
         </td>
 
         <td class="centered" colspan="2">
-            Перепрацьовано: <?= $up_working_hours ?> год.
+            Перепрацьовано: {{ $up_working_hours }} год.
         </td>
     </tr>
 </table>
@@ -42,11 +42,11 @@
         <td>Робочий день</td>
         <td>Обід</td>
         <td>Перевиконання</td>
-        <?php if (can() || user()->id == $data->user) { ?>
+        @if (can() || user()->id == $data->user)
             <td>Дія</td>
-        <?php } ?>
+        @endif
     </tr>
-    <?php for ($i = 1; $i < day_in_month($data->month, $data->year) + 1; $i++) {
+    @for($i = 1; $i < day_in_month($data->month, $data->year) + 1; $i++)
         $date = $data->year . '-' . $data->month . '-' . $i;
         $color = (date_to_day($date) == 'Неділя' || date_to_day($date) == 'Субота') ? '#f00' : '#2FAC7C';
         if (isset($schedules[$i])) {
@@ -130,6 +130,6 @@
                     </td>
                 <?php } ?>
             </tr>
-        <?php }
-    } ?>
+        <?php } ?>
+    @endfor
 </table>
