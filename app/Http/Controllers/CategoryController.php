@@ -42,8 +42,6 @@ class CategoryController extends Controller
         Category::create($request->all());
 
         $categoryTree->forgetCache();
-
-        session()->flash('success', true);
     }
 
     public function actionUpdate(UniversalRequest $request, CategoryTree $categoryTree)
@@ -51,8 +49,6 @@ class CategoryController extends Controller
         Category::findOrFail($request->id)->update($request->all());
 
         $categoryTree->forgetCache();
-
-        session()->flash('success', true);
     }
 
     public function actionDelete(Request $request, CategoryTree $categoryTree)

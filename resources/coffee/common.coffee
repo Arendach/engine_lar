@@ -38,8 +38,9 @@ $(document).ready ->
     $('[data-toggle="tooltip"]').tooltip()
     $('[data-toggle="popover"]').popover()
 
-    if window.successSessionMessage
+    if $.cookie('success') is 'true'
         SuccessToastr('Виконано', 'Дані успішно збережені')
+        $.cookie('success', null)
 
     url = document.location.toString()
     if url.match '#'
@@ -165,6 +166,9 @@ $(document).on 'click', '[data-type="get_form"]', (event) ->
 
     url = $(@).data 'uri'
     data = $(@).data 'post'
+    id = $(@).data('id')
+
+    if data is undefined then data = {id}
 
     $(@).attr('disabled', on)
 

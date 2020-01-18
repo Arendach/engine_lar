@@ -34,8 +34,6 @@ class TaskController extends Controller
         $data['author_id'] = user()->id;
 
         Task::create($data);
-
-        session()->flash('success', true);
     }
 
     public function actionUpdate(CreateUpdateTaskRequest $request)

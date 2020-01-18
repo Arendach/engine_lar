@@ -3,20 +3,20 @@
 @if($user->id == user()->id)
     @section('title', 'Мій профіль :: Мій графік роботи')
 
-    @breadcrumbs(
-        ['Мій профіль', uri('user/profile')],
-        ['Графіки роботи', uri('schedule/main')],
-        [int_to_month($month) . ' ' . $year]
-    )
+@breadcrumbs(
+    ['Мій профіль', uri('user/profile')],
+    ['Графіки роботи', uri('schedule/main')],
+    [int_to_month($schedules->month) . ' ' . $schedules->year]
+)
 @else
     @section('title', "Менеджери :: Графік роботи $user->login")
 
-    @breadcrumbs(
-        ['Менеджери', uri('user/list')],
-        [$user->login, uri('user/view', ['id' => $user->id])],
-        ['Графіки роботи', uri('schedule', ['user' => $user->id])],
-        [int_to_month($month) . ' ' . $year]
-    )
+@breadcrumbs(
+    ['Менеджери', uri('user/list')],
+    [$user->login, uri('user/view', ['id' => $user->id])],
+    ['Графіки роботи', uri('schedule', ['user' => $user->id])],
+    [int_to_month($schedules->month) . ' ' . $schedules->year]
+)
 @endif
 
 @section('content')
@@ -33,7 +33,7 @@
         </div>
 
         <div class="tab-pane" id="bonuses">
-            {{--            @include('schedule.view.bonuses')--}}
+            @include('schedule.view.bonuses')
         </div>
 
         <div class="tab-pane" id="payouts">
@@ -45,45 +45,4 @@
             {{--            @include('schedule.view.all')--}}
         </div>
     </div>
-@endsection
-
-
-@section('scripts')
-    <script>
-        $(document).ready(function () {
-
-            var $body = $('body');
-
-            $body.on('keyup', '#work_day', function () {
-                var worked = +$('#went_away').val() - (+$('#turn_up').val() + +$('#dinner_break').val());
-                if (worked < +$('#work_day').val())
-                    $('#work_day').val(worked);
-            });
-
-            $body.on('keyup', '.time', function () {
-                var $this = $(this);
-                var array = [];
-                for (var i = 0; i < 25; i++)
-                    array.push(i);
-
-                if ($.inArray(+$this.val(), array) === -1)
-                    $($this.val(0))
-            });
-
-            $body.on('change', '[name=type]', function () {
-                if ($(this).val() == '2' || $(this).val() == '3') {
-                    $('#turn_up').val('9').attr('disabled', 'disabled');
-                    $('#went_away').val('17').attr('disabled', 'disabled');
-                    $('#dinner_break').val('0').attr('disabled', 'disabled');
-                    $('#work_day').val('8').attr('disabled', 'disabled');
-                } else {
-                    $('#turn_up').removeAttr('disabled');
-                    $('#went_away').removeAttr('disabled');
-                    $('#dinner_break').removeAttr('disabled');
-                    $('#work_day').removeAttr('disabled');
-                }
-            });
-
-        });
-    </script>
 @endsection

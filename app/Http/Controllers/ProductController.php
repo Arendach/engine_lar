@@ -214,18 +214,12 @@ class ProductController extends Controller
                 'product_id' => $request->id
             ]);
         }
-
-        session()->flash('success', true);
-
-        return response(null, 200);
     }
 
     public function actionChangeMainImage(int $product_id, int $image_id)
     {
         ProductImage::where('product_id', $product_id)->update(['is_main' => 0]);
         ProductImage::findOrFail($image_id)->update(['is_main' => 1]);
-
-        session()->flash('success', true);
     }
 
     public function actionDeleteImage(int $id)
@@ -243,8 +237,6 @@ class ProductController extends Controller
     public function actionUpdateImage(Request $request)
     {
         ProductImage::findOrFail($request->id)->update($request->all());
-
-        session()->flash('success', true);
     }
 
 

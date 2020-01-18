@@ -38,6 +38,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Schedule[] $items
  * @property-read int|null $items_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleMonth concrete($year = null, $month = null, $user = null)
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleMonth whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleMonth whereUpdatedAt($value)
  */
 class ScheduleMonth extends Model
 {

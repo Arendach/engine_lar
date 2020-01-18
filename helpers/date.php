@@ -10,6 +10,36 @@ function month_valid($int)
     else return $int;
 }
 
+/**
+ * Поточний рік
+ *
+ * @return int
+ */
+function year(): int
+{
+    return date('Y');
+}
+
+/**
+ * Поточний місяць
+ *
+ * @return int
+ */
+function month(): int
+{
+    return date('m');
+}
+
+/**
+ * Поточний день
+ *
+ * @return int
+ */
+function day(): int
+{
+    return date('d');
+}
+
 
 /**
  * Кількість днів в місяці
@@ -18,9 +48,9 @@ function month_valid($int)
  * @param int $year
  * @return int
  */
-function day_in_month(int $month, int $year): int
+function days_in_month(int $month, int $year): int
 {
-    return (int)date('t', strtotime("$year-$month-01"));
+    return date('t', strtotime("$year-$month-01"));
 }
 
 /**

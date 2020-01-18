@@ -31,6 +31,11 @@ class SuccessHandler
 
     setAfterCallable: (@callable) -> @
 
+    reload: ->
+        $.cookie('success', yes)
+        new Modal().close()
+        PjaxReload()
+
     apply: () ->
         @setMessages()
 
@@ -39,8 +44,7 @@ class SuccessHandler
 
     applyToastr: () ->
         if @after is 'reload'
-            new Modal().close()
-            PjaxReload()
+            @reload()
         else
             SuccessToastr(@title, @message)
 

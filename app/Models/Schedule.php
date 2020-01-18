@@ -32,6 +32,19 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property int|null $schedule_month_id
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereScheduleMonthId($value)
+ * @property-read mixed $day
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule isHoliday()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule isHospital()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule isVacation()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule isWorking()
+ * @property-read mixed $type_color
+ * @property-read mixed $worked
+ * @property-read mixed $worked_color
+ * @property string|null $updated_at
+ * @property string|null $created_at
+ * @property-read mixed $recycling
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereUpdatedAt($value)
  */
 class Schedule extends Model
 {
@@ -42,7 +55,6 @@ class Schedule extends Model
         'type',
         'turn_up',
         'went_away',
-        'work_day',
         'dinner_break',
         'user_id',
         'schedule_month_id'
@@ -51,29 +63,85 @@ class Schedule extends Model
     public $timestamps = false;
 
     private $types = [
-        0 => '',
-        1 => '',
-        2 => '',
-        3 => '',
+        'holiday'  => 'Вихідний',
+        'working'  => 'Робочий',
+        'vacation' => 'Відпустка',
+        'hospital' => 'Лікарняний'
     ];
 
+    private $type_colors = [
+        'holiday'  => '#ff0000',
+        'working'  => '#244cff',
+        'vacation' => '#0a790f',
+        'hospital' => '#ffa500'
+    ];
+
+    private $worked_colors = [
+        'minus' => '#f00',
+        'plus'  => '#0f0',
+        'equal' => '#00f'
+    ];
+
+    // relations
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    // accessor + mutator
     public function getTypeNameAttribute()
     {
         return $this->types[$this->type] ?? null;
     }
 
-    public function getDayAttribute()
+    public function getTypeColorAttribute(): string
+    {
+        return $this->type_colors[$this->type] ?? '#000';
+    }
+
+    public function getWorkedAttribute(): int
+    {
+        return $this->went_away - $this->turn_up - $this->dinner_break;
+    }
+
+    public function getRecyclingAttribute(): int
+    {
+        return $this->worked - 8 > 0 ? $this->worked - $this->work_day : 0;
+    }
+
+    public function getWorkedColorAttribute(): string
+    {
+        if ($this->worked == 8)
+            return $this->worked_colors['equal'];
+        elseif ($this->worked > 8)
+            return $this->worked_colors['plus'];
+        else
+            return $this->worked_colors['minus'];
+    }
+
+    public function getDayAttribute(): int
     {
         return date('d', strtotime($this->date));
     }
 
-    public function scopeWorking(Builder $query)
+    // scopes
+    public function scopeIsHoliday(Builder $query): void
     {
         $query->where('type', 0);
+    }
+
+    public function scopeIsWorking(Builder $query): void
+    {
+        $query->where('type', 1);
+    }
+
+    public function scopeIsVacation(Builder $query): void
+    {
+        $query->where('type', 2);
+    }
+
+    public function scopeIsHospital(Builder $query): void
+    {
+        $query->where('type', 3);
     }
 }

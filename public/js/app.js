@@ -30859,8 +30859,9 @@ $(document).ready(function() {
   var url;
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
-  if (window.successSessionMessage) {
+  if ($.cookie('success') === 'true') {
     SuccessToastr('Виконано', 'Дані успішно збережені');
+    $.cookie('success', null);
   }
   url = document.location.toString();
   if (url.match('#')) {
@@ -30992,10 +30993,14 @@ $(document).on('submit', '[data-type="ajax"]', function(event) {
 });
 
 $(document).on('click', '[data-type="get_form"]', function(event) {
-  var data, url;
+  var data, id, url;
   event.preventDefault();
   url = $(this).data('uri');
   data = $(this).data('post');
+  id = $(this).data('id');
+  if (data === void 0) {
+    data = {id};
+  }
   $(this).attr('disabled', true);
   return $.ajax({
     type: 'post',
@@ -31412,6 +31417,12 @@ SuccessHandler = class SuccessHandler {
     return this;
   }
 
+  reload() {
+    $.cookie('success', true);
+    new Modal().close();
+    return PjaxReload();
+  }
+
   apply() {
     this.setMessages();
     if (this.driver === 'toastr') {
@@ -31423,8 +31434,7 @@ SuccessHandler = class SuccessHandler {
 
   applyToastr() {
     if (this.after === 'reload') {
-      new Modal().close();
-      return PjaxReload();
+      return this.reload();
     } else {
       return SuccessToastr(this.title, this.message);
     }
