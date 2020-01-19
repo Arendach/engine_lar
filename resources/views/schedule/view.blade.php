@@ -41,7 +41,7 @@
         </div>
 
         <div class="tab-pane" id="all">
-            {{--            @include('schedule.view.all')--}}
+            @include('schedule.view.all')
         </div>
     </div>
 @endsection

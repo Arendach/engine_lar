@@ -7,17 +7,17 @@
         <input type="hidden" name="id" value="{{ $schedule->id }}">
 
         <div class="form-group">
-            <label>За машину</label>
+            <label><i class="text-danger">*</i> За машину</label>
             <input class="form-control input-sm" name="for_car" value="{{ $schedule->for_car }}" data-inspect="decimal">
         </div>
 
         <div class="form-group">
-            <label>Бонус</label>
+            <label><i class="text-danger">*</i> Бонус</label>
             <input class="form-control input-sm" name="bonus" value="{{ $schedule->bonus }}" data-inspect="decimal">
         </div>
 
         <div class="form-group">
-            <label>Штраф</label>
+            <label><i class="text-danger">*</i> Штраф</label>
             <input class="form-control input-sm" name="fine" value="{{ $schedule->fine }}" data-inspect="decimal">
         </div>
 
