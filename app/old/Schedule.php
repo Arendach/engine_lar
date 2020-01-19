@@ -143,7 +143,7 @@ class Schedule extends Model
 
     public static function getPayoutsSum($year, $month, $user_id)
     {
-        $sql = "SELECT SUM(`sum`) as `sum` FROM `payouts` WHERE `year` = ? AND `month` = ? AND `user` = ?";
+        $sql = "SELECT SUM(`sum`) as `sum` FROM `payouts` WHERE `year` = ? AND `month` = ? AND user_id = ?";
         $result = R::getRow($sql, [$year, $month, $user_id]);
         return $result['sum'];
     }

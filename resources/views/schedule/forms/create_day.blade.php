@@ -4,10 +4,8 @@
 
 @section('content')
     <form data-after="reload" data-type="ajax" action="@uri('ScheduleController@actionCreateDay')">
-        <input type="hidden" name="year" value="{{ $year }}">
-        <input type="hidden" name="month" value="{{ $month }}">
-        <input type="hidden" name="day" value="{{ $day }}">
-        <input type="hidden" name="user_id" value="{{ $user_id }}">
+        <input type="hidden" name="id" value="{{ $id }}">
+        <input type="hidden" name="day" value="{{ $day}}">
 
         <div class="form-group" style="text-align: justify">
             <label style="width: 25%"><input type="radio" value="holiday" name="type"> Вихідний</label>

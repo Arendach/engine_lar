@@ -37,8 +37,7 @@
         </div>
 
         <div class="tab-pane" id="payouts">
-
-            {{--            @include('schedule.view.payouts')--}}
+            @include('schedule.view.payouts')
         </div>
 
         <div class="tab-pane" id="all">

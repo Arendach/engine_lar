@@ -3,7 +3,7 @@
 @section('title', 'Новий бонус')
 
 @section('content')
-    <form action="@uri('ScheduleController@actionCreateBonus')" data-after="reload" data-type="ajax">
+    <form action="@uri('ScheduleController@actionCreateBonus')" data-type="ajax">
         <input type="hidden" name="id" value="{{ $schedule->id }}">
 
         <div class="form-group">

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Schedule\CreateDayRequest;
+use App\Http\Requests\Schedule\CreatePayoutRequest;
 use App\Models\Bonus;
 use App\Models\Payout;
 use App\Models\Schedule;
 use App\Models\ScheduleMonth;
 use App\Services\ScheduleService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class ScheduleController extends Controller
 {
@@ -18,9 +19,12 @@ class ScheduleController extends Controller
 
         abort_if(cannot('schedule') && $user->id != user()->id, 403);
 
-        $schedules = ScheduleMonth::my()->orderByDesc('year')->get()->mapToGroups(function (ScheduleMonth $item) {
-            return [$item->year => $item];
-        });
+        $schedules = ScheduleMonth::where('user_id', $user->id)
+            ->orderByDesc('year')
+            ->get()
+            ->mapToGroups(function (ScheduleMonth $item) {
+                return [$item->year => $item];
+            });
 
         return view('schedule.main', compact('schedules', 'user'));
     }
@@ -36,7 +40,7 @@ class ScheduleController extends Controller
         $year = $year ? $year : date('Y');
         $month = $month ? $month : date('m');
 
-        $scheduleService->createOrAbort($year, $month, $user->id);
+        $scheduleService->create($year, $month, $user->id);
 
         $schedules = ScheduleMonth::concrete($year, $month, $user->id)->first()->load('items');
 
@@ -56,8 +60,8 @@ class ScheduleController extends Controller
             'schedules'   => $schedules,
             'bonus'       => $bonus,
             'salary'      => $salary,
-            'bonuses'     => Bonus::fromMonth($year, $month, $user->id),
-            'payouts'     => Payout::fromMonth($year, $month, $user->id),
+            'bonuses'     => Bonus::fromMonth($year, $month, $user->id)->get(),
+            'payouts'     => Payout::fromMonth($year, $month, $user->id)->get(),
             'working'     => $working,
             'holidays'    => $holidays,
             'vacation'    => $vacation,
@@ -69,19 +73,6 @@ class ScheduleController extends Controller
         return view('schedule.view', $data);
     }
 
-    public function section_users()
-    {
-        $data = [
-            'title'       => 'Менеджери :: Звіти',
-            'users'       => Schedule::getDistinctUsers(),
-            'breadcrumbs' => [
-                ['Менеджери', uri('user')],
-                ['Графіки роботи']
-            ]
-        ];
-
-        $this->view->display('schedule.users', $data);
-    }
 
     public function actionUpdateDayForm(int $id)
     {
@@ -90,10 +81,37 @@ class ScheduleController extends Controller
         return view('schedule.forms.update_day', compact('schedule'));
     }
 
-    public function actionCreateDayForm(CreateDayRequest $request)
+    public function actionUpdateDay(Request $request)
     {
-        return view('schedule.forms.create_day', $request->all());
+        Schedule::findOrFail($request->id)->update($request->all());
     }
+
+    public function actionCreateDayForm(int $id, int $day)
+    {
+        return view('schedule.forms.create_day', compact('id', 'day'));
+    }
+
+    public function actionCreateDay(Request $request, ScheduleService $scheduleService)
+    {
+        $schedule = ScheduleMonth::findOrFail($request->get('id'));
+
+        $date = create_date(year($schedule->date), month($schedule->date), $request->get('day'));
+
+        if (Schedule::where('date', $date)->where('user_id', $request->user_id)->count()) {
+            return;
+        }
+
+        Schedule::create([
+            'date'              => $date,
+            'type'              => $request->type,
+            'turn_up'           => $request->get('turn_up', 9),
+            'went_away'         => $request->get('went_away', 17),
+            'dinner_break'      => $request->get('dinner_break', 0),
+            'user_id'           => $schedule->user_id,
+            'schedule_month_id' => $schedule->id
+        ]);
+    }
+
 
     public function action_update_head_form($post)
     {
@@ -108,58 +126,27 @@ class ScheduleController extends Controller
         response(200, DATA_SUCCESS_UPDATED);
     }
 
-    public function action_update_bonuses_form($post)
+
+    public function actionUpdateBonusesForm(Request $request)
     {
-        $data = Schedule::findMonth($post);
-        $this->view->display('schedule.forms.update_bonuses', ['data' => $data, 'title' => 'Редагувати бонуси']);
+        $schedule = ScheduleMonth::findOrFail($request->id);
+
+        return view('schedule.forms.update_bonuses', compact('schedule'));
     }
 
-    public function action_update_bonuses($post)
+    public function actionUpdateBonuses(Request $request)
     {
-        Schedule::update($post, $post->id, 'work_schedule_month');
-
-        response(200, DATA_SUCCESS_UPDATED);
+        ScheduleMonth::findOrFail($request->id)->update($request->all());
     }
 
-    public function actionUpdateDay(Request $request)
+
+    public function actionCreatePayoutForm(int $id)
     {
-        Schedule::findOrFail($request->id)->update($request->all());
-    }
+        $schedule = ScheduleMonth::findOrFail($id)->load('items');
 
-    public function actionCreateDay(Request $request, ScheduleService $scheduleService)
-    {
-        $date = $request->year . '-' . month_valid($request->month) . '-' . month_valid($request->day);
+        $maxPayout = $this->maxPayout($schedule);
 
-        if (Schedule::where('date', $date)->where('user_id', $request->user_id)->count()) {
-            return;
-        }
-
-        $scheduleService->create($request->year, $request->month, $request->user_id);
-
-        $schedule = ScheduleMonth::concrete($request->year, $request->month, $request->user_id)->first();
-
-        Schedule::create([
-            'date'              => $date,
-            'type'              => $request->type,
-            'turn_up'           => $request->get('turn_up', 9),
-            'went_away'         => $request->get('went_away', 17),
-            'dinner_break'      => $request->get('dinner_break', 0),
-            'user_id'           => $request->user_id,
-            'schedule_month_id' => $schedule->id
-        ]);
-    }
-
-    public function action_create_payout_form($post)
-    {
-        $data = [
-            'title'      => 'Нова виплата',
-            'year'       => $post->year,
-            'month'      => $post->month,
-            'user'       => $post->user,
-            'max_payout' => $this->maxPayout($post->year, $post->month, $post->user)
-        ];
-
-        $this->view->display('schedule.forms.create_payout', $data);
+        return view('schedule.forms.create_payout', compact('maxPayout', 'schedule'));
     }
 
     public function action_update_payout_form($post)
@@ -175,18 +162,19 @@ class ScheduleController extends Controller
         $this->view->display('schedule.forms.update_payout', $data);
     }
 
-    public function action_create_payout($post)
+    public function actionCreatePayout(CreatePayoutRequest $request)
     {
-        if ($post->sum == 0) response(400, 'Сума не може бути нулем!');
+        $schedule = ScheduleMonth::findOrFail($request->id);
 
-        $post->date_payout = date('Y-m-d H:i:s');
-        $post->author = user()->id;
-
-        $payout_id = Schedule::insert($post, 'payouts');
-
-        Reports::createPayout($post->sum, $payout_id, $post->user);
-
-        response(200, 'Виплата вдало прийнята!');
+        Payout::create([
+            'sum'         => $request->sum,
+            'user_id'     => $schedule->user_id,
+            'author_id'   => user()->id,
+            'date_payout' => now(),
+            'year'        => $schedule->year,
+            'month'       => $schedule->month,
+            'comment'     => $request->comment
+        ]);
     }
 
     public function action_update_payout($post)
@@ -218,36 +206,15 @@ class ScheduleController extends Controller
 
     public function actionCreateBonus(int $id, float $sum)
     {
+        $schedule = ScheduleMonth::findOrFail($id);
 
         Bonus::create([
-            ''
+            'type'    => 'bonus',
+            'sum'     => $sum,
+            'user_id' => $schedule->user_id,
+            'date'    => create_date_or_now($schedule->year, $schedule->month, 1, true),
+            'source'  => 'other'
         ]);
-
-        $bean = R::findOne('work_schedule_month', '`year` = ? AND `month` = ? AND `user` = ?', [
-            $post->year,
-            $post->month,
-            $post->user
-        ]);
-
-        $bean->bonus += $post->sum;
-
-        R::store($bean);
-
-        $bean = R::dispense('bonuses');
-
-        $bean->data = '';
-        $bean->type = 'bonus';
-        $bean->sum = $post->sum;
-        $bean->user_id = $post->user;
-
-        $bean->date =
-            (date('Y') == $post->year && date('m') == $post->month)
-                ? date('Y-m-d H:i:s')
-                : date('Y-m-t', strtotime($post->year . '-' . month_valid($post->month) . '-01')) . ' 23:59:59';
-
-        $bean->source = 'other';
-
-        R::store($bean);
     }
 
     public function action_update_bonus_form($post)
@@ -269,7 +236,7 @@ class ScheduleController extends Controller
     }
 
     // Бонуси за перепрацювання
-    public function getBonuses($items, $coefficient, $year, $month, $price_month)
+    private function getBonuses($items, $coefficient, $year, $month, $price_month)
     {
         $over_full_hours = 0; // Кількість перепрацьованих годин
         $bonus_per_hour = 0; // бонус за перевиконання
@@ -287,79 +254,53 @@ class ScheduleController extends Controller
         return round($bonus_per_hour, 2);
     }
 
-    public function maxPayout($year, $month, $user_id)
+    private function maxPayout(ScheduleMonth $schedule): Collection
     {
-        $items = get_object(Schedule::getUserWorkSchedule($year, $month, $user_id));
-
-        $new = [];
-        foreach ($items->schedules as $item) $new[date_parse($item->date)['day']] = $item;
-
         // Зарплата = Ставка за місяць + бонуси за додаткові дні + бонуси + бонуси за перевиконання годин - штрафи
-        $salary = $this->calculate_price_month($items) + $items->bonus + $items->for_car - $items->fine;
+        $salary = $this->calculatePriceMonth($schedule) + $schedule->bonus + $schedule->for_car - $schedule->fine;
 
-        unset($items->schedules);
+        $payoutsSum = Payout::fromMonth($schedule->year, $schedule->month, $schedule->user_id)->sum('sum');
 
-        $payouts_sum = Schedule::getPayoutsSum($year, $month, $user_id);
-
-        return [
-            'salary'      => $salary,
-            'payouts_sum' => $payouts_sum,
-            'max'         => $salary - $payouts_sum
-        ];
+        return new Collection([
+            'salary'     => $salary,
+            'payoutsSum' => $payoutsSum,
+            'max'        => $salary - $payoutsSum
+        ]);
     }
 
-    private function calculatePriceMonth($schedules): float
+    public function calculatePriceMonth(ScheduleMonth $schedules): float
     {
-        $hour_price = $schedules->price_month / count_working_days($schedules->year, $schedules->month) / 8;
+        $hospitalPrice = $this->calculateHospitalPrice($schedules->hospital_hours, $schedules->hour_price);
+        $workingPrice = $schedules->working_hours * $schedules->hour_price;
+        $vacationPrice = $schedules->vacation_hours * $schedules->hour_price;
+        $upWorkingPrice = $schedules->up_working_hours * $schedules->coefficient * $schedules->hour_price;
 
-        $working_hours = 0; // робочих годин (фактичних)
-        $up_working_hours = 0; // перепрацьовані години
-        $hospital_hours = 0; // на лікарняному
+        return $hospitalPrice + $workingPrice + $vacationPrice + $upWorkingPrice;
+    }
 
-        foreach ($schedules->items as $item) {
+    private function calculateHospitalPrice(int $hospitalHours, float $hourPrice): float
+    {
+        $matrix = [
+            1   => 24, // 0   - 24
+            0.8 => 32, // 24  - 56
+            0.5 => 64, // 56  - 120
+            0.3 => 64  // 120 - 184
+        ];
+        $hospitalPrice = 0;
+        foreach ($matrix as $coefficient => $hours) {
+            // якшо лікарняних менше або рівно 0
+            if ($hospitalHours <= 0) break;
 
-            // пропрацьовано годин цього дня
-            $worked = $item->went_away - $item->turn_up - $item->dinner_break;
+            // якщо лікаарняних менше ніж годин з матриці
+            if ($hospitalHours < $hours) $hours = $hospitalHours;
 
-            if ($item->type == 1 || $item->type == 2) $working_hours += $worked;
-            elseif ($item->type == 3) $hospital_hours += $worked;
+            // плюсуєм до зп
+            $hospitalPrice += $hours * $coefficient * $hourPrice;
 
-
-            // підрахунок перепрацьованих годин
-            if ($worked - 8 > 0) $up_working_hours += $worked - $item->work_day;
+            // віднімаєм години
+            $hospitalHours -= $hours;
         }
 
-
-        $h = $hour_price;
-        $hh = $hospital_hours;
-
-        if ($hh <= 24)
-            $matrix = [$hh * $h];
-        elseif ($hh > 24 && $hh <= 56)
-            $matrix = [24 * $h, ($hh - 24) * $h * 0.8];
-        elseif ($hh > 56 && $hh <= 120)
-            $matrix = [24 * $h, 32 * $h * 0.8, ($hh - 56) * $h * 0.5];
-        elseif ($hh > 120 && $hh <= 184)
-            $matrix = [24 * $h, 32 * $h * 0.8, 64 * $h * 0.5, ($hh - 120) * $h * 0.3];
-        else
-            $matrix = [24 * $h, 32 * $h * 0.8, 64 * $h * 0.5, 64 * $h * 0.3, 0];
-
-        $hospital_price = array_sum($matrix);
-
-
-        // перерахування ставки
-        $price_month = ($working_hours * $hour_price)
-            - ($up_working_hours * $hour_price)
-            + ($up_working_hours * $schedules->coefficient * $hour_price)
-            + $hospital_price;
-
-        $price_month = round($price_month, 2);
-
-        view()->share('working_hours', $working_hours);
-        view()->share('up_working_hours', $up_working_hours);
-        view()->share('hour_price', $hour_price);
-        view()->share('hospital_hours', $hospital_hours);
-
-        return $price_month;
+        return $hourPrice;
     }
 }

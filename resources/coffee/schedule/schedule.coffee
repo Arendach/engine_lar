@@ -11,3 +11,7 @@ $(document).on 'change', '[name=type]', ->
         $('#turn_up, #went_away, #dinner_break').val('').attr('disabled', yes)
     else
         $('#turn_up, #went_away, #dinner_break').attr('disabled', no)
+
+$(document).on 'keyup', '#payout-sum', ->
+    if +$(@).val() > +$('.max_payout').text()
+        $(@).val(+$('.max_payout').text())

@@ -1,5 +1,8 @@
 <?php
 
+use Carbon\Carbon;
+use Carbon\Exceptions\ParseErrorException;
+
 /**
  * @param $int
  * @return string
@@ -11,23 +14,49 @@ function month_valid($int)
 }
 
 /**
- * Поточний рік
- *
+ * @param Carbon|string|null $date
  * @return int
+ * @throws Exception
  */
-function year(): int
+function year($date = null): int
 {
-    return date('Y');
+    if (is_null($date)) {
+        return date('Y');
+    }
+
+    if (is_string($date)) {
+        $date = new Carbon($date);
+    }
+
+    if (!($date instanceof Carbon)) {
+        throw new ParseErrorException('Не вдвлось розпінати дату', $date);
+    }
+
+    return $date->year;
 }
 
 /**
  * Поточний місяць
  *
+ * @param null $date
  * @return int
+ * @throws Exception
  */
-function month(): int
+function month($date = null): int
 {
-    return date('m');
+    if (is_null($date)) {
+        return date('m');
+    }
+
+    if (is_string($date)) {
+        $date = new Carbon($date);
+    }
+
+    if (!($date instanceof Carbon)) {
+        throw new ParseErrorException('Не вдвлось розпінати дату', $date);
+    }
+
+    return $date->month;
 }
 
 /**
@@ -38,6 +67,40 @@ function month(): int
 function day(): int
 {
     return date('d');
+}
+
+/**
+ * @param $year
+ * @param $month
+ * @param $day
+ * @return Carbon
+ * @throws Exception
+ */
+function create_date($year, $month, $day): Carbon
+{
+    $month = month_valid($month);
+    $day = month_valid($day);
+
+    return new Carbon("$year-$month-$day");
+}
+
+/**
+ * @param null $year
+ * @param null $month
+ * @param null $day
+ * @param bool $isNow
+ * @return Carbon
+ * @throws Exception
+ */
+function create_date_or_now($year = null, $month = null, $day = null, $isNow = false): Carbon
+{
+    if (is_null($year) && is_null($month) && is_null($day)) {
+        return now();
+    } elseif ($year == year() && $month == month() && $isNow) {
+        return now();
+    } else {
+        return create_date($year, $month, $day);
+    }
 }
 
 
@@ -183,7 +246,7 @@ function previous_month_with_year(string $year = '', string $month = ''): array
     if ($month === '') $month = date('m');
     if ($year === '') $year = date('Y');
 
-    $date = \Carbon\Carbon::parse('first day of previous month');
+    $date = Carbon::parse('first day of previous month');
 
     return ['month' => $date->month, 'year' => $date->year];
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Schedule;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateDayRequest extends FormRequest
+class CreatePayoutRequest extends FormRequest
 {
     public function authorize()
     {
@@ -14,10 +14,14 @@ class CreateDayRequest extends FormRequest
     public function rules()
     {
         return [
-            'year'    => 'required|numeric',
-            'month'   => 'required|numeric',
-            'day'     => 'required|numeric',
-            'user_id' => 'required|numeric'
+            'sum' => 'required|numeric'
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'sum' => 'Сума'
         ];
     }
 }

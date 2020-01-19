@@ -8,18 +8,14 @@
         @endif
     </tr>
     <tr>
-        <td>{{ $schedules->for_car }} грн</td>
-        <td>{{ $schedules->bonus }} грн</td>
-        <td>{{ $schedules->fine }} грн</td>
+        <td>{{ number_format($schedules->for_car) }} грн</td>
+        <td>{{ number_format($schedules->bonus) }} грн</td>
+        <td>{{ number_format($schedules->fine) }} грн</td>
         @if (can('bonuses'))
             <td class="action-1">
                 <button data-type="get_form"
-                        data-uri="@uri('ScheduleController@actionUpdateBonuseForm')"
-                        data-post="@params([
-                            'year'  => $schedules->year,
-                            'month' => $schedules->month,
-                            'user_id'  => $schedules->user_id,
-                        ])"
+                        data-uri="@uri('ScheduleController@actionUpdateBonusesForm')"
+                        data-id="{{ $schedules->id }}"
                         class="btn btn-primary btn-xs">
                     <i class="fa fa-pencil"></i>
                 </button>
@@ -53,16 +49,16 @@
             <tr style="background-color: {{ $item->type_color }}">
                 <td><a href="{{ $item->source_link }}">{{ $item->source_text }}</a></td>
                 <td>{{ $item->type_text }}</td>
-                <td>{{ $item->sum }} грн</td>
+                <td>{{ number_format($item->sum )}} грн</td>
                 @if(can('bonuses'))
                     <td class="action-1">
                         <button data-type="get_form"
                                 data-uri="@uri('ScheduleController@actionUpdateBonusForm')"
                                 data-post="@params([
                                     'id'    => $item->id,
-                                    'year'  => $data->year,
-                                    'month' => $data->month,
-                                    'user'  => $data->user
+                                    'year'  => $schedules->year,
+                                    'month' => $schedules->month,
+                                    'user'  => $schedules->user
                                 ])"
                                 class="btn btn-primary btn-xs">
                             <span class="fa fa-pencil"></span>

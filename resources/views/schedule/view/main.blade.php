@@ -6,9 +6,10 @@
         <td class="centered">Лікарняних: {{ $hospital }} дн.</td>
     </tr>
     <tr>
-        <td class="centered">Робочих: {{ $working_hours - $up_working_hours }} год.</td>
-        <td class="centered">Лікарняних: {{ $hospital_hours }} год.</td>
-        <td class="centered" colspan="2">Перепрацьовано: {{ $up_working_hours }} год.</td>
+        <td class="centered">Перепрацьовано: {{ $schedules->up_working_hours }} год.</td>
+        <td class="centered">Робочих: {{ $schedules->working_hours }} год.</td>
+        <td class="centered">У відпустці: {{ $schedules->vacation_hours }} год.</td>
+        <td class="centered">Лікарняних: {{ $schedules->hospital_hours }} год.</td>
     </tr>
 </table>
 
@@ -79,12 +80,7 @@
                         @else
                             <button data-type="get_form"
                                     data-uri="@uri('ScheduleController@actionCreateDayForm')"
-                                    data-post="@params([
-                                        'year'    => $schedules->year,
-                                        'month'   => $schedules->month,
-                                        'day'     => $i,
-                                        'user_id' => $schedules->user_id
-                                    ])"
+                                    data-post="@params(['day' => $i, 'id' => $schedules->id])"
                                     class="btn btn-primary btn-xs get_form">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </button>

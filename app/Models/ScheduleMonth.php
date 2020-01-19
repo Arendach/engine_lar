@@ -42,6 +42,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleMonth whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ScheduleMonth whereUpdatedAt($value)
+ * @property-read mixed $hospital_hours
+ * @property-read mixed $hour_price
+ * @property-read mixed $up_working_hours
+ * @property-read mixed $vacation_hours
+ * @property-read mixed $working_hours
  */
 class ScheduleMonth extends Model
 {
@@ -72,6 +77,39 @@ class ScheduleMonth extends Model
     public function items()
     {
         return $this->hasMany(Schedule::class);
+    }
+
+    // Кількість пропрацьованих годин за місяць
+    public function getWorkingHoursAttribute(): ?int
+    {
+        return $this->items->where('type', 'working')->count() * 8;
+    }
+
+    // кількість перепрацьованих годин за місяць
+    public function getUpWorkingHoursAttribute(): int
+    {
+        return $this->items->where('type', 'working')->sum(function (Schedule $item) {
+            return $item->worked > 8 ? $item->worked - 8 : 0;
+        });
+    }
+
+    // кількість годин у відпустці
+    public function getVacationHoursAttribute()
+    {
+        return $this->items->where('type', 'vacation')->count() * 8;
+    }
+
+    // кількість дікарняних годин
+    public function getHospitalHoursAttribute(): int
+    {
+        return $this->items->where('type', 'hospital')->count() * 8;
+    }
+
+    // Ціна роботи за 1 годину
+    public function getHourPriceAttribute()
+    {
+        return $this->price_month / count_working_days($this->year, $this->month) / 8;
+
     }
 
     public function scopeConcrete(Builder $query, int $year = null, int $month = null, int $user = null)
