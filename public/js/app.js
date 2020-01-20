@@ -30972,7 +30972,7 @@ $(document).on('submit', '[data-type="ajax"]', function(event) {
       processData: false,
       contentType: false,
       success: (answer, status, jqXHR) => {
-        new SuccessHandler(answer, jqXHR).setDriver(success).setRedirectTo(redirectTo).setAfter(after).apply();
+        new SuccessHandler(answer, jqXHR).setDriver(success).setRedirectTo(redirectTo).setFormElement(event.currentTarget).setAfter(after).apply();
         $(event.currentTarget).find('[name]').attr('disabled', false);
         return $(event.currentTarget).find('button').attr('disabled', false).find('i').remove();
       },
@@ -31417,10 +31417,18 @@ SuccessHandler = class SuccessHandler {
     return this;
   }
 
+  setFormElement(form) {
+    this.form = form;
+    return this;
+  }
+
   reload() {
     $.cookie('success', true);
-    new Modal().close();
     return PjaxReload();
+  }
+
+  reset() {
+    return $(':input', this.form).not(':button, :submit, :reset, :hidden').val('').prop('checked', false).prop('selected', false);
   }
 
   apply() {
@@ -31435,9 +31443,11 @@ SuccessHandler = class SuccessHandler {
   applyToastr() {
     if (this.after === 'reload') {
       return this.reload();
-    } else {
-      return SuccessToastr(this.title, this.message);
     }
+    if (this.after === 'reset') {
+      this.reset();
+    }
+    return SuccessToastr(this.title, this.message);
   }
 
   applySweetalert() {
@@ -31490,14 +31500,24 @@ module.exports = SuccessToastr;
 
 var reload;
 
+$(document).on('pjax:beforeSend', function() {
+  return $(document).off();
+});
+
 $(document).pjax('a', '#pjax-container', {
   fragment: '#pjax-container'
 });
 
 reload = function() {
-  return window.location.reload();
+  new Modal().close();
+  $(document).off();
+  return $.pjax.reload({
+    container: '#pjax-container',
+    fragment: '#pjax-container'
+  });
 };
 
+//window.location.reload()
 //  $.pjax.defaults.timeout = false
 //  $.pjax.reload({container: '#pjax-container', fragment: '#pjax-container'})
 module.exports = reload;

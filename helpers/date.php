@@ -2,6 +2,7 @@
 
 use Carbon\Carbon;
 use Carbon\Exceptions\ParseErrorException;
+use Illuminate\Support\Collection;
 
 /**
  * @param $int
@@ -28,6 +29,10 @@ function year($date = null): int
         $date = new Carbon($date);
     }
 
+    if (mb_strlen($date) == 4 && is_numeric($date)) {
+        return (int)$date;
+    }
+
     if (!($date instanceof Carbon)) {
         throw new ParseErrorException('Не вдвлось розпінати дату', $date);
     }
@@ -50,6 +55,10 @@ function month($date = null): int
 
     if (is_string($date)) {
         $date = new Carbon($date);
+    }
+
+    if ((mb_strlen($date) == 2 || mb_strlen($date) == 1) && is_numeric($date)) {
+        return (int)$date;
     }
 
     if (!($date instanceof Carbon)) {
@@ -239,16 +248,16 @@ function time_to_string(string $time): string
 /**
  * @param string $year
  * @param string $month
- * @return array
+ * @return Collection
  */
-function previous_month_with_year(string $year = '', string $month = ''): array
+function previous_month_with_year(string $year = '', string $month = ''): Collection
 {
     if ($month === '') $month = date('m');
     if ($year === '') $year = date('Y');
 
     $date = Carbon::parse('first day of previous month');
 
-    return ['month' => $date->month, 'year' => $date->year];
+    return new Collection(['month' => $date->month, 'year' => $date->year]);
 }
 
 /**

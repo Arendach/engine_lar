@@ -131,6 +131,7 @@ $(document).on 'submit', '[data-type="ajax"]', (event) ->
                 new SuccessHandler answer, jqXHR
                     .setDriver success
                     .setRedirectTo redirectTo
+                    .setFormElement event.currentTarget
                     .setAfter after
                     .apply()
 

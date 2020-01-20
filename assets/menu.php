@@ -40,12 +40,12 @@ return [
             ],
             [
                 'name' => 'Активи',
-                'url' => uri('product?section=assets'),
+                'url' => uri('product/assets'),
                 'access' => 'product',
             ],
             [
                 'name' => 'Склади',
-                'url' => uri('storage'),
+                'url' => uri('storage/main'),
                 'access' => 'storage',
             ]
         ]
@@ -122,11 +122,6 @@ return [
             [
                 'name' => 'Посади',
                 'url' => uri('position'),
-                'access' => 'ROOT'
-            ],
-            [
-                'name' => 'Графыки роботи',
-                'url' => uri('schedule', ['section' => 'users']),
                 'access' => 'ROOT'
             ],
         ]

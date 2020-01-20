@@ -2,142 +2,67 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
+use App\Http\Requests\Report\UpdateReserveFundsRequest;
+use App\Models\Report;
+use App\Models\ReportItem;
+use App\Services\ReportService;
 
-use Web\Model\Reports;
-
-class ReportsController extends Controller
+class ReportController extends Controller
 {
-    // Мої звіти
-    // Користувач бачить тільки свої звіти
-    public function section_my()
+    // За конкретний місяць
+    public function sectionView(int $year = null, int $month = null, int $user_id = 0)
     {
-        if (get('month') && get('year')) {
-            $params = [
-                'month' => get('month'),
-                'year' => get('year'),
-                'user' => user()->id];
-        } else {
-            $params = [
-                'month' => date('m'),
-                'year' => date('Y'),
-                'user' => user()->id];
-        }
+        $year = year($year);
+        $month = month($month);
+        $user = user($user_id);
 
-        if ($params['year'] == date('Y') && $params['month'] == date('m')) {
-            $createIfNotExists = true;
-        } else {
-            $createIfNotExists = false;
-        }
+        $report = app(ReportService::class)
+            ->getOrCreateOrFail($year, $month, $user->id)
+            ->load('items');
 
-        $data = [
-            'title' => 'Мої звіти',
-            'reports' => Reports::getReports($params),
-            'report_item' => Reports::getReport($params['year'], $params['month'], $params['user'], $createIfNotExists),
-            'user' => user()->id,
-            'breadcrumbs' => [
-                ['Менеджери', uri('user')],
-                [user()->login, uri('reports', ['section' => 'user', 'id' => user()->id])],
-                ['Звіти']
-            ]
-        ];
-
-        $this->display_reports($data);
+        return view('reports.display', compact('report', 'user', 'year', 'month'));
     }
 
-    // Звіти менеджерів
-    // Той в кого є ключ може бачити всі звіти
-    // @access - reports
-    public function section_view()
+    // Всі звіти
+    public function sectionUser($id = 0)
     {
-        $params = [];
-        $params['year'] = get('year') != false ? get('year') : date('Y');
-        $params['month'] = get('month') != false ? get('month') : date('m');
-        $params['user'] = get('user') != false ? get('user') : user()->id;
+        abort_if(user()->id != $id && cannot('report'), 403);
 
-        //  Перевірка прав доступу
-        $this->authorization($params['user']);
+        $user = user($id);
 
-        $data = [
-            'title' => 'Звіти менеджера ' . user($params['user'])->login . ' за ' . int_to_month($params['month']) . ' ' . $params['year'],
-            'reports' => Reports::getReports($params),
-            'report_item' => Reports::getReport($params['year'], $params['month'], $params['user'], true),
-            'user' => $params['user'],
-            'breadcrumbs' => [
-                ['Менеджери', uri('user')],
-                [user($params['user'])->login, uri('reports', ['section' => 'user', 'id' => user($params['user'])->id])],
-                ['Звіти']
-            ]
-        ];
+        $reports = ReportItem::where('user_id', $user->id)
+            ->orderByDesc('year')
+            ->orderByDesc('month')
+            ->get()
+            ->mapToGroups(function (ReportItem $item) {
+                return [$item->year => $item];
+            });
 
-        $this->display_reports($data);
-    }
-
-    // Звіти по місяцях
-    // Той в кого є ключ може бачити всі звіти
-    // @access - reports
-    public function section_user()
-    {
-        //  Перевірка прав доступу
-        $this->authorization(get('user') ? get('user') : user()->id);
-
-        if (get('user') == user()->id)
-            $breadcrumbs = [
-                ['Мій профіль', uri('user', ['section' => 'profile'])],
-                ['Мої звіти']
-            ];
-        else
-            $breadcrumbs = [
-                ['Менеджери', uri('user', ['section' => 'list'])],
-                [user(get('user'))->login, uri('user', ['id' => get('user'), 'section' => 'view'])],
-                ['Звіти']
-            ];
-
-        $data = [
-            'title' => 'Мої звіти',
-            'breadcrumbs' => $breadcrumbs
-        ];
-
-        $this->view->display('reports.user', $data);
+        return view('reports.user', compact('reports', 'user'));
     }
 
     // Створення звіту - Переміщення коштів
-    public function section_moving()
+    public function sectionMoving()
     {
-        $data = [
-            'title' => 'Мої звіти :: Переміщення коштів',
-            'breadcrumbs' => [
-                ['Мої звіти', uri('reports', ['section' => 'my'])],
-                ['Переміщення коштів']
-            ]
-        ];
-
-        $this->view->display('reports.create.moving', $data);
+        return view('reports.create.moving');
     }
 
     // Створення звіту - Резервний фонд
-    public function section_reserve_funds()
+    public function sectionReserveFunds()
     {
-        $report = Reports::getReport(date('Y'), date('m'), user()->id);
+        $report = ReportItem::concrete(year(), month(), user()->id)->first();
 
-        $data = [
-            'title' => 'Мої звіти :: Резервний фонд',
-            'max_down' => user()->reserve_funds,
-            'max_up' => $report->start_month + $report->just_now,
-            'breadcrumbs' => [
-                ['Мої звіти', uri('reports', ['section' => 'my'])],
-                ['Резервний фонд']
-            ]
-        ];
+        $maxDown = user()->reserve_funds;
+        $maxUp = $report->start_month + $report->just_now;
 
-        $this->view->display('reports.reserve_funds', $data);
+        return view('reports.reserve_funds', compact('maxUp', 'maxDown'));
     }
 
     // Створення звіту - Видатки
     public function section_expenditures()
     {
         $data = [
-            'title' => 'Мої звіти :: Видатки',
+            'title'       => 'Мої звіти :: Видатки',
             'breadcrumbs' => [
                 ['Мої звіти', uri('reports', ['section' => 'my'])],
                 ['Видатки']
@@ -151,7 +76,7 @@ class ReportsController extends Controller
     public function section_shipping_costs()
     {
         $data = [
-            'title' => 'Мої звіти :: Витрати на доставку',
+            'title'       => 'Мої звіти :: Витрати на доставку',
             'breadcrumbs' => [
                 ['Мої звіти', uri('reports', ['section' => 'my'])],
                 ['Витрати на доставку']
@@ -165,7 +90,7 @@ class ReportsController extends Controller
     public function section_profits()
     {
         $data = [
-            'title' => 'Мої звіти :: Прибутки',
+            'title'       => 'Мої звіти :: Прибутки',
             'breadcrumbs' => [
                 ['Мої звіти', uri('reports', ['section' => 'my'])],
                 ['Прибутки (коректування)']
@@ -176,42 +101,33 @@ class ReportsController extends Controller
     }
 
     // Оновити резервний фонд
-    public function action_reserve_funds_update($post)
+    public function actionReserveFundsUpdate(UpdateReserveFundsRequest $request)
     {
-        $report = Reports::getReport(date('Y'), date('m'), user()->id);
+        $report = ReportItem::concrete(year(), month(), user()->id)->firstOrFail();
 
-        if ($post->act == 'put') {
-            $in_hand = $report->start_month + $report->just_now;
-
-            if ($post->sum > $in_hand)
-                response(400, 'Ви не можете поставити в резервний фонд більше ніж ' . $in_hand . ' грн!');
-
-            if ($post->sum <= 0)
-                response(400, 'Ви не можете поставити в резервний фонд суму меншу чи рівну нулю!');
+        if ($request->act == 'put') {
+            $nameOperation = 'Переміщення коштів у резерв';
+            $type = 'to_reserve';
         } else {
-            if ($post->sum > user()->reserve_funds)
-                response(400, "Ви не можете забрати з резервного фонду більше ніж " . user()->reserve_funds . " грн!");
-
-            if ($post->sum <= 0)
-                response(400, 'Ви не можете забрати з резервного фонду суму меншу чи рівну нулю!');
+            $nameOperation = 'Переміщення коштів з резерву';
+            $type = 'un_reserve';
         }
 
-        Reports::reserve_funds_update($post->sum, $post->act);
+        Report::create([
+            'name_operation' => $nameOperation,
+            'sum'            => $request->sum,
+            'user_id'        => user()->id,
+            'type'           => $type,
+            'report_item_id' => $report->id
+        ]);
 
-        $response = [
-            'message' => DATA_SUCCESS_CREATED,
-            'action' => 'redirect',
-            'uri' => uri('reports', ['section' => 'my'])
-        ];
-
-        response(200, $response);
     }
 
     // Форма підтвердження передачі коштів
     public function action_close_moving_form($post)
     {
         $data = [
-            'title' => 'Отримання коштів',
+            'title'  => 'Отримання коштів',
             'report' => Reports::getOne($post->id)
         ];
 
@@ -243,8 +159,8 @@ class ReportsController extends Controller
 
         $response = [
             'message' => "Кошти буде передано, як тільки $login підтвердить передачу!",
-            'action' => 'redirect',
-            'uri' => uri('reports', ['section' => 'my'])
+            'action'  => 'redirect',
+            'uri'     => uri('reports', ['section' => 'my'])
         ];
 
         response(200, $response);
@@ -270,8 +186,8 @@ class ReportsController extends Controller
 
         $response = [
             'message' => 'Видатки вдало збережені!',
-            'action' => 'redirect',
-            'uri' => uri('reports', ['section' => 'my'])
+            'action'  => 'redirect',
+            'uri'     => uri('reports', ['section' => 'my'])
         ];
 
         response(200, $response);
@@ -295,8 +211,8 @@ class ReportsController extends Controller
 
         $response = [
             'message' => 'Витрати на доставку вдало збережені!',
-            'action' => 'redirect',
-            'uri' => uri('reports', ['section' => 'my'])
+            'action'  => 'redirect',
+            'uri'     => uri('reports', ['section' => 'my'])
         ];
 
         Reports::createShippingCosts($post, $data);
@@ -313,8 +229,8 @@ class ReportsController extends Controller
 
         $response = [
             'message' => 'Прибутки вдало збережені!',
-            'action' => 'redirect',
-            'uri' => uri('reports', ['section' => 'my'])
+            'action'  => 'redirect',
+            'uri'     => uri('reports', ['section' => 'my'])
         ];
 
         response(200, $response);
@@ -326,15 +242,6 @@ class ReportsController extends Controller
     {
         $data = ['report' => Reports::getOne($post->id)];
         $this->view->display("reports.preview.{$data['report']->type}", $data);
-    }
-
-
-    // Відображення звіту
-    private function display_reports($data)
-    {
-        $data['components'] = ['modal'];
-
-        $this->view->display('reports.display', $data);
     }
 
     // Валідація форми
@@ -351,7 +258,7 @@ class ReportsController extends Controller
     public function action_update_form($post)
     {
         $data = [
-            'title' => 'Редагування звіту',
+            'title'  => 'Редагування звіту',
             'report' => Reports::getOne($post->id, 'reports')
         ];
 
@@ -394,8 +301,8 @@ class ReportsController extends Controller
         }
 
         $data = [
-            'title' => 'Статистика по звітах',
-            'data' => $group_reports,
+            'title'       => 'Статистика по звітах',
+            'data'        => $group_reports,
             'breadcrumbs' => [
                 ['Звіти', uri('reports', ['section' => 'view', 'user' => get('user')])],
                 ['Статистика по звітах']

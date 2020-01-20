@@ -36,22 +36,34 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read mixed $moving_status
  * @property-read mixed $moving_user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereUserId($value)
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property int|null $report_item_id
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $day
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereReportItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereUpdatedAt($value)
  */
 class Report extends Model
 {
     protected $table = 'reports';
 
     protected $fillable = [
+        'type',
         'name_operation',
-        'date',
+        'created_at',
+        'updated_at',
         'data',
         'sum',
         'comment',
         'user_id',
-        'type'
+        'type',
+        'report_item_id'
     ];
 
-    protected $dates = ['date'];
+    public $timestamps = true;
+
+    protected $dates = ['created_at', 'updated_at'];
 
     public $types = [
         'purchases'            => 'Закупка',
@@ -90,6 +102,7 @@ class Report extends Model
         return $this->belongsTo(User::class);
     }
 
+
     public function getTypeNameAttribute(): string
     {
         return $this->types[$this->type] ?? '';
@@ -100,32 +113,38 @@ class Report extends Model
         return $this->typeColor[$this->type] ?? '';
     }
 
-    public function scopeType(Builder $query, string $type): void
-    {
-        $query->where('type', $type);
-    }
-
     public function getSumAttribute($sum): string
     {
         return number_format($sum);
     }
 
-    public function scopeMy(Builder $query): void
-    {
-        $query->where('user_id', user()->id);
-    }
-
     public function getMovingUserAttribute(): int
     {
-        [$user_id] = explode(':', $this->data);
+        [$userId] = explode(':', $this->data);
 
-        return (int)$user_id;
+        return (int)$userId;
     }
 
     public function getMovingStatusAttribute(): int
     {
-        [$user_id, $status] = explode(':', $this->data);
+        [,$status] = explode(':', $this->data);
 
         return (int)$status;
+    }
+
+    public function getDayAttribute()
+    {
+        return $this->created_at->format('d');
+    }
+
+
+    public function scopeType(Builder $query, string $type): void
+    {
+        $query->where('type', $type);
+    }
+
+    public function scopeMy(Builder $query): void
+    {
+        $query->where('user_id', user()->id);
     }
 }

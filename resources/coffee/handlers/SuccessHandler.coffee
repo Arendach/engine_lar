@@ -31,10 +31,18 @@ class SuccessHandler
 
     setAfterCallable: (@callable) -> @
 
+    setFormElement: (@form) -> @
+
     reload: ->
         $.cookie('success', yes)
-        new Modal().close()
         PjaxReload()
+
+    reset: ->
+        $ ':input', @form
+            .not ':button, :submit, :reset, :hidden'
+            .val ''
+            .prop 'checked', off
+            .prop 'selected', off
 
     apply: () ->
         @setMessages()
@@ -44,9 +52,12 @@ class SuccessHandler
 
     applyToastr: () ->
         if @after is 'reload'
-            @reload()
-        else
-            SuccessToastr(@title, @message)
+            return @reload()
+
+        if @after is 'reset'
+            @reset()
+
+        SuccessToastr(@title, @message)
 
     applySweetalert: () ->
         swal.fire

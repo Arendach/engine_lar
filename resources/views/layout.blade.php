@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Enter Title')</title>
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?{{ rand32() }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?{{ rand32() }}">
-    <link rel="stylesheet" id="baze-theme" href="{{ asset('css/themes/' . user()->theme . '.css') }}?{{ rand32() }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }} }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" id="baze-theme" href="{{ asset('css/themes/' . user()->theme . '.css') }}">
 </head>
 <body>
+<div id="pjax-container">
 <input style="display: none" name="login" type="text">
 <input style="display: none" name="password" type="password">
-<a style="display: none" id="pjax_reload" href="{{ url()->current() }}"></a>
 
 <div class="content-left content-left-{{ $_COOKIE['left-content-state'] ?? 'open' }}">
     <ul>
@@ -107,37 +107,17 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
-                            <li>
-                                <a href="{{ uri('user', ['section' => 'instruction']) }}">
-                                    Посадова інструкція
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ uri('schedule', ['section' => 'view']) }}">
-                                    Мій графік роботи
-                                </a>
-                            </li>
+                            <li><a href="{{ uri('user/instruction') }}">Посадова інструкція</a></li>
+                            <li><a href="{{ uri('schedule/view') }}">Мій графік роботи</a></li>
                             <li>
                                 <a data-type="pin_code" href="#" data-href="{{ uri('reports', ['section' => 'my']) }}">
                                     Мої звіти
                                 </a>
                             </li>
-                            <li>
-                                <a href="{{ uri('task', ['section' => 'list', 'user' => user()->id]) }}">
-                                    Мої задачі
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ uri('user', ['section' => 'profile']) }}">
-                                    Профіль
-                                </a>
-                            </li>
+                            <li><a href="{{ uri('task/main') }}">Мої задачі</a></li>
+                            <li><a href="{{ uri('user/profile') }}">Профіль</a></li>
                             <li class="divider"></li>
-                            <li>
-                                <a href="{{ route('exit') }}">
-                                    Вихід
-                                </a>
-                            </li>
+                            <li><a href="{{ route('exit') }}">Вихід</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -145,21 +125,24 @@
         </div>
     </nav>
 
-    <div class="content-page" id="pjax-container">
+    <div class="content-page">
         @isset($breadcrumbs)
-            @include('parts.breadcrumbs')
+            <ol class="breadcrumb">
+                <li><a href="@uri('/')"><i class="fa fa-dashboard"></i></a></li>
+                @foreach ($breadcrumbs as $item)
+                    @if ($loop->last)
+                        <li class="active"><span>{{ $item[0] }}</span></li>
+                    @else
+                        <li><a href="{{ $item[1] }}">{{ $item[0] }}</a></li>
+                    @endif
+                @endforeach
+            </ol>
         @endisset
 
         @yield('content')
 
         <div class="scripts-hidden">
             <script>
-                @if(session('success'))
-                    window.successSessionMessage = true;
-                @else
-                    window.successSessionMessage = false;
-                @endif
-
                 @isset($toJs)
                     window.JData = @json($toJs)
                 @endisset
@@ -170,7 +153,7 @@
 
             @yield('scripts')
 
-            <script src="{{ asset('js/app.js') }}?{{ rand32() }}"></script>
+            <script src="{{ asset('js/app.js') }}"></script>
 
             @if (isset($editor) && $editor == 'full')
                 <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
@@ -179,11 +162,12 @@
             @endif
 
             @if (isset($controller) && is_file(public_path("js/controllers/$controller.js")))
-                <script src="{{ asset("js/controllers/$controller.js") }}?{{ rand32() }}"></script>
+                <script src="{{ asset("js/controllers/$controller.js") }}"></script>
             @endisset
         </div>
     </div>
 
+</div>
 </div>
 </body>
 </html>

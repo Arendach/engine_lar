@@ -46,6 +46,10 @@ function can_keys(array $array)
  */
 function user($id = 0)
 {
+    if ($id === 'all') {
+        return \App\Models\User::all();
+    }
+
     if ($id > 0)
         return \App\Models\User::find($id);
 
