@@ -19,6 +19,9 @@ mix
     .js('resources/coffee/task/task.coffee', 'public/js/controllers/task.js')
     .js('resources/coffee/user/user.coffee', 'public/js/controllers/user.js')
     .js('resources/coffee/schedule/schedule.coffee', 'public/js/controllers/schedule.js')
+    .js('resources/coffee/report/report.coffee', 'public/js/controllers/report.js')
+    .js('resources/coffee/libs.coffee', 'public/js/libs.js')
+    .js('resources/coffee/pjax.coffee', 'public/js/pjax.js')
 
 
     .less('resources/less/login.less', 'public/css/login.css')

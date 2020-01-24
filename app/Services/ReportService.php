@@ -7,22 +7,6 @@ use Illuminate\Support\Collection;
 
 class ReportService
 {
-    public function getOrCreateOrFail(int $year, int $month, int $user_id)
-    {
-        $report = ReportItem::concrete($year, $month, $user_id);
-        $exists = $report->count();
-
-        if (!$exists and $year != year() and $month != month()) {
-            abort(404);
-        }
-
-        if (!$exists) {
-            $this->create($year, $month, $user_id);
-        }
-
-        return $report->first();
-    }
-
     public function create(int $year, int $month, int $user_id)
     {
         ReportItem::create([

@@ -6,11 +6,33 @@
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }} }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" id="baze-theme" href="{{ asset('css/themes/' . user()->theme . '.css') }}">
+
+    <script>
+        @isset($toJs)
+            window.JData = @json($toJs)
+        @endisset
+
+        window.pin = '{{ user()->pin }}';
+        window.my_url = '{{ '' }}';
+    </script>
+
+    @yield('scripts')
+
+    <script src="{{ asset('js/libs.js') }}"></script>
+
+    @if (isset($editor) && $editor == 'full')
+        <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+    @else
+        <script src="{{ asset('ckeditor_basic/ckeditor.js') }}"></script>
+    @endif
+
+    <script src="{{ asset('js/pjax.js') }}"></script>
 </head>
 <body>
-<div id="pjax-container">
+<div>
 <input style="display: none" name="login" type="text">
 <input style="display: none" name="password" type="password">
+</div>
 
 <div class="content-left content-left-{{ $_COOKIE['left-content-state'] ?? 'open' }}">
     <ul>
@@ -125,49 +147,32 @@
         </div>
     </nav>
 
-    <div class="content-page">
-        @isset($breadcrumbs)
-            <ol class="breadcrumb">
-                <li><a href="@uri('/')"><i class="fa fa-dashboard"></i></a></li>
-                @foreach ($breadcrumbs as $item)
-                    @if ($loop->last)
-                        <li class="active"><span>{{ $item[0] }}</span></li>
-                    @else
-                        <li><a href="{{ $item[1] }}">{{ $item[0] }}</a></li>
-                    @endif
-                @endforeach
-            </ol>
-        @endisset
-
-        @yield('content')
-
-        <div class="scripts-hidden">
-            <script>
-                @isset($toJs)
-                    window.JData = @json($toJs)
-                @endisset
-
-                window.pin = '{{ user()->pin }}';
-                window.my_url = '{{ '' }}';
-            </script>
-
-            @yield('scripts')
-
-            <script src="{{ asset('js/app.js') }}"></script>
-
-            @if (isset($editor) && $editor == 'full')
-                <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
-            @else
-                <script src="{{ asset('ckeditor_basic/ckeditor.js') }}"></script>
-            @endif
-
-            @if (isset($controller) && is_file(public_path("js/controllers/$controller.js")))
-                <script src="{{ asset("js/controllers/$controller.js") }}"></script>
+    <div id="pjax-container">
+        <div class="content-page">
+            @isset($breadcrumbs)
+                <ol class="breadcrumb">
+                    <li><a href="@uri('/')"><i class="fa fa-dashboard"></i></a></li>
+                    @foreach ($breadcrumbs as $item)
+                        @if ($loop->last)
+                            <li class="active"><span>{{ $item[0] }}</span></li>
+                        @else
+                            <li><a href="{{ $item[1] }}">{{ $item[0] }}</a></li>
+                        @endif
+                    @endforeach
+                </ol>
             @endisset
+
+            @yield('content')
+
+            <div class="scripts-hidden">
+                <script src="{{ asset('js/app.js') }}"></script>
+
+                @if (isset($controller) && is_file(public_path("js/controllers/$controller.js")))
+                    <script src="{{ asset("js/controllers/$controller.js") }}"></script>
+                @endisset
+            </div>
         </div>
     </div>
-
-</div>
 </div>
 </body>
 </html>

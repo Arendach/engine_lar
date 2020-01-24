@@ -15,7 +15,7 @@
         <a href="@uri('ReportController@sectionReserveFunds')" class="btn btn-success">Резервний фонд</a>
         <a href="@uri('ReportController@sectionMoving')" class="btn btn-success">Переміщення коштів</a>
         <a href="@uri('ReportController@sectionExpenditures')" class="btn btn-success">Видатки</a>
-        <a href="@uri('ReportController@sectionShippingCosts') ?>" class="btn btn-success">Витрати на доставку</a>
+        <a href="@uri('ReportController@sectionShippingCosts')" class="btn btn-success">Витрати на доставку</a>
         @if (can())
             <a href="@uri('ReportController@sectionProfits')" class="btn btn-success">Коректування</a>
         @endif

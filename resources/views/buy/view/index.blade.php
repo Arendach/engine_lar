@@ -108,7 +108,7 @@
 
         @include("buy.view.$type")
 
-        {{ $orders->links('parts.paginator') }}
+        {{ $orders->links() }}
 
     </div>
 

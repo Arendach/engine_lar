@@ -1,13 +1,24 @@
-$(document).on('pjax:beforeSend', -> $(document).off())
-
 $(document).pjax 'a', '#pjax-container', fragment: '#pjax-container'
 
-reload = ->
+window.PjaxReload = ->
     new Modal().close()
-    $(document).off()
-    $.pjax.reload(container: '#pjax-container', fragment: '#pjax-container')
-#window.location.reload()
-#  $.pjax.defaults.timeout = false
-#  $.pjax.reload({container: '#pjax-container', fragment: '#pjax-container'})
+    $.pjax.reload
+        container: '#pjax-container',
+        fragment: '#pjax-container',
 
-module.exports = reload
+$(document).on 'pjax:click', (options) ->
+    console.log($(options.currentTarget))
+    window.resetEventStorage()
+
+window.eventStorage = []
+
+window.event = (type, element, handler) ->
+    $(document).on(type, element, handler);
+
+    window.eventStorage.push({type, element, handler})
+
+window.resetEventStorage = () ->
+    for hand in window.eventStorage
+        $(document).off(hand.type, hand.element, hand.handler)
+
+    window.eventStorage = []

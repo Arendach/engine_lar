@@ -5,10 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Report\UpdateReserveFundsRequest;
 use App\Models\Report;
 use App\Models\ReportItem;
+use App\Repositories\ReportRepository;
 use App\Services\ReportService;
 
 class ReportController extends Controller
 {
+    private $repository;
+
+    public function __construct(ReportRepository $reportRepository)
+    {
+        $this->repository = $reportRepository;
+    }
+
     // За конкретний місяць
     public function sectionView(int $year = null, int $month = null, int $user_id = 0)
     {
@@ -16,11 +24,9 @@ class ReportController extends Controller
         $month = month($month);
         $user = user($user_id);
 
-        $report = app(ReportService::class)
-            ->getOrCreateOrFail($year, $month, $user->id)
-            ->load('items');
+        $report = $this->repository->getOrCreateOrFail($year, $month, $user->id);
 
-        return view('reports.display', compact('report', 'user', 'year', 'month'));
+        return view('report.display', compact('report', 'user', 'year', 'month'));
     }
 
     // Всі звіти
@@ -30,64 +36,41 @@ class ReportController extends Controller
 
         $user = user($id);
 
-        $reports = ReportItem::where('user_id', $user->id)
-            ->orderByDesc('year')
-            ->orderByDesc('month')
-            ->get()
-            ->mapToGroups(function (ReportItem $item) {
-                return [$item->year => $item];
-            });
+        $reports = $this->repository->getForUser($user->id);
 
-        return view('reports.user', compact('reports', 'user'));
+        return view('report.user', compact('reports', 'user'));
     }
 
     // Створення звіту - Переміщення коштів
     public function sectionMoving()
     {
-        return view('reports.create.moving');
+        return view('report.create.moving');
     }
 
     // Створення звіту - Резервний фонд
     public function sectionReserveFunds()
     {
-        $report = ReportItem::concrete(year(), month(), user()->id)->first();
-
+        $report = $this->repository->getConcreteOrFail();
         $maxDown = user()->reserve_funds;
         $maxUp = $report->start_month + $report->just_now;
 
-        return view('reports.reserve_funds', compact('maxUp', 'maxDown'));
+        return view('report.reserve_funds', compact('maxUp', 'maxDown'));
     }
 
     // Створення звіту - Видатки
-    public function section_expenditures()
+    public function sectionExpenditures()
     {
-        $data = [
-            'title'       => 'Мої звіти :: Видатки',
-            'breadcrumbs' => [
-                ['Мої звіти', uri('reports', ['section' => 'my'])],
-                ['Видатки']
-            ]
-        ];
-
-        $this->view->display('reports.create.expenditures', $data);
+        return view('report.create.expenditures');
     }
 
     // Створення звіту - Витрати на доставку
-    public function section_shipping_costs()
+    public function sectionShippingCosts()
     {
-        $data = [
-            'title'       => 'Мої звіти :: Витрати на доставку',
-            'breadcrumbs' => [
-                ['Мої звіти', uri('reports', ['section' => 'my'])],
-                ['Витрати на доставку']
-            ]
-        ];
-
-        $this->view->display('reports.create.shipping_costs', $data);
+        return view('report.create.shipping_costs');
     }
 
     // Створення звіту - Прибуток
-    public function section_profits()
+    public function sectionProfits()
     {
         $data = [
             'title'       => 'Мої звіти :: Прибутки',
@@ -97,7 +80,7 @@ class ReportController extends Controller
             ]
         ];
 
-        $this->view->display('reports.create.profits', $data);
+        return view('report.create.profits', $data);
     }
 
     // Оновити резервний фонд

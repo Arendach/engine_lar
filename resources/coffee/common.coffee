@@ -1,5 +1,4 @@
 window.Modal = require './Modal.coffee'
-window.PjaxReload = require './pjax.coffee'
 window.SuccessToastr = require './handlers/SuccessToastr.coffee'
 window.SuccessHandler = require './handlers/SuccessHandler.coffee'
 window.ErrorHandler = require './handlers/ErrorHandler.coffee'
@@ -37,6 +36,10 @@ String::replaceAll = (search, replace) -> @.split(search).join(replace)
 $(document).ready ->
     $('[data-toggle="tooltip"]').tooltip()
     $('[data-toggle="popover"]').popover()
+
+    $('[data-type="ckeditor"]').each ->
+        CKEDITOR.replace($(@).attr('name'))
+
 
     if $.cookie('success') is 'true'
         SuccessToastr('Виконано', 'Дані успішно збережені')
@@ -98,7 +101,8 @@ $(document).on 'keyup', '[data-inspect="integer"]', ->
     value = "-#{value}" if minus
     $(@).val value
 
-$(document).on 'submit', '[data-type="ajax"]', (event) ->
+
+event 'submit', '[data-type="ajax"]', (event) ->
     event.preventDefault()
 
     url = $(@).attr 'action'
@@ -162,7 +166,7 @@ $(document).on 'submit', '[data-type="ajax"]', (event) ->
 
     if typeof $(@).data('pin_code') != "undefined" then pin_code -> send() else send()
 
-$(document).on 'click', '[data-type="get_form"]', (event) ->
+event 'click', '[data-type="get_form"]', (event) ->
     event.preventDefault()
 
     url = $(@).data 'uri'
@@ -185,7 +189,7 @@ $(document).on 'click', '[data-type="get_form"]', (event) ->
             new ErrorHandler(answer).apply()
 
 
-$(document).on 'click', '[data-type="ajax_request"]', (event) ->
+event 'click', '[data-type="ajax_request"]', (event) ->
     event.preventDefault()
 
     url = $(@).data 'uri'
@@ -226,7 +230,7 @@ $(document).on 'click', '.map-signs', (event) ->
 
 
 
-$(document).on 'hide.bs.modal', '.modal', -> $(@).remove()
+event 'hide.bs.modal', '.modal', -> $(@).remove()
 
 
 $('a[data-type="pin_code"]').on 'click', ->

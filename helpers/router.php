@@ -16,7 +16,7 @@ function router(string $controller, string $action, string $prefix, $params = []
 
     $namespace = "\\App\\Http\\Controllers\\{$controller}Controller";
 
-    $controller = new $namespace();
+    $controller = app($namespace);
 
     abort_if(!method_exists($controller, $action), 404, __('common.errors.post_404'));
 

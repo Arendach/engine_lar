@@ -36,23 +36,11 @@
 
         <div class="form-group">
             <label>Коментар</label>
-            <textarea class="form-control" name="comment"></textarea>
+            <textarea class="form-control" data-type="ckeditor" name="comment"></textarea>
         </div>
 
         <div class="form-group">
             <button class="btn btn-primary">Перемістити</button>
         </div>
-
     </form>
-
-    <script>
-        $(document).ready(function () {
-            var $body = $('body');
-
-            $body.on('change', '#user', function () {
-                $('#name_operation').val('Передача коштів ' + $(this).find(':selected').text());
-            });
-
-        });
-    </script>
 @endsection
