@@ -38,7 +38,7 @@
                         </button>
 
                         <button data-type="delete"
-                                data-uri="@uri('ClientsController@actionDeleteGroup')"
+                                data-uri="@uri('ClientController@actionDeleteGroup')"
                                 data-toggle="tooltip"
                                 title="Видалити"
                                 data-id="{{ $group->id }}"

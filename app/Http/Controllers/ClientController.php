@@ -19,7 +19,9 @@ class ClientController extends Controller
         $clients = Client::with('group')
             ->filter($clientFilter)
             ->orderByDesc('id')
-            ->paginate(config('app.items'));
+            ->paginate(config('app.items'))
+            ->appends(request()->all());
+
         $groups = ClientGroup::all();
 
         return view('client.main', compact('clients', 'groups'));

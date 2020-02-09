@@ -26,6 +26,9 @@ class UrlGenerator
     go: ->
         window.location.href = @toString()
 
+    filter: ->
+        window.PjaxLoad(@toString())
+
     redirect: ->
         window.open @toString()
 

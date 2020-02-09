@@ -2,73 +2,92 @@
 
 namespace App\Http\Controllers;
 
-
-use Web\Model\Category;
-use Web\Model\Coupon;
-use Web\Model\Inventory;
+use App\Models\Inventory;
+use App\Models\InventoryProduct;
+use App\Models\Manufacturer;
+use App\Models\Product;
+use App\Models\ProductStorage;
+use App\Models\Storage;
+use App\Services\CategoryTree;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
     public $access = 'inventory';
 
-    public function section_main()
+    public function sectionMain()
     {
-        $data = [
-            'title' => 'Інвентаризація',
-            'breadcrumbs' => [['Інвентаризація']],
-            'items' => Inventory::getItems()
-        ];
+        $inventory = Inventory::with('products', 'user', 'manufacturer', 'storage')
+            ->latest()
+            ->paginate(config('app.items'));
 
-        $this->view->display('inventory.view', $data);
+        return view('inventory.main', compact('inventory'));
     }
 
-    public function section_print()
+    public function sectionPrint(int $id)
     {
-        if (!get('id')) $this->display_404();
+        $inventory = Inventory::with('products')->findOrFail($id);
 
-        $data = [
-            'data' => Inventory::getData(get('id')),
-            'products' => Inventory::getProducts(get('id'))
-        ];
-
-        $this->view->display('inventory.print', $data);
+        return view('inventory.print', compact('inventory'));
     }
 
-    public function section_create()
+    public function sectionCreate(CategoryTree $categoryTree)
     {
-        $data = [
-            'scripts' => ['inventory.js'],
-            'title' => 'Інвентаризація',
-            'manufacturers' => Inventory::getAll("manufacturers"),
-            'storage' => Inventory::findAll('storage', 'accounted = 1'),
-            'breadcrumbs' => [['Інвентаризація', uri('inventory')], ['Нова']],
-            'categories' => Coupon::getCategories()
-        ];
+        $categories = $categoryTree->option();
+        $storage = Storage::all();
+        $manufacturers = Manufacturer::all();
 
-        $this->view->display('inventory.create', $data);
+        return view('inventory.create', compact('categories', 'storage', 'manufacturers'));
     }
 
-
-    public function action_get_products($post)
+    public function actionForm(int $manufacturer_id, int $storage_id, int $category_id = null)
     {
-        if (empty($post->manufacturer)) exit('');
+        $builder = Product::with('storage', 'storage_list')
+            ->where('manufacturer_id', $manufacturer_id)
+            ->whereHas('storage_list', function (Builder $builder) use ($storage_id) {
+                $builder->where('storage_id', $storage_id);
+            });
 
-        $this->view->display('inventory.get_products', [
-            'products' => Inventory::findProducts($post->manufacturer, $post->storage, $post->category)
-        ]);
+        if (!is_null($category_id) && $category_id != 0) {
+            $builder->where('category_id', $category_id);
+        }
+
+        $products = $builder->get();
+
+        return view('inventory.form', compact('products'));
     }
 
-    public function action_create($post)
+    public function actionCreate(Request $request)
     {
-        if (!isset($post->products) || my_count($post->products) == 0)
-            response(400, 'Виберіть хоча-б один товар!');
+        $inventory = Inventory::create($request->only('comment', 'manufacturer_id', 'storage_id'));
 
-        Inventory::create($post);
+        foreach ($request->products as $id => $amount) {
+            if (is_null($amount) || $amount == 0) {
+                continue;
+            }
 
-        response(200, [
-            'action' => 'redirect',
-            'message' => DATA_SUCCESS_CREATED,
-            'uri' => uri('inventory')
-        ]);
+            $pts = ProductStorage::filter($request->storage_id, $id);
+            if (!$pts->count()) {
+                ProductStorage::create([
+                    'storage_id' => $request->storage_id,
+                    'product_id' => $id,
+                    'count'      => 0
+                ]);
+            }
+            $pts = $pts->first();
+
+            $oldCount = $pts->count;
+
+            $pts->count += $amount;
+            $pts->save();
+
+            InventoryProduct::create([
+                'inventory_id' => $inventory->id,
+                'product_id'   => $id,
+                'amount'       => $amount,
+                'old_count'    => $oldCount
+            ]);
+        }
     }
 }

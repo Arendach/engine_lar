@@ -16,8 +16,6 @@
         window.my_url = '{{ '' }}';
     </script>
 
-    @yield('scripts')
-
     <script src="{{ asset('js/libs.js') }}"></script>
 
     @if (isset($editor) && $editor == 'full')
@@ -178,6 +176,8 @@
                         alert('Reinitiable failed')
                     @endif
                 </script>
+
+                @yield('scripts')
             </div>
         </div>
     </div>

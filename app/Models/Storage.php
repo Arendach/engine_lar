@@ -50,6 +50,6 @@ class Storage extends Model
 
     public function scopeAccounted(Builder $query, bool $isAccounted = true): void
     {
-        $query->where('accounted', (int)$isAccounted);
+        $query->where('is_accounted', (int)$isAccounted);
     }
 }

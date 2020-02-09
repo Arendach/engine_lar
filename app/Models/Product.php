@@ -99,6 +99,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read mixed $level1
  * @property-read mixed $level2
  * @property-read \App\Models\ProductImage $image
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Storage[] $storages
+ * @property-read int|null $storages_count
  */
 class Product extends Model
 {
@@ -151,6 +153,11 @@ class Product extends Model
         return $this->hasMany(ProductStorage::class)
             ->orderByDesc('count')
             ->with('storage');
+    }
+
+    public function storages()
+    {
+        return $this->belongsToMany(Storage::class, 'product_storage');
     }
 
     public function images(): HasMany

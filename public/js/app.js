@@ -200,23 +200,6 @@ String.prototype.replaceAll = function(search, replace) {
   return this.split(search).join(replace);
 };
 
-$(document).ready(function() {
-  var url;
-  $('[data-toggle="tooltip"]').tooltip();
-  $('[data-toggle="popover"]').popover();
-  $('[data-type="ckeditor"]').each(function() {
-    return CKEDITOR.replace($(this).attr('name'));
-  });
-  url = document.location.toString();
-  if (url.match('#')) {
-    return $('.nav-pills a[href="#' + url.split('#')[1] + '"]').tab('show');
-  }
-});
-
-$('.nav-pills a').on('shown.bs.tab', function(event) {
-  return window.location.hash = event.target.hash;
-});
-
 //Валідація поля типу decimal
 $(document).on('focus', '[data-inspect]', function() {
   return document.inputCache = $(this).val();

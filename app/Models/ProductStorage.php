@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -28,12 +29,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductStorage whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\ProductStorage withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\ProductStorage withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductStorage filter($storage_id, $product_id)
  */
 class ProductStorage extends Model
 {
     use SoftDeletes;
 
     protected $table = 'product_storage';
+
+    protected $fillable = [
+        'product_id',
+        'storage_id',
+        'count',
+        'deleted_at'
+    ];
 
     public $timestamps = false;
 
@@ -49,5 +58,10 @@ class ProductStorage extends Model
     public function storage()
     {
         return $this->belongsTo(Storage::class, 'storage_id');
+    }
+
+    public function scopeFilter(Builder $builder, int $storage_id, int $product_id): void
+    {
+        $builder->where('storage_id', $storage_id)->where('product_id', $product_id);
     }
 }

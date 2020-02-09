@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Закупка по виробнику: "<?= $data->manufacturer_name ?>"</title>
+    <title>Закупка по виробнику: "{{ $inventory->manufacturer->name }}"</title>
     <style>
         table {
             font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
@@ -47,11 +47,11 @@
         <th>Коментар</th>
     </tr>
     <tr>
-        <td><?= date_for_humans($data->date) ?></td>
-        <td><?= $data->manufacturer_name ?></td>
-        <td><?= $data->storage_name ?></td>
-        <td><?= user($data->user)->login ?></td>
-        <td><?= $data->comment ?></td>
+        <td>{{ $inventory->created_date_human  }}</td>
+        <td>{{ $inventory->manufacturer->name }}</td>
+        <td>{{ $inventory->storage->name }}</td>
+        <td>{{ $inventory->user->login }}</td>
+        <td>{{ $inventory->comment }}</td>
     </tr>
 </table>
 
@@ -63,18 +63,16 @@
         <th>Товар</th>
         <th>Кількість на складі(на момент інвентаризації)</th>
         <th>Коректування</th>
+        <th>Нове значення</th>
     </tr>
-    <?php foreach ($products as $product) { ?>
+    @foreach($inventory->products as $product)
         <tr>
-            <td>
-                <a href="<?= uri('product', ['section' => 'update', 'id' => $product->id]) ?>">
-                    <?= $product->name ?>
-                </a>
-            </td>
-            <td><?= $product->old_count ?></td>
-            <td><?= $product->amount > 0 ? '+' : '' ?><?= $product->amount ?></td>
+            <td><a href="@uri('product/update', ['id' => $product->id])">{{ $product->name }}</a></td>
+            <td>{{ $product->pivot->old_count }}</td>
+            <td>{{ $product->pivot->amount > 0 ? '+' : '-' }}{{ $product->pivot->amount }}</td>
+            <td>{{ $product->pivot->amount + $product->pivot->old_count }}</td>
         </tr>
-    <?php } ?>
+    @endforeach
 </table>
 
 </body>

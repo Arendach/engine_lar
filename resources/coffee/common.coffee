@@ -25,28 +25,11 @@ window.getParameters = ->
 
 window.redirect = (url) -> window.location.href = url
 
-
 window.url = (path) ->
     path = path.replace(/^\//, '')
     "#{my_url}/#{path}"
 
 String::replaceAll = (search, replace) -> @.split(search).join(replace)
-
-
-$(document).ready ->
-    $('[data-toggle="tooltip"]').tooltip()
-    $('[data-toggle="popover"]').popover()
-
-    $('[data-type="ckeditor"]').each ->
-        CKEDITOR.replace($(@).attr('name'))
-
-    url = document.location.toString()
-    if url.match '#'
-        $('.nav-pills a[href="#' + url.split('#')[1] + '"]').tab('show')
-
-$('.nav-pills a').on 'shown.bs.tab', (event) ->
-    window.location.hash = event.target.hash
-
 
 #Валідація поля типу decimal
 $(document).on 'focus', '[data-inspect]', -> document.inputCache = $(@).val()

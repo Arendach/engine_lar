@@ -98,7 +98,10 @@
             </td>
         </tr>
     @endif
+@endsection
 
+
+@section('scripts')
     <script>
         $(document).on('change', '.filter', function () {
             let data = {}
@@ -106,8 +109,7 @@
                 data[$(this).data('name')] = $(this).val()
             })
 
-            new UrlGenerator().appends(data).unsetEmpty().go()
-        });
+            new UrlGenerator().appends(data).unsetEmpty().unset('page').filter()
+        })
     </script>
-
 @endsection

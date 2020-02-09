@@ -8,8 +8,9 @@ window.PjaxReload = ->
         container: '#pjax-container',
         fragment: '#pjax-container'
 
-$(document).on 'pjax:click', (options) ->
-    window.resetEventStorage()
+window.PjaxLoad = (url) ->
+    $.pjax {url: url, container: '#pjax-container', fragment: '#pjax-container'}
+
 
 window.eventStorage = []
 

@@ -39,6 +39,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereUpdatedAt($value)
+ * @property-read string $created_date_human
+ * @property-read string $updated_date_human
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
+ * @property-read int|null $orders_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client filter($filters)
  */
 class Client extends Model
 {

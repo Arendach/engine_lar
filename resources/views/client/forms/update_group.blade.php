@@ -3,7 +3,7 @@
 @section('title', 'Редагувати групу')
 
 @section('content')
-    <form data-type="ajax" action="@uri('ClientController@actionUpdateGroup')">
+    <form data-type="ajax" data-after="reload" action="@uri('ClientController@actionUpdateGroup')">
         <input type="hidden" name="id" value="{{ $group->id }}">
 
         <div class="form-group">

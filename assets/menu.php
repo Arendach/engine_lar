@@ -20,7 +20,7 @@ return [
             ],
             [
                 'name'   => 'Інвентаризація',
-                'url'    => uri('inventory'),
+                'url'    => uri('inventory/main'),
                 'access' => 'inventory',
             ],
             [
@@ -30,7 +30,7 @@ return [
             ],
             [
                 'name'   => 'Постачальники',
-                'url'    => uri('manufacturer'),
+                'url'    => uri('manufacturer/main'),
                 'access' => 'manufacturer',
             ],
             [

@@ -1,8 +1,10 @@
 @extends('layout')
 
+@section('title', 'Адмінка')
+
 @section('content')
 
-    @if ($notifications->count() or $productMoving->count())
+    @if ($notifications->count() /*or $productMoving->count()*/)
 
         <h2><i style="color: red" class="fa fa-bell"></i> Сповіщення</h2>
 

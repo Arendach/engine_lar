@@ -9,7 +9,6 @@ class MainController extends Controller
     public function index()
     {
         $data = [
-            'title' => 'Адмінка',
             'schedules' => user()->getSchedulesNotWrite(),
             'schedulesPrevious' => user()->getPreviousSchedulesNotWrite(),
             'notifications' => user()->notifications,

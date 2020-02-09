@@ -132,6 +132,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read mixed $is_open
  * @property-read \App\Models\NewPostCity|null $sending_city
  * @property-read \App\Models\NewPostWarehouse|null $sending_warehouse
+ * @property-read string $created_date_human
+ * @property-read string $updated_date_human
  */
 class Order extends Model
 {
