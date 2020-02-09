@@ -32,6 +32,8 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Storage accounted($isAccounted = true)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Storage sort($order = 'asc')
+ * @property int $is_accounted
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Storage whereIsAccounted($value)
  */
 class Storage extends Model
 {

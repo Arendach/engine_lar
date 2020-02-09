@@ -71,6 +71,9 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read mixed $full_name
  * @property-read mixed $online_color
  * @property-read mixed $online_text
+ * @property int $user_position_id
+ * @property-read \App\Models\UserPosition $userPosition
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUserPositionId($value)
  */
 class User extends Model
 {
@@ -87,7 +90,7 @@ class User extends Model
         'created_at',
         'updated_at',
         'deleted_at',
-        'access',
+        'user_access_id',
         'pin',
         'name',
         'instruction',
@@ -95,7 +98,7 @@ class User extends Model
         'rate',
         'archive',
         'schedule_notice',
-        'position',
+        'user_position_id',
         'is_courier',
         'theme'
     ];
@@ -115,6 +118,11 @@ class User extends Model
     {
         return $this->hasMany(Task::class)
             ->where('is_success', 0);
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(UserPosition::class, 'user_position_id');
     }
 
     public function user_access()

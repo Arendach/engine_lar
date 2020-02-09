@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\LoginRequest;
+use App\Http\Requests\User\RegisterRequest;
 use App\Http\Requests\User\UpdateInfoRequest;
+use App\Http\Requests\User\UpdateMoreRequest;
+use App\Http\Requests\User\UpdatePasswordRequest;
 use App\Models\UserAccess;
 use App\Models\UserPosition;
+use Illuminate\Http\Request;
 use UserAuth;
 use App\Models\User;
 
@@ -27,19 +31,9 @@ class UserController extends Controller
         return view('user.list', ['users' => User::all()]);
     }
 
-    public function section_archive()
+    public function sectionArchive()
     {
-        $data = [
-            'title' => 'Менеджери :: Архів',
-            'css' => ['users.css'],
-            'breadcrumbs' => [
-                ['Менеджери', uri('user')],
-                ['Архів']
-            ],
-            'items' => User::findAll('user', 'archive = 1')
-        ];
-
-        $this->view->display('users.archive', $data);
+        return view('user.list', ['users' => User::onlyTrashed()->get()]);
     }
 
     public function section_view()
@@ -52,9 +46,9 @@ class UserController extends Controller
         $manager = $this->get_access($manager);
 
         $data = [
-            'title' => 'Менеджери :: ' . $manager->login,
-            'components' => ['sweet_alert'],
-            'manager' => $manager,
+            'title'       => 'Менеджери :: ' . $manager->login,
+            'components'  => ['sweet_alert'],
+            'manager'     => $manager,
             'breadcrumbs' => [
                 ['Менеджери', uri('user', ['section' => 'list'])],
                 [$manager->first_name . ' ' . $manager->last_name]
@@ -67,66 +61,45 @@ class UserController extends Controller
     public function sectionUpdate(int $id)
     {
         $data = [
-            'user' => User::findOrFail($id),
-            'access' => UserAccess::all(),
+            'user'      => User::withTrashed()->findOrFail($id),
+            'access'    => UserAccess::all(),
             'positions' => UserPosition::all()
         ];
 
         return view('user.update', $data);
     }
 
-    public function section_register()
+    public function sectionRegister()
     {
-        $data = [
-            'title' => 'Менеджери :: Реєстрація',
-            'access_groups' => get_object(Access::getAll()),
-            'breadcrumbs' => [['Менеджери', uri('user', ['section' => 'list'])], ['Реєстрація']],
-            'positions' => Position::getAll()
-        ];
+        $accessGroups = UserAccess::all();
+        $positions = UserPosition::all();
 
-        $this->view->display('users.register', $data);
+        return view('user.register', compact('accessGroups', 'positions'));
     }
 
-    public function section_instruction()
+    public function sectionInstruction()
     {
-        $user = User::getOne(user()->id);
-
-        $this->view->display('users.instruction', [
-            'data' => htmlspecialchars_decode($user->instruction)
-        ]);
+        return view('user.instruction');
     }
 
-    public function section_profile()
+    public function sectionProfile()
     {
-        $data = [
-            'title' => 'Мій профіль',
-            'breadcrumbs' => [['Мій профіль']]
-        ];
-
-        $this->view->display('users.profile.main', $data);
+        return view('user.profile.main');
     }
 
-    public function section_update_password()
+    public function sectionUpdatePassword()
     {
-        $data = [
-            'title' => 'Профіль :: Зміна паролю',
-            'breadcrumbs' => [
-                ['Профіль', uri('user', ['section' => 'profile'])],
-                ['Зміна паролю']
-            ]
-        ];
-
-        $this->view->display('users.profile.update_password', $data);
+        return view('user.profile.update_password');
     }
 
     public function actionAuthorize(LoginRequest $request)
     {
-        if (UserAuth::authorize($request->login, $request->password)){
+        if (UserAuth::authorize($request->login, $request->password)) {
             return response(null, 200);
         } else {
             return response()->json(['message' => 'Не вдалось авторизуватись!'], 400);
         }
-}
+    }
 
     public function sectionUnAuthorize()
     {
@@ -137,83 +110,31 @@ class UserController extends Controller
 
     public function actionUpdateInfo(UpdateInfoRequest $request)
     {
-        User::findOrFail($request->id)->update($request->all());
+        User::withTrashed()->findOrFail($request->id)->update($request->all());
     }
 
-    public function action_register($post)
+    public function actionUpdateMore(UpdateMoreRequest $request)
     {
-        $error = 0;
-        foreach ($post as $key => $value)
-            if (empty($value))
-                $error++;
-
-        if ($error > 0)
-            response(400, 'Заповніть всі поля правильно!');
-
-        if (!preg_match('/^[A-z0-9]+$/', $post->login) || strlen($post->login) < 3)
-            response(400, 'Логін тільки англійські букви і цифри! Не менше 3 символів!');
-
-        if (strlen($post->password) < 4 || !preg_match('/^[A-z0-9]+$/', $post->password))
-            response(400, 'Пароль не може бути кортше 4 символів! Тільки англійські букви і цифри!');
-
-        if (User::count('user', '`email` = ?', [$post->email]) > 0)
-            response(400, 'Користувач з таким E-Mail уже існує в БД!');
-
-        if (User::count('user', '`login` = ?', [$post->login]) > 0)
-            response(400, 'Користувач з таким логіном уже існує в БД!');
-
-        User::register($post);
-
-        response(200, [
-            'action' => 'redirect',
-            'uri' => uri('user', ['section' => 'list']),
-            'message' => 'Користувач вдало зареєстрований!'
-        ]);
+        User::withTrashed()->findOrFail($request->id)->update($request->all());
     }
 
-    public function action_update_password($post)
+    public function actionRegister(RegisterRequest $request)
     {
-        if ($post->password != $post->password_confirmation)
-            response(400, 'Паролі не співпадають');
-
-        if (mb_strlen($post->password) < 6)
-            response(400, 'Занадто короткий пароль!');
-
-        User::update(['password' => my_hash($post->password)], $post->id);
-
-        response(200, 'Пароль вдало змінено!');
+        User::create($request->all());
     }
 
-    public function action_update_pin($post)
+    public function actionUpdatePassword(UpdatePasswordRequest $request)
     {
-        if ($post->pin != $post->pin_confirmation)
-            response(400, 'PIN-коди не співпадають!');
-
-        if (mb_strlen($post->pin) != 3)
-            response(400, 'Пін код повинен містити 3 символи!');
-
-        User::update(['pin' => $post->pin], $post->id);
-
-        response(200, 'Пін код вдало змінений!');
+        User::findOrFail($request->id)->update($request->only('password'));
     }
 
-    public function api_all_users()
+    public function actionUpdatePin(Request $request)
     {
-        $users = User::findAll('user', 'archive = 0');
+        User::findOrFail($request->id)->update($request->only('pin'));
+    }
 
-        $result = [];
-        foreach ($users as $i => $user) {
-            $result[$i] = [
-                'id' => $user->id,
-                'login' => $user->login,
-                'email' => $user->email,
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'password' => $user->password,
-                'phone' => ''
-            ];
-        }
-
-        echo json($result);
+    public function apiAllUsers()
+    {
+        return response()->json(User::all());
     }
 }

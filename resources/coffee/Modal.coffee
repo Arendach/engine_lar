@@ -1,6 +1,6 @@
 class Modal
     open: (html) ->
-        $('#pjax-container').append(html)
+        $('.content-page').append(html)
         $('.modal').modal()
         @.handlers()
     

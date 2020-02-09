@@ -10,9 +10,9 @@
     <script>
         @isset($toJs)
             window.JData = @json($toJs)
-        @endisset
+                @endisset
 
-        window.pin = '{{ user()->pin }}';
+            window.pin = '{{ user()->pin }}';
         window.my_url = '{{ '' }}';
     </script>
 
@@ -27,11 +27,13 @@
     @endif
 
     <script src="{{ asset('js/pjax.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+
 </head>
 <body>
 <div>
-<input style="display: none" name="login" type="text">
-<input style="display: none" name="password" type="password">
+    <input style="display: none" name="login" type="text">
+    <input style="display: none" name="password" type="password">
 </div>
 
 <div class="content-left content-left-{{ $_COOKIE['left-content-state'] ?? 'open' }}">
@@ -165,11 +167,17 @@
             @yield('content')
 
             <div class="scripts-hidden">
-                <script src="{{ asset('js/app.js') }}"></script>
-
                 @if (isset($controller) && is_file(public_path("js/controllers/$controller.js")))
                     <script src="{{ asset("js/controllers/$controller.js") }}"></script>
                 @endisset
+
+                <script>
+                    @if(is_file(public_path('js/Reinitiable.js')))
+                        {!! file_get_contents(public_path('js/Reinitiable.js')) !!}
+                    @else
+                        alert('Reinitiable failed')
+                    @endif
+                </script>
             </div>
         </div>
     </div>

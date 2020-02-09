@@ -97,7 +97,7 @@ var Modal;
 
 Modal = class Modal {
   open(html) {
-    $('#pjax-container').append(html);
+    $('.content-page').append(html);
     $('.modal').modal();
     return this.handlers();
   }
@@ -207,10 +207,6 @@ $(document).ready(function() {
   $('[data-type="ckeditor"]').each(function() {
     return CKEDITOR.replace($(this).attr('name'));
   });
-  if ($.cookie('success') === 'true') {
-    SuccessToastr('Виконано', 'Дані успішно збережені');
-    $.cookie('success', null);
-  }
   url = document.location.toString();
   if (url.match('#')) {
     return $('.nav-pills a[href="#' + url.split('#')[1] + '"]').tab('show');
@@ -268,7 +264,7 @@ $(document).on('keyup', '[data-inspect="decimal"]', function() {
   return $(this).val(value);
 });
 
-$(document).on('keyup', '[data-inspect="integer"]', function() {
+event('keyup', '[data-inspect="integer"]', function() {
   var minus, value;
   value = $(this).val();
   if (value === '') {
@@ -282,7 +278,7 @@ $(document).on('keyup', '[data-inspect="integer"]', function() {
   return $(this).val(value);
 });
 
-event('submit', '[data-type="ajax"]', function(event) {
+$(document).on('submit', '[data-type="ajax"]', function(event) {
   var after, data, error, redirectTo, send, success, type, url;
   event.preventDefault();
   url = $(this).attr('action');
@@ -340,7 +336,7 @@ event('submit', '[data-type="ajax"]', function(event) {
   }
 });
 
-event('click', '[data-type="get_form"]', function(event) {
+$(document).on('click', '[data-type="get_form"]', function(event) {
   var data, id, url;
   event.preventDefault();
   url = $(this).data('uri');
@@ -387,7 +383,7 @@ event('click', '[data-type="ajax_request"]', function(event) {
   });
 });
 
-$(document).on('click', '.map-signs', function(event) {
+event('click', '.map-signs', function(event) {
   var content_left, content_right, current, navbar;
   current = $(event.currentTarget);
   content_left = $('.content-left');
@@ -716,6 +712,9 @@ SuccessHandler = class SuccessHandler {
     this.after = 'close';
     this.message = this.answer.message;
     this.title = this.answer.title;
+    if (this.answer.redirectTo !== void 0) {
+      this.redirectTo = this.answer.redirectTo;
+    }
   }
 
   setMessages() {
@@ -739,6 +738,7 @@ SuccessHandler = class SuccessHandler {
   }
 
   status301Handler() {
+    window.location.href = this.answer.redirectTo;
     if (this.title == null) {
       this.title = 'Виконано';
     }
@@ -794,6 +794,9 @@ SuccessHandler = class SuccessHandler {
     }
     if (this.after === 'reset') {
       this.reset();
+    }
+    if (this.after === 'redirect') {
+      window.location.href = this.redirectTo;
     }
     return SuccessToastr(this.title, this.message);
   }

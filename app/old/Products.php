@@ -419,9 +419,9 @@ class Products extends Model
             ->setGroupBy('products_assets.id')
             ->get();
 
-        return object(R::getAll("SELECT products_assets .*, storage . name AS storage_name
-            FROM products_assets 
-            LEFT JOIN storage ON storage . id = products_assets . storage {$p->query_string}"));
+        return object(R::getAll("SELECT product_assets .*, storage . name AS storage_name
+            FROM product_assets 
+            LEFT JOIN storage ON storage . id = product_assets . storage_id {$p->query_string}"));
     }
 
     public static function getAllMoving()

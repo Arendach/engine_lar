@@ -6,6 +6,9 @@ class SuccessHandler
         @message = @answer.message
         @title = @answer.title
 
+        if @answer.redirectTo isnt undefined
+            @redirectTo = @answer.redirectTo
+
     setMessages: ->
         if @res.status is 200
             @status200Handler()
@@ -20,6 +23,7 @@ class SuccessHandler
         @message ?= 'Дані успішно збережені'
 
     status301Handler: ->
+        window.location.href = @answer.redirectTo
         @title ?= 'Виконано'
         @message ?= 'Дані успішно збережені'
 
@@ -56,6 +60,9 @@ class SuccessHandler
 
         if @after is 'reset'
             @reset()
+
+        if (@after is 'redirect')
+            window.location.href = @redirectTo
 
         SuccessToastr(@title, @message)
 

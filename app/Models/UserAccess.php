@@ -31,10 +31,12 @@ class UserAccess extends Model
         'params'
     ];
 
-    public function getArrayParamsAttribute($value): array
+    public $timestamps = false;
+
+    public function getArrayParamsAttribute(): array
     {
-        if (is_null($value)) return [];
-        if (mb_strlen($value) < 5) return [];
-        else return json_decode($value);
+        if (is_null($this->params)) return [];
+        if (mb_strlen($this->params) < 5) return [];
+        else return json_decode($this->params);
     }
 }

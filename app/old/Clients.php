@@ -31,7 +31,7 @@ class Clients extends Model
                 `clients_group`.`name` AS `group_name` 
             FROM 
                 `clients` 
-            LEFT JOIN `clients_group` ON(`clients_group`.`id` = `clients`.`group`) 
+            LEFT JOIN `clients_group` ON(`clients_group`.`id` = `clients`.group_id) 
             {$p->query_string}");
     }
 
@@ -47,7 +47,7 @@ class Clients extends Model
                  `clients_group`.`name` AS `group_name` 
             FROM 
                 `clients` 
-            LEFT JOIN `clients_group` ON(`clients_group`.`id` = `clients`.`group`) 
+            LEFT JOIN `clients_group` ON(`clients_group`.`id` = `clients`.group_id) 
             WHERE 
                 `clients`.`id` = ?', [$id]);
     }

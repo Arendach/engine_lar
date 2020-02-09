@@ -21,4 +21,11 @@ class ClientGroup extends Model
     protected $table = 'client_groups';
 
     protected $fillable = ['name'];
+
+    public $timestamps = false;
+
+    public function clients()
+    {
+        return $this->hasMany(Client::class, 'group_id');
+    }
 }

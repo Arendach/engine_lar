@@ -2,89 +2,51 @@
 
 namespace App\Http\Controllers;
 
-
-use Web\Model\Access;
+use App\Http\Requests\Access\UniversalAccessRequest;
+use App\Models\UserAccess;
 
 class AccessController extends Controller
 {
     public $access = 'access';
 
-    public function section_main()
+    public function sectionMain()
     {
-        $data = [
-            'title' => 'Менеджери :: Групи доступу',
-            'groups' => Access::getAll(),
-            'breadcrumbs' => [['Менеджери', uri('user')], ['Групи доступу']]
-        ];
+        $groups = UserAccess::all();
 
-        $this->view->display('access.main', $data);
+        return view('access.main', compact('groups'));
     }
 
-    public function section_update()
+    public function sectionUpdate(int $id)
     {
-        if (!get('id')) $this->display_404();
+        $group = UserAccess::findOrFail($id);
+        $access = assets('access');
 
-        $data = [
-            'title' => 'Менеджери :: Налаштування доступу',
-            'group' => Access::getOne(get('id')),
-            'access' => Access::get_access(get('id')),
-            'breadcrumbs' => [
-                ['Менеджери', uri('user')],
-                ['Групи доступу', uri('access')],
-                ['Редагування групи доступу']
-            ]
-        ];
-
-        $this->view->display('access.update', $data);
+        return view('access.update', compact('group', 'access'));
     }
 
-    public function action_update($post)
+    public function actionUpdate(UniversalAccessRequest $request)
     {
-        if ($post->name == '') response(400, 'Заповіть імя групи!');
-        if ($post->description == '') response(400, 'Заповіть опис групи!');
-        if (!isset($post->keys) || my_count($post->keys) == 0) response(400, 'Виберть ключі');
-
-        $post->params = json_encode(get_array($post->keys));
-        unset($post->keys);
-
-        Access::update_group($post);
-
-        response(200, DATA_SUCCESS_UPDATED);
+        UserAccess::findOrFail($request->id)->update($request->all());
     }
 
-    public function section_create()
+    public function sectionCreate()
     {
-        $data = [
-            'title' => 'Менеджери :: Створення групи доступу',
-            'access' => Access::get_all(),
-            'breadcrumbs' => [
-                ['Менеджери', uri('user')],
-                ['Групи доступу', uri('access')],
-                ['Створення групи доступу']
-            ]
-        ];
+        $access = assets('access');
 
-        $this->view->display('access.create', $data);
+        return view('access.create', compact('access'));
     }
 
-    public function action_create($post)
+    public function actionCreate(UniversalAccessRequest $request)
     {
-        if ($post->name == '') response(400, 'Заповніть назву групи!');
-        if ($post->description == '') response(400, 'Заповніть опис групи!');
-        if (!isset($post->keys) || my_count($post->keys) == 0) response(400, 'Виберіть ключі!');
+        $id = UserAccess::create($request->all())->id;
 
-        Access::access_group_create($post);
-
-        response(200, 'Група доступу вдало створена!');
+        return response()->json([
+            'redirectTo' => uri('AccessController@sectionUpdate', ['id' => $id])
+        ], 200);
     }
 
-    public function action_delete($post)
+    public function actionDelete(int $id)
     {
-        Access::group_delete($post);
-    }
-
-    public function section_test()
-    {
-        response(200);
+        UserAccess::findOrFail($id)->delete();
     }
 }

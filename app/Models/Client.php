@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Traits\DateHuman;
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\Client
@@ -30,9 +33,18 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client wherePercentage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client wherePhone($value)
  * @mixin \Eloquent
+ * @property int|null $group_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereGroupId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereUpdatedAt($value)
  */
 class Client extends Model
 {
+    use Filterable;
+    use DateHuman;
+
     protected $table = 'clients';
 
     protected $fillable = [
@@ -43,16 +55,28 @@ class Client extends Model
         'info',
         'group_id',
         'percentage',
-        'manager_id'
+        'manager_id',
+        'created_at',
+        'updated_at'
     ];
 
-    public function manager()
+    protected $dates = [
+        'created_at',
+        'updated_t'
+    ];
+
+    public function manager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manager_id', 'id');
     }
 
-    public function group()
+    public function orders()
     {
-        return $this->hasOne(ClientGroup::class);
+        return $this->hasMany(Order::class);
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(ClientGroup::class);
     }
 }

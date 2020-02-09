@@ -22,6 +22,7 @@ mix
     .js('resources/coffee/report/report.coffee', 'public/js/controllers/report.js')
     .js('resources/coffee/libs.coffee', 'public/js/libs.js')
     .js('resources/coffee/pjax.coffee', 'public/js/pjax.js')
+    .js('resources/coffee/Reinitiable.coffee', 'public/js/Reinitiable.js')
 
 
     .less('resources/less/login.less', 'public/css/login.css')

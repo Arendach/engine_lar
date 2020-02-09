@@ -40,11 +40,6 @@ $(document).ready ->
     $('[data-type="ckeditor"]').each ->
         CKEDITOR.replace($(@).attr('name'))
 
-
-    if $.cookie('success') is 'true'
-        SuccessToastr('Виконано', 'Дані успішно збережені')
-        $.cookie('success', null)
-
     url = document.location.toString()
     if url.match '#'
         $('.nav-pills a[href="#' + url.split('#')[1] + '"]').tab('show')
@@ -93,7 +88,7 @@ $(document).on 'keyup', '[data-inspect="decimal"]', ->
     $(@).val(value)
 
     
-$(document).on 'keyup', '[data-inspect="integer"]', ->
+event 'keyup', '[data-inspect="integer"]', ->
     value = $(@).val()
     return if value is ''
     minus = value.match patterns.hyphen
@@ -102,7 +97,7 @@ $(document).on 'keyup', '[data-inspect="integer"]', ->
     $(@).val value
 
 
-event 'submit', '[data-type="ajax"]', (event) ->
+$(document).on 'submit', '[data-type="ajax"]', (event) ->
     event.preventDefault()
 
     url = $(@).attr 'action'
@@ -166,7 +161,7 @@ event 'submit', '[data-type="ajax"]', (event) ->
 
     if typeof $(@).data('pin_code') != "undefined" then pin_code -> send() else send()
 
-event 'click', '[data-type="get_form"]', (event) ->
+$(document).on 'click', '[data-type="get_form"]', (event) ->
     event.preventDefault()
 
     url = $(@).data 'uri'
@@ -209,7 +204,7 @@ event 'click', '[data-type="ajax_request"]', (event) ->
             $(@).attr('disabled', no)
             new ErrorHandler(answer).apply()
 
-$(document).on 'click', '.map-signs', (event) ->
+event 'click', '.map-signs', (event) ->
     current = $(event.currentTarget)
     content_left = $ '.content-left'
     content_right = $ '.content-right'

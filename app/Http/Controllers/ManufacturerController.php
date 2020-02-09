@@ -2,105 +2,53 @@
 
 namespace App\Http\Controllers;
 
-
-use Web\Model\Manufacturers;
-use Web\Model\ManufacturersGroup;
+use App\Http\Requests\Manufacturer\CreateRequest;
+use App\Http\Requests\Manufacturer\UpdateRequest;
+use App\Models\Manufacturer;
 
 class ManufacturerController extends Controller
 {
     public $access = 'manufacturer';
 
-    public function section_main()
+    public function sectionMain()
     {
-        $data = [
-            'title' => 'Каталог :: Виробники',
-            'scripts' => ['ckeditor/ckeditor.js'],
-            'components' => ['modal', 'inputmask'],
-            'breadcrumbs' => [['Групи виробників', uri('manufacturer_groups')], ['Виробники']],
-            'manufacturers' => Manufacturers::all()
-        ];
+        $manufacturers = Manufacturer::all();
 
-        $this->view->display('manufacturer.main', $data);
+        return view('manufacturer.main', compact('manufacturers'));
     }
 
-
-    public function action_create_form()
+    public function actionCreateForm()
     {
-        $data = [
-            'title' => 'Додати виробника',
-            'groups' => ManufacturersGroup::getAll(),
-            'modal_size' => 'lg',
-        ];
-
-        $this->view->display('manufacturer.create_form', $data);
+        return view('manufacturer.create_form');
     }
 
-    public function action_create($post)
+    public function actionCreate(CreateRequest $request)
     {
-        if (empty($post->name))
-            response(400, 'Заповніть назву правильно!');
-
-        if (!filter_var($post->email, FILTER_VALIDATE_EMAIL))
-            response(400, 'Заповніть E-Mail правильно!');
-
-        if (empty($post->address))
-            response(400, 'Заповніть адресу правильно!');
-
-        Manufacturers::insert($post);
-
-        response(200, 'Виробника вдало додано в базу даних!');
+        Manufacturer::create($request->all());
     }
 
-
-    public function action_update_form($post)
+    public function actionUpdateForm(int $id)
     {
-        $data = [
-            'manufacturer' => Manufacturers::getOne($post->id),
-            'title' => 'Редагування виробника',
-            'groups' => ManufacturersGroup::getAll(),
-            'id' => $post->id,
-            'modal_size' => 'lg'
-        ];
+        $manufacturer = Manufacturer::findOrFail($id);
 
-        $this->view->display('manufacturer.update_form', $data);
+        return view('manufacturer.update_form', compact('manufacturer'));
     }
 
-    public function action_update($post)
+    public function actionUpdate(UpdateRequest $request)
     {
-        if (empty($post->name))
-            response(400, 'Заповніть назву правильно!');
-
-        if (!filter_var($post->email, FILTER_VALIDATE_EMAIL))
-            response(400, 'Заповніть E-Mail правильно!');
-
-        if (empty($post->address))
-            response(400, 'Заповніть адресу правильно!');
-
-        Manufacturers::update($post, $post->id);
-
-        response(200, 'Дані вдало оновлено!');
+        Manufacturer::findOrFail($request->id)->update($request->all());
     }
 
-
-    public function action_delete($post)
+    public function actionDelete(int $id)
     {
-        if (!is_numeric($post->id))
-            response(400, 'Неправильні вхідні параметри!');
-
-        Manufacturers::delete($post->id);
-
-        response(200, 'Виробника вдало видалено з бази даних!');
+        Manufacturer::findOrFail($id)->delete();
     }
 
-
-    public function action_print($post)
+    public function sectionPrint(array $ids)
     {
-        $data = [
-            'section' => 'Виробники',
-            'table' => get_object(Manufacturers::printManufacturer($post->ids))
-        ];
+        $manufacturers = Manufacturer::findMany($ids);
 
-        $this->view->display('manufacturer.print', $data);
+        return view('manufacturer.print', compact('manufacturers'));
     }
 
     public function api_test()

@@ -2,149 +2,154 @@
 
 return [
     [
-        'name' => 'Панель управління',
-        'url' => uri('/'),
+        'name'   => 'Панель управління',
+        'url'    => uri('/'),
         'access' => false,
-        'icon' => 'dashboard',
+        'icon'   => 'dashboard',
     ],
     [
-        'name' => 'Каталог',
-        'url' => '#',
+        'name'   => 'Каталог',
+        'url'    => '#',
         'access' => false,
-        'icon' => 'book',
-        'menu' => [
+        'icon'   => 'book',
+        'menu'   => [
             [
-                'name' => 'Закупки',
-                'url' => uri('purchases'),
+                'name'   => 'Закупки',
+                'url'    => uri('purchases'),
                 'access' => 'purchases',
             ],
             [
-                'name' => 'Інвентаризація',
-                'url' => uri('inventory'),
+                'name'   => 'Інвентаризація',
+                'url'    => uri('inventory'),
                 'access' => 'inventory',
             ],
             [
-                'name' => 'Категорії',
-                'url' => uri('category/main'),
+                'name'   => 'Категорії',
+                'url'    => uri('category/main'),
                 'access' => 'category',
             ],
             [
-                'name' => 'Постачальники',
-                'url' => uri('manufacturer'),
+                'name'   => 'Постачальники',
+                'url'    => uri('manufacturer'),
                 'access' => 'manufacturer',
             ],
             [
-                'name' => 'Товари',
-                'url' => uri('product/main'),
+                'name'   => 'Товари',
+                'url'    => uri('product/main'),
                 'access' => 'product',
             ],
             [
-                'name' => 'Активи',
-                'url' => uri('product/assets'),
+                'name'   => 'Активи',
+                'url'    => uri('product/assets'),
                 'access' => 'product',
             ],
             [
-                'name' => 'Склади',
-                'url' => uri('storage/main'),
+                'name'   => 'Склади',
+                'url'    => uri('storage/main'),
                 'access' => 'storage',
             ]
         ]
     ],
     [
-        'name' => 'Замовлення',
-        'url' => '#',
+        'name'   => 'Замовлення',
+        'url'    => '#',
         'access' => 'orders',
-        'icon' => 'shopping-basket',
-        'menu' => [
+        'icon'   => 'shopping-basket',
+        'menu'   => [
             [
                 'name' => 'Доставки',
-                'url' => uri('orders/view', ['type' => 'delivery'])
+                'url'  => uri('orders/view', ['type' => 'delivery'])
             ],
             [
                 'name' => 'Відправки',
-                'url' => uri('orders/view', ['type' => 'sending'])
+                'url'  => uri('orders/view', ['type' => 'sending'])
             ],
             [
                 'name' => 'Самовивози',
-                'url' => uri('orders/view', ['type' => 'self'])
+                'url'  => uri('orders/view', ['type' => 'self'])
+            ],
+            [
+                'name'   => 'Постійні клієнти',
+                'url'    => uri('client/main'),
+                'access' => 'client'
             ],
         ]
     ],
     [
-        'name' => 'Інше',
-        'url' => '#',
+        'name'   => 'Інше',
+        'url'    => '#',
         'access' => false,
-        'icon' => 'cogs',
-        'menu' => [
+        'icon'   => 'cogs',
+        'menu'   => [
             [
-                'name' => 'Налаштування',
-                'url' => uri('settings/main'),
+                'name'   => 'Налаштування',
+                'url'    => uri('settings/main'),
                 'access' => 'settings'
             ],
             [
-                'name' => 'Статистика',
-                'url' => uri('statistic'),
+                'name'   => 'Статистика',
+                'url'    => uri('statistic'),
                 'access' => 'statistic'
             ],
             [
-                'name' => 'Відпустки',
-                'url' => uri('vacation'),
+                'name'   => 'Відпустки',
+                'url'    => uri('vacation'),
                 'access' => 'vacation'
             ],
             [
-                'name' => 'Транзакції',
-                'url' => uri('pb'),
+                'name'   => 'Транзакції',
+                'url'    => uri('pb'),
                 'access' => 'transactions'
             ],
             [
-                'name' => 'Логи',
-                'url' => uri('log'),
+                'name'   => 'Логи',
+                'url'    => uri('log'),
                 'access' => 'logs'
             ],
         ]
     ],
     [
-        'name' => 'Менеджери',
-        'url' => uri('user/list'),
-        'icon' => 'users',
+        'name'   => 'Менеджери',
+        'url'    => uri('user/list'),
+        'icon'   => 'users',
         'access' => 'users',
-        'menu' => [
+        'menu'   => [
             [
-                'name' => 'Доступ',
-                'url' => uri('access'),
+                'name'   => 'Доступ',
+                'url'    => uri('access/main'),
+                'access' => 'access'
+            ],
+            [
+                'name'   => 'Список',
+                'url'    => uri('user/list'),
                 'access' => 'ROOT'
             ],
             [
-                'name' => 'Список',
-                'url' => uri('user/list'),
-                'access' => 'ROOT'
-            ],
-            [
-                'name' => 'Посади',
-                'url' => uri('position'),
+                'name'   => 'Посади',
+                'url'    => uri('position'),
                 'access' => 'ROOT'
             ],
         ]
     ],
     [
-        'name' => 'Адмін',
-        'url' => '#',
-        'icon' => 'cogs',
+        'name'   => 'Адмін',
+        'url'    => '#',
+        'icon'   => 'cogs',
         'access' => 'ROOT',
-        'menu' => [
+        'menu'   => [
             [
-                'name' => 'PhpMyAdmin',
-                'url' => uri('phpmyadmin/index.php'),
+                'name'   => 'PhpMyAdmin',
+                'url'    => uri('phpmyadmin/index.php'),
                 'access' => 'ROOT'
             ],
             [
-                'name' => 'Файл менеджер',
-                'url' => uri('explorer/index.php'),
+                'name'   => 'Файл менеджер',
+                'url'    => uri('explorer/index.php'),
                 'access' => 'ROOT'
             ],
             [
-                'name' => 'Команди',
-                'url' => uri('commands'),
+                'name'   => 'Команди',
+                'url'    => uri('commands'),
                 'access' => 'ROOT'
             ]
         ]

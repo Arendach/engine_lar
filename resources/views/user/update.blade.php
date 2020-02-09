@@ -11,7 +11,6 @@
     <ul class="nav nav-justified nav-pills">
         <li class="active"><a href="#main" data-toggle="tab">Загальна інформація</a></li>
         <li><a href="#password" data-toggle="tab">Пароль</a></li>
-        <li><a href="#rate" data-toggle="tab">Ставка</a></li>
         <li><a href="#more" data-toggle="tab">Інше</a></li>
     </ul>
 
@@ -55,8 +54,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Посадова інструкція</label>
-                    <textarea name="instruction">{{ $user->instruction }}</textarea>
+                    <label>Ставка за місяць</label>
+                    <input class="form-control" name="rate" value="{{ $user->rate }}" data-inspect="decimal">
                 </div>
 
                 <div class="form-group">
@@ -80,7 +79,7 @@
         </div>
 
         <div class="tab-pane" id="password">
-            <form action="@uri('user.update_password')" data-type="ajax">
+            <form action="@uri('UserController@actionUpdatePassword')" data-type="ajax" data-after="reset">
                 <input type="hidden" name="id" value="{{ $user->id }}">
 
                 <div class="form-group">
@@ -99,36 +98,20 @@
             </form>
         </div>
 
-        <div class="tab-pane" id="rate">
-            <form action="@uri('user/update')" data-type="ajax">
-                <input type="hidden" name="id" value="{{ $user->id }}">
-
-                <div class="form-group">
-                    <label>Ставка за місяць</label>
-                    <input class="form-control" name="rate" value="{{ $user->rate }}" data-inspect="decimal">
-                </div>
-
-                <div class="form-group">
-                    <button class="btn btn-primary">Зберегти</button>
-                </div>
-
-            </form>
-        </div>
-
         <div class="tab-pane" id="more">
-            <form action="@uri('user/update')" data-type="ajax">
+            <form action="@uri('UserController@actionUpdateMore')" data-type="ajax">
                 <input type="hidden" name="id" value="{{ $user->id }}">
 
                 <div class="form-group">
-                    <label>В архіві</label>
-                    <select class="form-control" name="archive">
-                        <option value="0">Ні</option>
-                        <option value="1">Так</option>
+                    <label><i class="text-danger">*</i> В архіві</label>
+                    <select class="form-control" name="deleted_at">
+                        <option @selected(is_null($user->deleted_at)) value="0">Ні</option>
+                        <option @selected(!is_null($user->deleted_at)) value="1">Так</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Показувати нагадування графіка роботи</label>
+                    <label><i class="text-danger">*</i> Показувати нагадування графіка роботи</label>
                     <select class="form-control" name="schedule_notice">
                         <option @selected(!$user->schedule_notice) value="0">Ні</option>
                         <option @selected($user->schedule_notice) value="1">Так</option>

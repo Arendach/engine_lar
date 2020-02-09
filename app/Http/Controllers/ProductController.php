@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Product\UniversalAssetsRequest;
 use App\Http\Requests\Products\UpdateInfoRequest;
 use App\Http\Requests\Products\UpdateStorageRequest;
 use App\Models\Manufacturer;
 use App\Models\Product;
+use App\Models\ProductAsset;
 use App\Models\ProductImage;
 use App\Models\ProductStorage;
 use App\Models\Storage;
@@ -240,7 +242,7 @@ class ProductController extends Controller
     }
 
 
-    public function action_create($post)
+    public function actionCreate($post)
     {
         $post->identefire_storage = $post->level1 . '-' . $post->level2;
         unset($post->level1, $post->level2);
@@ -311,77 +313,48 @@ class ProductController extends Controller
         $this->view->display('product.part.combine_products', $data);
     }
 
-    public function section_assets()
+    public function sectionAssets()
     {
-        $data = [
-            'title'       => 'Товари :: Матеріальні активи',
-            'breadcrumbs' => [
-                ['Товари', uri('product')],
-                ['Матеріальні активи']
-            ],
-            'components'  => ['modal'],
-            'assets'      => Products::getAllAssets()
-        ];
+        $assets = ProductAsset::whereIsArchive(request()->has('archive'))
+            ->latest()
+            ->paginate(config('app.items'));
 
-        $this->view->display('product.assets.main', $data);
+        return view('product.assets.main', compact('assets'));
     }
 
-    public function action_create_assets_form()
+    public function actionCreateAssetsForm()
     {
-        $data = [
-            'title'   => 'Новий актив',
-            'storage' => Storage::findAll('storage', 'accounted = 0')
-        ];
+        $storage = Storage::where('is_accounted', 0)->get();
 
-        $this->view->display('product.assets.form_create', $data);
+        return view('product.assets.form_create', compact('storage'));
     }
 
-    public function action_update_assets_form($post)
+    public function actionUpdateAssetsForm(int $id)
     {
-        $data = [
-            'title'   => 'Редагування активу',
-            'storage' => Storage::findAll('storage', 'accounted = 0'),
-            'assets'  => Products::getOne($post->id, 'products_assets')
-        ];
+        $storage = Storage::where('is_accounted', 0)->get();
+        $assets = ProductAsset::findOrFail($id);
 
-        $this->view->display('product.assets.form_update', $data);
+        return view('product.assets.form_update', compact('storage', 'assets'));
     }
 
-    public function action_create_assets($post)
+    public function actionCreateAssets(UniversalAssetsRequest $request)
     {
-        if (!is_numeric($post->price)) response(400, 'Введіть ціну!');
-        if (!is_numeric($post->course)) response(400, 'Введіть курс!');
-
-        $post->date = date('Y-m-d H:i:s');
-        $post->archive = 0;
-
-        Products::insert($post, 'products_assets');
-
-        response(200, 'Актив додано в базу даних!');
+        ProductAsset::create($request->all());
     }
 
-    public function action_update_assets($post)
+    public function actionUpdateAssets(UniversalAssetsRequest $request)
     {
-        if (!is_numeric($post->price)) response(400, 'Введіть ціну!');
-        if (!is_numeric($post->course)) response(400, 'Введіть курс!');
-
-        Products::update($post, $post->id, 'products_assets');
-
-        response(200, 'Актив вдало відредаговно!');
+        ProductAsset::findOrFail($request->id)->update($request->all());
     }
 
-    public function action_assets_to_archive($post)
+    public function actionAssetsToArchive(int $id)
     {
-        Products::update(['archive' => 1], $post->id, 'products_assets');
-
-        response(200, 'Актив переміщено в архів!');
+        ProductAsset::findOrFail($id)->update(['is_archive' => 1]);
     }
 
-    public function action_assets_un_archive($post)
+    public function actionAssetsUnArchive(int $id)
     {
-        Products::update(['archive' => 0], $post->id, 'products_assets');
-
-        response(200, 'Актив переміщено з архіву!');
+        ProductAsset::findOrFail($id)->update(['is_archive' => 0]);
     }
 
     public function section_moving()

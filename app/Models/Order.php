@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
+use App\Traits\DateHuman;
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -134,6 +136,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Order extends Model
 {
     use EagerLoadPivotTrait;
+    use Filterable;
+    use DateHuman;
 
     protected $table = 'orders';
 
@@ -340,11 +344,6 @@ class Order extends Model
         return get_number_world_format(str_replace('-', '', $this->phone));
     }
 
-
-    public function scopeFilter(Builder $builder, $filters): Builder
-    {
-        return $filters->apply($builder);
-    }
 
     public function scopeDelivery(Builder $query): void
     {
