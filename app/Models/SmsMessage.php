@@ -26,10 +26,26 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SmsMessage whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SmsMessage whereText($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SmsMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SmsMessage whereUpdatedAt($value)
  */
 class SmsMessage extends Model
 {
     protected $table = 'sms_messages';
+
+    protected $fillable = [
+        'order_id',
+        'text',
+        'created_at',
+        'updated_at',
+        'message_id',
+        'phone',
+        'status'
+    ];
+
+    public $timestamps = true;
 
     public function getStatusNameAttribute()
     {

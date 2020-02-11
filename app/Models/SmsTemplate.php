@@ -26,6 +26,14 @@ class SmsTemplate extends Model
 {
     protected $table = 'sms_templates';
 
+    public $timestamps = false;
+
+    protected $fillable = [
+        'name',
+        'text',
+        'type'
+    ];
+
     public function scopeType(Builder $query, string $type): void
     {
         $query->where('type', $type);

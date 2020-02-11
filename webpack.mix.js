@@ -21,6 +21,7 @@ mix
     .js('resources/coffee/schedule/schedule.coffee', 'public/js/controllers/schedule.js')
     .js('resources/coffee/report/report.coffee', 'public/js/controllers/report.js')
     .js('resources/coffee/inventory/inventory.coffee', 'public/js/controllers/inventory.js')
+    .js('resources/coffee/sms/sms.coffee', 'public/js/controllers/sms.js')
     .js('resources/coffee/libs.coffee', 'public/js/libs.js')
     .js('resources/coffee/pjax.coffee', 'public/js/pjax.js')
     .js('resources/coffee/Reinitiable.coffee', 'public/js/Reinitiable.js')

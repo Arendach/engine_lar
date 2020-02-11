@@ -8,6 +8,8 @@ use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Order
@@ -143,7 +145,7 @@ class Order extends Model
 
     protected $table = 'orders';
 
-    protected $fillable  = [
+    protected $fillable = [
         'author_id',
         'type',
         'fio',
@@ -184,75 +186,75 @@ class Order extends Model
 
     public $timestamps = true;
 
-    public function hint()
+    public function hint(): BelongsTo
     {
         return $this->belongsTo(OrderHint::class);
     }
 
-    public function logistic()
+    public function logistic(): BelongsTo
     {
         return $this->belongsTo(Logistic::class);
     }
 
-    public function pay()
+    public function pay(): BelongsTo
     {
         return $this->belongsTo(Pay::class);
     }
 
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function liable()
+    public function liable(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function courier()
+    public function courier(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function professional()
+    public function professional(): BelongsTo
     {
         return $this->belongsTo(OrderProfessional::class, 'order_professional_id', 'id');
     }
 
-    public function bonuses()
+    public function bonuses(): HasMany
     {
         return $this->hasMany(Bonus::class, 'data')
             ->with('user');
     }
 
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany(OrderTransaction::class);
     }
 
-    public function sms_messages()
+    public function sms_messages(): HasMany
     {
         return $this->hasMany(SmsMessage::class);
     }
 
-    public function files()
+    public function files(): HasMany
     {
         return $this->hasMany(OrderFile::class);
     }
 
-    public function products()
+    public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, OrderProduct::class)
             ->withPivot('amount', 'price', 'storage_id', 'id', 'attributes');
     }
 
-    public function history()
+    public function history(): HasMany
     {
         return $this->hasMany(OrderHistory::class, 'id_order', 'id')
             ->orderByDesc('id');
     }
 
-    public function client()
+    public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
     }
@@ -265,6 +267,11 @@ class Order extends Model
     public function sending_warehouse(): BelongsTo
     {
         return $this->belongsTo(NewPostWarehouse::class, 'warehouse', 'id');
+    }
+
+    public function site(): BelongsTo
+    {
+        return $this->belongsTo(Site::class);
     }
 
 

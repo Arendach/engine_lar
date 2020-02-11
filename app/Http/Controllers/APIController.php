@@ -86,16 +86,4 @@ class APIController extends Controller
         echo $str;
     }
 
-    /**
-     * Очищення всіх тимчасових файлів, папок та кешу
-     * @POST
-     */
-    public function clean()
-    {
-        dir_clean(ROOT . '/cache/');
-        dir_clean(ROOT . '/server/export/');
-        dir_clean(ROOT . '/server/logs/');
-        dir_clean(ROOT . '/server/temp_files');
-    }
-
 }

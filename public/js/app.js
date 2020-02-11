@@ -247,7 +247,7 @@ $(document).on('keyup', '[data-inspect="decimal"]', function() {
   return $(this).val(value);
 });
 
-event('keyup', '[data-inspect="integer"]', function() {
+eventRegister('keyup', '[data-inspect="integer"]', function() {
   var minus, value;
   value = $(this).val();
   if (value === '') {
@@ -344,7 +344,7 @@ $(document).on('click', '[data-type="get_form"]', function(event) {
   });
 });
 
-event('click', '[data-type="ajax_request"]', function(event) {
+eventRegister('click', '[data-type="ajax_request"]', function(event) {
   var after, data, url;
   event.preventDefault();
   url = $(this).data('uri');
@@ -366,7 +366,7 @@ event('click', '[data-type="ajax_request"]', function(event) {
   });
 });
 
-event('click', '.map-signs', function(event) {
+eventRegister('click', '.map-signs', function(event) {
   var content_left, content_right, current, navbar;
   current = $(event.currentTarget);
   content_left = $('.content-left');
@@ -391,7 +391,7 @@ event('click', '.map-signs', function(event) {
   }
 });
 
-event('hide.bs.modal', '.modal', function() {
+eventRegister('hide.bs.modal', '.modal', function() {
   return $(this).remove();
 });
 
@@ -413,6 +413,13 @@ $(document).on('click', '.change-theme', function(event) {
   $('#theme-name').text(name);
   return $.post('/main/change_theme', {
     theme: theme
+  });
+});
+
+$(document).on('ajaxSuccess', function() {
+  // CKEDITOR Initiable
+  return $('[data-type="ckeditor"]').each(function() {
+    return CKEDITOR.replace($(this).attr('name'));
   });
 });
 

@@ -50,9 +50,9 @@ $(document).on 'change', '.input-file-input', (event) ->
 
 $(document).on 'keyup', '[data-inspect="decimal"]', ->
     value = $(@).val()
-    
+
     return if value is ''
-  
+
     value = value.replaceAll(patterns.comma, '.')
     value = value.replaceAll(patterns.space, '')
     value = value.replaceAll(patterns.letter, '')
@@ -70,8 +70,8 @@ $(document).on 'keyup', '[data-inspect="decimal"]', ->
 
     $(@).val(value)
 
-    
-event 'keyup', '[data-inspect="integer"]', ->
+
+eventRegister 'keyup', '[data-inspect="integer"]', ->
     value = $(@).val()
     return if value is ''
     minus = value.match patterns.hyphen
@@ -167,7 +167,7 @@ $(document).on 'click', '[data-type="get_form"]', (event) ->
             new ErrorHandler(answer).apply()
 
 
-event 'click', '[data-type="ajax_request"]', (event) ->
+eventRegister 'click', '[data-type="ajax_request"]', (event) ->
     event.preventDefault()
 
     url = $(@).data 'uri'
@@ -187,7 +187,7 @@ event 'click', '[data-type="ajax_request"]', (event) ->
             $(@).attr('disabled', no)
             new ErrorHandler(answer).apply()
 
-event 'click', '.map-signs', (event) ->
+eventRegister 'click', '.map-signs', (event) ->
     current = $(event.currentTarget)
     content_left = $ '.content-left'
     content_right = $ '.content-right'
@@ -208,7 +208,7 @@ event 'click', '.map-signs', (event) ->
 
 
 
-event 'hide.bs.modal', '.modal', -> $(@).remove()
+eventRegister 'hide.bs.modal', '.modal', -> $(@).remove()
 
 
 $('a[data-type="pin_code"]').on 'click', ->
@@ -226,3 +226,8 @@ $(document).on 'click', '.change-theme', (event) ->
     $('#theme-name').text(name)
 
     $.post '/main/change_theme', {theme: theme}
+
+$(document).on 'ajaxSuccess', ->
+    # CKEDITOR Initiable
+    $('[data-type="ckeditor"]').each ->
+        CKEDITOR.replace($(@).attr('name'))

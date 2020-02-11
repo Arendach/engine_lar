@@ -2,41 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use RedBeanPHP\R;
-
-use Web\Model\Storage;
+use App\Http\Requests\Storage\UniversalRequest;
+use App\Models\Storage;
 
 class StorageController extends Controller
 {
     public $access = 'storage';
 
-    public function section_main()
+    public function sectionMain()
     {
-        $data = [
-            'title' => 'Каталог :: Склади',
-            'scripts' => ['storage.js', 'ckeditor/ckeditor.js'],
-            'components' => ['modal', 'summer_note'],
-            'storage' => Storage::getAll(),
-            'breadcrumbs' => [['Склади']]
-        ];
+        $storage = Storage::all();
 
-        $this->view->display('storage.main', $data);
+        return view('storage.main', compact('storage'));
     }
 
-    public function action_form_create()
+    public function actionFormCreate()
     {
-        $this->view->display('storage.form_create', ['title' => 'Новий склад', 'modal_size' => 'lg']);
+        return view('storage.form_create');
     }
 
-    public function action_form_update($post)
+    public function actionFormUpdate(int $id)
     {
         $data = [
-            'title' => 'Оновити склад',
-            'storage' => Storage::getOne($post->id),
+            'title'      => 'Оновити склад',
+            'storage'    => Storage::getOne($post->id),
             'modal_size' => 'lg'
         ];
 
-        $this->view->display('storage.form_update', $data);
+        return view('storage.form_update', $data);
     }
 
     public function action_delete($post)
@@ -46,14 +39,9 @@ class StorageController extends Controller
         response(200, DATA_SUCCESS_DELETED);
     }
 
-    public function action_create($post)
+    public function actionCreate(UniversalRequest $request)
     {
-        if (empty($post->name))
-            response(400, 'Заповніть назву складу!');
-
-        Storage::insert($post);
-
-        response(200, DATA_SUCCESS_CREATED);
+        Storage::create($request->all());
     }
 
     public function action_update($post)
@@ -88,8 +76,8 @@ class StorageController extends Controller
 
                 $result[$product->product_key][] = [
                     'count' => $pt->count,
-                    'name' => $storage->name,
-                    'id' => $storage->id
+                    'name'  => $storage->name,
+                    'id'    => $storage->id
                 ];
             }
         }

@@ -1,4 +1,4 @@
-<div class="modal fade" data-backdrop="static" data-on-success="@yield('onClose', 'none')">
+<div class="modal fade" data-backdrop="static">
     <div class="modal-dialog modal-@yield('modal_size', 'lg')">
         <div class="modal-content">
             <div class="modal-header">

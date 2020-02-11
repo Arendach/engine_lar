@@ -39,10 +39,18 @@ class Storage extends Model
 {
     protected $table = 'storage';
 
-    /**
-     * @param Builder $query
-     * @param string $order
-     */
+    protected $fillable = [
+        'name',
+        'is_accounted',
+        'info',
+        'sort',
+        'self',
+        'delivery',
+        'sending'
+    ];
+
+    public $timestamps = false;
+
     public function scopeSort(Builder $query, string $order = 'asc'): void
     {
         $query->where('sort', $order);

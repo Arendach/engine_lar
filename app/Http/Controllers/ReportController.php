@@ -72,15 +72,7 @@ class ReportController extends Controller
     // Створення звіту - Прибуток
     public function sectionProfits()
     {
-        $data = [
-            'title'       => 'Мої звіти :: Прибутки',
-            'breadcrumbs' => [
-                ['Мої звіти', uri('reports', ['section' => 'my'])],
-                ['Прибутки (коректування)']
-            ]
-        ];
-
-        return view('report.create.profits', $data);
+        return view('report.create.profits');
     }
 
     // Оновити резервний фонд
@@ -227,16 +219,6 @@ class ReportController extends Controller
         $this->view->display("reports.preview.{$data['report']->type}", $data);
     }
 
-    // Валідація форми
-    private function check($post)
-    {
-        if (!isset($post->sum) || empty($post->sum))
-            response(400, 'Сума не може бути пустою!');
-
-        if (!isset($post->name_operation) || empty($post->name_operation))
-            response(400, 'Введіть назву операції!');
-    }
-
     // Форма оновлення коментара
     public function action_update_form($post)
     {
@@ -293,12 +275,5 @@ class ReportController extends Controller
         ];
 
         $this->view->display('reports.statistics', $data);
-    }
-
-
-    private function authorization($user_id)
-    {
-        if (!(user()->id == $user_id || can('reports')))
-            $this->display_403();
     }
 }

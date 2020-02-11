@@ -14,13 +14,13 @@ window.PjaxLoad = (url) ->
 
 window.eventStorage = []
 
-window.event = (type, element, handler) ->
-    $('.content-page').on(type, element, handler);
+window.eventRegister = (type, element, handler) ->
+    $('#pjax-container').on(type, element, handler);
 
     window.eventStorage.push({type, element, handler})
 
 window.resetEventStorage = () ->
     for hand in window.eventStorage
-        $('.content-page').off(hand.type, '**')
+        $('#pjax-container').off(hand.type, '**')
 
     window.eventStorage = []
