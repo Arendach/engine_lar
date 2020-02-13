@@ -6,12 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateDeliveryAddressRequest extends FormRequest
 {
-/*    public function validate(Request $request): void
+    public function rules()
     {
-        if ($request->isEmpty('city'))
-            $this->error('city', 'Введіть назву міста!');
-
-    }*/
+        return [
+            'city' => 'required'
+        ];
+    }
 
     public function authorize(): bool
     {

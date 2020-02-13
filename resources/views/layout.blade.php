@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Enter Title')</title>
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }} }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" id="baze-theme" href="{{ asset('css/themes/' . user()->theme . '.css') }}">
 
@@ -166,7 +166,9 @@
 
             <div class="scripts-hidden">
                 @if (isset($controller) && is_file(public_path("js/controllers/$controller.js")))
-                    <script src="{{ asset("js/controllers/$controller.js") }}"></script>
+                    <script>
+                        {!! file_get_contents(public_path("js/controllers/$controller.js")) !!}
+                    </script>
                 @endisset
 
                 <script>

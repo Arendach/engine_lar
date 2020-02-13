@@ -2,30 +2,26 @@
 
 namespace App\Requests\Orders;
 
+use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateWorkingRequest extends FormRequest
 {
-   /* public function validate(Request $request): void
+    public function rules()
     {
-        $order = Order::findOrFail($request->id);
+        $order = Order::findOrFail($this->request->get('id'));
 
-        if ($request->isEmpty('date_delivery'))
-            $this->error('date_delivery', 'Заповніть дату доставки!');
+        $date = $order->created_at->format('Y-m-d');
 
-        if (strtotime($request->get('date_delivery')) < $order->created_at->timestamp)
-            $this->error('date_delivery', 'Дата доставки не може бути давнішою за дату зведення замовлення!');
+        return [
+            'date_delivery' => "required|date_format:Y-m-d|after:$date",
+            'site'          => 'required'
+        ];
+    }
 
-        if ($request->isNotEmpty('time_with') && !preg_match('/[0-9\:]{1,5}/', $request->get('time_with')))
-            $this->error('time_with', 'Формат хх:хх');
-
-        if ($this->isNotEmpty('time_to') && !preg_match('/[0-9:]{1,5}/', $this->get('time_to')))
-            $this->error('time_to', 'Формат хх:хх');
-
-    }*/
-
-    public function authorize(): bool
+    public function authorize()
     {
-        return true;
+        return can('orders');
     }
 }

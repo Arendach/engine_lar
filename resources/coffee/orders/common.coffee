@@ -90,11 +90,6 @@ $(document).ready ->
                 success: (data) ->
                     result data
 
-        afterSelect: (p1, p2, p3) ->
-            console.log(p1)
-            console.log(p2)
-            console.log(p3)
-
     $('#sending_city').select2
         ajax:
             type: 'post'

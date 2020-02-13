@@ -55,19 +55,6 @@ class OrderUpdate extends Basic
         $this->save();
         $this->history->status($status);
     }
-    // Оновлення контактів
-
-    /**
-     * @param array $data
-     * @return void
-     */
-    public function contacts(array $data): void
-    {
-        foreach ($data as $field => $value)
-            $this->order->{$field} = trim($value);
-        $this->save();
-        $this->history->contacts($data);
-    }
 
     /**
      * Оновлення загальної інформації

@@ -274,7 +274,7 @@
     <div class="form-group">
         <label class="col-md-4 control-label">Клієнт</label>
         <div class="col-md-5">
-            <select name="client_id" class="form-control">
+            <select name="client_id" class="form-control" id="client_id">
                 <option value="0"></option>
                 @foreach ($clientModel->all() as $item)
                     <option value="{{ $item->id }}">{{ $item->name }}</option>

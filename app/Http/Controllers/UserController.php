@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\LoginRequest;
+use App\Http\Requests\User\PositionRequest;
 use App\Http\Requests\User\RegisterRequest;
 use App\Http\Requests\User\UpdateInfoRequest;
 use App\Http\Requests\User\UpdateMoreRequest;
@@ -136,5 +137,41 @@ class UserController extends Controller
     public function apiAllUsers()
     {
         return response()->json(User::all());
+    }
+
+    /*=============================================*/
+
+    public function sectionPositions()
+    {
+        $positions = UserPosition::all();
+
+        return view('user.positions.main', compact('positions'));
+    }
+
+    public function actionCreatePositionForm()
+    {
+        return view('user.positions.create_form');
+    }
+
+    public function actionCreatePosition(PositionRequest $request)
+    {
+        UserPosition::create($request->all());
+    }
+
+    public function actionUpdatePositionForm(int $id)
+    {
+        $position = UserPosition::findOrFail($id);
+
+        return view('user.positions.update_form', compact('position'));
+    }
+
+    public function actionUpdatePosition(Request $request)
+    {
+        UserPosition::findOrFail($request->id)->update($request->all());
+    }
+
+    public function actionDeletePosition(int $id)
+    {
+        UserPosition::findOrFail($id)->delete();
     }
 }

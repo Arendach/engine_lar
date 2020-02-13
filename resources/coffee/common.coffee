@@ -31,6 +31,8 @@ window.url = (path) ->
 
 String::replaceAll = (search, replace) -> @.split(search).join(replace)
 
+$(document).on 'hide.bs.modal', '.modal', -> $(this).remove()
+
 #Валідація поля типу decimal
 $(document).on 'focus', '[data-inspect]', -> document.inputCache = $(@).val()
 
@@ -124,7 +126,7 @@ $(document).on 'submit', '[data-type="ajax"]', (event) ->
                 $ event.currentTarget
                     .find 'button'
                     .attr 'disabled', no
-                    .find 'i'
+                    .find 'i.fa-spin'
                     .remove()
             error: (answer) =>
                 new ErrorHandler answer
@@ -139,7 +141,7 @@ $(document).on 'submit', '[data-type="ajax"]', (event) ->
                 $ event.currentTarget
                     .find 'button'
                     .attr 'disabled', no
-                    .find 'i'
+                    .find 'i.fa-spin'
                     .remove()
 
     if typeof $(@).data('pin_code') != "undefined" then pin_code -> send() else send()
@@ -162,6 +164,7 @@ $(document).on 'click', '[data-type="get_form"]', (event) ->
         success: (answer) =>
             $(@).attr('disabled', no)
             new Modal().open(answer)
+            $(document).trigger('formLoaded')
         error: (answer) =>
             $(@).attr('disabled', no)
             new ErrorHandler(answer).apply()
@@ -227,7 +230,7 @@ $(document).on 'click', '.change-theme', (event) ->
 
     $.post '/main/change_theme', {theme: theme}
 
-$(document).on 'ajaxSuccess', ->
+$(document).on 'formLoaded', ->
     # CKEDITOR Initiable
     $('[data-type="ckeditor"]').each ->
         CKEDITOR.replace($(@).attr('name'))

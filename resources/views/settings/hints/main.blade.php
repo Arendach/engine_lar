@@ -25,18 +25,20 @@
                     <td>{{ $item->type_name }}</td>
                     <td class="action-2">
                         <a data-type="get_form"
-                           data-uri="<?= uri('settings') ?>"
-                           data-action="color_form_update"
-                           data-post="<?= params(['id' => $item->id]) ?>"
+                           title="Редагувати"
+                           data-toggle="tooltip"
+                           data-uri="@uri('SettingsController@actionHintFormUpdate')"
+                           data-post="@params(['id' => $item->id])"
                            class="btn btn-primary btn-xs">
-                            <span class="glyphicon glyphicon-pencil"></span>
+                            <span class="fa fa-pencil"></span>
                         </a>
-                        <button @data(['type' => "delete", 'uri' => ''])
-                                data-uri="<?= uri('settings') ?>"
-                                data-action="color_delete"
-                                data-id="<?= $item->id ?>"
+                        <button data-type="delete"
+                                title="Видалити"
+                                data-toggle="tooltip"
+                                data-uri="@uri('SettingsController@actionHintDelete')"
+                                data-id="{{ $item->id }}"
                                 class="btn btn-danger btn-xs">
-                            <span class="glyphicon glyphicon-remove"></span>
+                            <span class="fa fa-remove"></span>
                         </button>
                     </td>
                 </tr>
@@ -48,7 +50,7 @@
 
 
     <div class="type_block" style="padding: 10px">
-        <form data-type="ajax" action="@uri('settings/hint_create')">
+        <form data-type="ajax" action="@uri('settings/hint_create')" data-after="reload">
             <div class="form-group">
                 <label><span class="text-danger">*</span> Опис</label>
                 <input name="description" class="form-control">
@@ -60,7 +62,6 @@
                     <option value="0">Загальний</option>
                     <option value="self">Самовивози</option>
                     <option value="sending">Відправки</option>
-                    <option value="shop">Магазин</option>
                     <option value="delivery">Доставки</option>
                 </select>
             </div>

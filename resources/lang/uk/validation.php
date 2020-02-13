@@ -185,6 +185,8 @@ return [
         'price'                 => 'Ціна',
         'course'                => 'Курс',
         'storage_id'            => 'Склад',
-        'login'                 => 'Логін'
+        'login'                 => 'Логін',
+        'date_delivery'         => 'Дата доставки',
+        'site'                  => 'Сайт',
     ],
 ];

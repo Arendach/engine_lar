@@ -115,9 +115,11 @@ Modal = class Modal {
   }
 
   close() {
-    $('.modal').modal('hide');
+    var modal;
+    modal = $('.modal');
+    modal.modal('hide');
     return setTimeout(function() {
-      return $('.modal').remove();
+      return modal.remove();
     }, 400);
   }
 
@@ -199,6 +201,10 @@ window.url = function(path) {
 String.prototype.replaceAll = function(search, replace) {
   return this.split(search).join(replace);
 };
+
+$(document).on('hide.bs.modal', '.modal', function() {
+  return $(this).remove();
+});
 
 //Валідація поля типу decimal
 $(document).on('focus', '[data-inspect]', function() {
@@ -301,12 +307,12 @@ $(document).on('submit', '[data-type="ajax"]', function(event) {
       success: (answer, status, jqXHR) => {
         new SuccessHandler(answer, jqXHR).setDriver(success).setRedirectTo(redirectTo).setFormElement(event.currentTarget).setAfter(after).apply();
         $(event.currentTarget).find('[name]').attr('disabled', false);
-        return $(event.currentTarget).find('button').attr('disabled', false).find('i').remove();
+        return $(event.currentTarget).find('button').attr('disabled', false).find('i.fa-spin').remove();
       },
       error: (answer) => {
         new ErrorHandler(answer).setFormElement(event.currentTarget).setDriver(error).apply();
         $(event.currentTarget).find('[name]').attr('disabled', false);
-        return $(event.currentTarget).find('button').attr('disabled', false).find('i').remove();
+        return $(event.currentTarget).find('button').attr('disabled', false).find('i.fa-spin').remove();
       }
     });
   };
@@ -335,7 +341,8 @@ $(document).on('click', '[data-type="get_form"]', function(event) {
     data: data,
     success: (answer) => {
       $(this).attr('disabled', false);
-      return new Modal().open(answer);
+      new Modal().open(answer);
+      return $(document).trigger('formLoaded');
     },
     error: (answer) => {
       $(this).attr('disabled', false);
@@ -416,7 +423,7 @@ $(document).on('click', '.change-theme', function(event) {
   });
 });
 
-$(document).on('ajaxSuccess', function() {
+$(document).on('formLoaded', function() {
   // CKEDITOR Initiable
   return $('[data-type="ckeditor"]').each(function() {
     return CKEDITOR.replace($(this).attr('name'));

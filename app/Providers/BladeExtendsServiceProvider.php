@@ -12,6 +12,7 @@ use App\Directives\RequestDirective;
 use App\Directives\SelectedDirective;
 use App\Directives\DisabledDirective;
 use App\Directives\ShareDirective;
+use App\Directives\TooltipDirective;
 use App\Directives\UriDirective;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,6 +30,7 @@ class BladeExtendsServiceProvider extends ServiceProvider
         BreadcrumbsDirective::class,
         CheckedDirective::class,
         ParamsDirective::class,
+        TooltipDirective::class,
     ];
 
     public function register(): void

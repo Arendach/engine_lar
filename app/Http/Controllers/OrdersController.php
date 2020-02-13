@@ -42,6 +42,7 @@ class OrdersController extends Controller
 
     private function checkBlackDate()
     {
+        return;
         if (!request('date_delivery'))
             return;
 
@@ -377,27 +378,23 @@ class OrdersController extends Controller
     }
 
     // Оновлення контактної інформації
-    public function actionUpdateContacts(UpdateContactsRequest $request, OrderUpdate $orderUpdate)
+    public function actionUpdateContacts(UpdateContactsRequest $request)
     {
-        $orderUpdate->contacts($request->toArray());
+        Order::findOrFail($request->id)->update($request->all());
 
-        response()->json(['message' => 'Контакти вдало оновлені!', 'action' => 'close']);
+        response()->json(['message' => 'Контакти вдало оновлені!']);
     }
 
     // Оновлення службової інформації
-    public function actionUpdateWorking(UpdateWorkingRequest $request, OrderUpdate $orderUpdate)
+    public function actionUpdateWorking(UpdateWorkingRequest $request)
     {
-        $orderUpdate->working($request->toCollection());
-
-        response()->json([
-            'message' => DATA_SUCCESS_UPDATED
-        ]);
+        Order::findOrFail($request->id)->update($request->all());
     }
 
     // Оновлення адреси
     public function actionUpdateDeliveryAddress(UpdateDeliveryAddressRequest $request, OrderUpdate $orderUpdate)
     {
-        $orderUpdate->deliveryAddress();
+        Order::findOrFail($request->id)->update($request->all());
 
         response()->json([
             'message' => 'Адресу вдало змінено!'

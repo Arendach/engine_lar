@@ -27,6 +27,14 @@ class OrderHint extends Model
 {
     protected $table = 'order_hints';
 
+    protected $fillable = [
+        'color',
+        'description',
+        'type'
+    ];
+
+    public $timestamps = false;
+
     private $types = [
         '0'        => 'Загальний',
         'self'     => 'Самовивози',

@@ -12,9 +12,10 @@ class Modal
                 @close()
     
     close: ->
-        $('.modal').modal('hide')
+        modal = $('.modal')
+        modal.modal('hide')
         setTimeout(->
-            $('.modal').remove()
+            modal.remove()
         , 400)
 
 

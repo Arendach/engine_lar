@@ -112,7 +112,7 @@ return [
         'name'   => 'Менеджери',
         'url'    => uri('user/list'),
         'icon'   => 'users',
-        'access' => 'users',
+        'access' => 'user',
         'menu'   => [
             [
                 'name'   => 'Доступ',
@@ -126,8 +126,8 @@ return [
             ],
             [
                 'name'   => 'Посади',
-                'url'    => uri('position'),
-                'access' => 'ROOT'
+                'url'    => uri('user/positions'),
+                'access' => 'user'
             ],
         ]
     ],

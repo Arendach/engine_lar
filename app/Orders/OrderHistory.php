@@ -66,16 +66,6 @@ class OrderHistory
      * @param array $data
      * @return void
      */
-    public function contacts(array $data): void
-    {
-        $edited = $this->getEdited($data);
-        $this->save('update_contact', $edited);
-    }
-
-    /**
-     * @param array $data
-     * @return void
-     */
     public function working(Collection $data): void
     {
         $history = [];

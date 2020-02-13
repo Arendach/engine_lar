@@ -322,7 +322,7 @@
         <label class="col-md-4 control-label">Сайт</label>
         <div class="col-md-5">
             <select name="site" class="form-control">
-                <option value="0"></option>
+                <option value=""></option>
                 @foreach ($site->all() as $item)
                     <option @selected($order->site == $item->id) value="{{ $item->id }}">
                         {{ $item->name }}

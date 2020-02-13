@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Storage\UniversalRequest;
 use App\Models\Storage;
+use Illuminate\Http\Request;
 
 class StorageController extends Controller
 {
@@ -23,43 +24,39 @@ class StorageController extends Controller
 
     public function actionFormUpdate(int $id)
     {
-        $data = [
-            'title'      => 'Оновити склад',
-            'storage'    => Storage::getOne($post->id),
-            'modal_size' => 'lg'
-        ];
+        $storage = Storage::findOrFail($id);
 
-        return view('storage.form_update', $data);
+        return view('storage.form_update', compact('storage'));
     }
 
-    public function action_delete($post)
+    public function actionDelete(int $id)
     {
-        Storage::delete($post->id);
-
-        response(200, DATA_SUCCESS_DELETED);
+        Storage::findOrFail($id)->delete();
     }
 
     public function actionCreate(UniversalRequest $request)
     {
-        Storage::create($request->all());
+        Storage::create($request->merge([
+            'delivery' => $request->get('delivery', 0),
+            'self'     => $request->get('self', 0),
+            'sending'  => $request->get('sending', 0)
+        ])->all());
     }
 
-    public function action_update($post)
+    public function actionUpdate(UniversalRequest $request)
     {
-        if (!isset($post->self)) $post->self = 0;
-        if (!isset($post->delivery)) $post->delivery = 0;
-        if (!isset($post->shop)) $post->shop = 0;
-        if (!isset($post->sending)) $post->sending = 0;
-
-        if (empty($post->name))
-            response(400, 'Заповніть назву складу!');
-
-        Storage::update($post, $post->id);
-
-        response(200, DATA_SUCCESS_UPDATED);
+        Storage::findOrFail($request->id)->update($request->merge([
+            'delivery' => $request->get('delivery', 0),
+            'self'     => $request->get('self', 0),
+            'sending'  => $request->get('sending', 0)
+        ])->all());
     }
 
-    public function api_count_products($post)
+    /**
+     * @param Request $request
+     * @todo rewrite
+     */
+    public function apiCountProducts(Request $request)
     {
         $ids = implode("','", (array)$post->ids);
 

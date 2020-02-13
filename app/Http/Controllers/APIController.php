@@ -2,28 +2,14 @@
 
 namespace App\Http\Controllers;
 
-
-use Web\App\Request;
+use App\Models\Street;
+use Illuminate\Http\Request;
 use Web\Model\Api\Location;
 use Web\Model\Coupon;
 use Web\Model\Api\NewPost;
 
 class APIController extends Controller
 {
-    /**
-     * @var string
-     */
-    private $api_key;
-
-    /**
-     * APIController constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->api_key = '123';
-    }
-
     /**
      * @param $post
      */
@@ -49,9 +35,13 @@ class APIController extends Controller
 
     public function actionSearchStreets(Request $request)
     {
-        $result = Location::searchStreets($request->street, 'Kyiv');
+        $result = Street::where('name', 'like', "%$request->street%")
+            ->get()
+            ->map(function (Street $street) {
+                return "$street->street_type $street->name ($street->district)";
+            });
 
-        response()->json($result);
+        return response()->json($result);
     }
 
     /**

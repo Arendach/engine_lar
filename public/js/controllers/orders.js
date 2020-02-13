@@ -221,11 +221,6 @@ $(document).ready(function() {
           return result(data);
         }
       });
-    },
-    afterSelect: function(p1, p2, p3) {
-      console.log(p1);
-      console.log(p2);
-      return console.log(p3);
     }
   });
   $('#sending_city').select2({

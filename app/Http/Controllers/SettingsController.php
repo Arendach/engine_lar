@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Logistic;
 use App\Models\OrderHint;
 use Illuminate\Http\Request;
 use Web\Model\Attributes;
@@ -29,63 +30,46 @@ class SettingsController extends Controller
         OrderHint::insert($request->all());
     }
 
-    public function action_color_form_update($post)
+    public function actionHintFormUpdate(Request $request)
     {
-        $data = [
-            'title' => 'Редагування підказки',
-            'item'  => OrderSettings::getOne($post->id, 'colors')
-        ];
+        $hint = OrderHint::findOrFail($request->id);
 
-        $this->view->display('settings.colors.form_update', $data);
+        return view('settings.hints.form_update', compact('hint'));
     }
 
-    public function action_color_update($post)
+    public function actionHintUpdate(Request $request)
     {
-        OrderSettings::update($post, $post->id, 'colors');
-
-        response(200, DATA_SUCCESS_UPDATED);
+        OrderHint::findOrFail($request->id)->update($request->all());
     }
 
-    public function action_color_delete($post)
+    public function actionHintDelete(Request $request)
     {
-        OrderSettings::delete(['id' => $post->id], 'colors');
-
-        response(200, DATA_SUCCESS_DELETED);
+        OrderHint::findOrFail($request->id)->delete();
     }
 
     /***************************************************************************/
     /* Delivery                                                                */
     /***************************************************************************/
-
-    public function section_delivery()
+    public function sectionDelivery()
     {
-        $data = [
-            'title'       => 'Налаштування :: Доставка',
-            'items'       => OrderSettings::getAll('logistics'),
-            'components'  => ['modal'],
-            'breadcrumbs' => [['Налаштування', uri('settings')], ['Доставка']]
-        ];
+        $items = Logistic::all();
 
-        $this->view->display('settings.delivery.main', $data);
+        return view('settings.delivery.main', compact('items'));
     }
 
-    public function action_delivery_create($post)
+    public function actionDeliveryCreate(Request $request)
     {
-        if (empty($post->name)) response(400, 'Заповніть імя!');
-
-        OrderSettings::insert($post, 'logistics');
-
-        response(200, DATA_SUCCESS_CREATED);
+        Logistic::create($request->all());
     }
 
-    public function action_delivery_form_update($post)
+    public function actionDeliveryFormUpdate(Request $request)
     {
         $data = [
             'title' => 'Редагування доставки',
             'item'  => OrderSettings::getOne($post->id, 'logistics')
         ];
 
-        $this->view->display('settings.delivery.form_update', $data);
+        return view('settings.delivery.form_update', $data);
     }
 
     public function action_delivery_update($post)
