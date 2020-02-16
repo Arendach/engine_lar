@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Merchant
@@ -19,8 +20,23 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Merchant whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Merchant wherePassword($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MerchantCard[] $cards
+ * @property-read int|null $cards_count
  */
 class Merchant extends Model
 {
-    //
+    protected $table = 'merchants';
+
+    protected $fillable = [
+        'name',
+        'password',
+        'merchant_id'
+    ];
+
+    public $timestamps = false;
+
+    public function cards(): HasMany
+    {
+        return $this->hasMany(MerchantCard::class);
+    }
 }

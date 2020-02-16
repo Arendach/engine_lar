@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Order\UpdateContacts;
 use App\Http\Requests\Orders\UpdateSendingAddressRequest;
 use App\Models\NewPostCity;
 use App\Models\NewPostWarehouse;
@@ -378,9 +379,9 @@ class OrdersController extends Controller
     }
 
     // Оновлення контактної інформації
-    public function actionUpdateContacts(UpdateContactsRequest $request)
+    public function actionUpdateContacts(UpdateContactsRequest $request, Order $order)
     {
-        Order::findOrFail($request->id)->update($request->all());
+        $order->findOrFail($request->id)->update($request->all());
 
         response()->json(['message' => 'Контакти вдало оновлені!']);
     }

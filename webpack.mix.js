@@ -13,6 +13,7 @@ mix.webpackConfig({
 })
 mix
     .js('resources/coffee/app.coffee', 'public/js/app.js')
+    .js('resources/js/vue.coffee', 'public/js/vue.js')
     .js('resources/coffee/login.coffee', 'public/js/login.js')
     .js('resources/coffee/orders/orders.coffee', 'public/js/controllers/orders.js')
     .js('resources/coffee/product/product.coffee', 'public/js/controllers/product.js')

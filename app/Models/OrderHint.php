@@ -42,6 +42,11 @@ class OrderHint extends Model
         'sending'  => 'Відправки'
     ];
 
+    public static function getTypes()
+    {
+        return (new static)->types;
+    }
+
     public function scopeType(Builder $query, string $type): void
     {
         $query->whereIn('type', [0, $type]);

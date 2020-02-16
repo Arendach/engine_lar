@@ -3,8 +3,9 @@
 Route::get('login', 'UserController@sectionLogin');
 Route::post('login', 'UserController@actionAuthorize')->name('login');
 Route::get('exit', 'UserController@sectionunAuthorize')->name('exit');
+Route::resource('setting', 'SettingController');
 
-Route::group(['middleware' => 'auth'], function (){
+Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'MainController@index')->name('home');
 
     Route::get('/{controller}/{method}', function ($controller, $method) {

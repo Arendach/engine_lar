@@ -22,4 +22,11 @@ class OrderProfessional extends Model
 {
     protected $table = 'order_professional';
 
+    protected $fillable = [
+        'name',
+        'color'
+    ];
+
+    public $timestamps = false;
+
 }

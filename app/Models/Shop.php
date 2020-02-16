@@ -27,4 +27,14 @@ use Illuminate\Database\Eloquent\Model;
 class Shop extends Model
 {
     protected $table = 'shops';
+
+    protected $fillable = [
+        'name',
+        'name_ru',
+        'address',
+        'address_ru',
+        'url_path'
+    ];
+
+    public $timestamps = false;
 }

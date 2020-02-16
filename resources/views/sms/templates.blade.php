@@ -3,8 +3,8 @@
 @section('title', 'Налаштування :: Смс шаблони')
 
 @breadcrumbs(
-    ['Налаштування', uri('SettingsController@sectionMain')],
-    ['Смс шаблони']
+    ['Налаштування', '/setting'],
+    [$title]
 )
 
 @section('content')

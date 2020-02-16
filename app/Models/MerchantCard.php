@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\MerchantCard
@@ -17,8 +18,21 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MerchantCard whereMerchantId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MerchantCard whereNumber($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Merchant $merchant
  */
 class MerchantCard extends Model
 {
-    //
+    protected $table = 'merchant_cards';
+
+    protected $fillable = [
+        'number',
+        'merchant_id'
+    ];
+
+    public $timestamps = false;
+
+    public function merchant(): BelongsTo
+    {
+        return $this->belongsTo(Merchant::class);
+    }
 }

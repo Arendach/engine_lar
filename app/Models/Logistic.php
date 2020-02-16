@@ -18,5 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Logistic extends Model
 {
+    protected $fillable = ['name'];
 
+    public $timestamps = false;
 }

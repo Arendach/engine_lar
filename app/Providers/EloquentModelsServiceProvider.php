@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\ClientGroup;
 use App\Models\Inventory;
 use App\Models\Order;
+use App\Models\OrderHistory;
 use App\Models\Payout;
 use App\Models\User;
 use App\Models\UserAccess;
@@ -14,6 +15,7 @@ use App\Observers\BonusObserver;
 use App\Observers\ClientGroupObserver;
 use App\Observers\ClientObserver;
 use App\Observers\InventoryObserver;
+use App\Observers\OrderHistoryObserver;
 use App\Observers\OrderObserver;
 use App\Observers\PayoutObserver;
 use App\Observers\UserAccessObserver;
@@ -36,5 +38,6 @@ class EloquentModelsServiceProvider extends ServiceProvider
         ClientGroup::observe(ClientGroupObserver::class);
         Inventory::observe(InventoryObserver::class);
         Order::observe(OrderObserver::class);
+        OrderHistory::observe(OrderHistoryObserver::class);
     }
 }

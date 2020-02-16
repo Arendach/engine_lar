@@ -11,6 +11,11 @@ use Web\Model\Storage;
 
 class SettingsController extends Controller
 {
+    public function sectionUniversal()
+    {
+
+    }
+
     public function sectionMain()
     {
         return view('settings.main');

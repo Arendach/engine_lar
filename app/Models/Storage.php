@@ -35,6 +35,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Storage sort($order = 'asc')
  * @property int $is_accounted
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Storage whereIsAccounted($value)
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Storage onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Storage whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Storage withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Storage withoutTrashed()
  */
 class Storage extends Model
 {
