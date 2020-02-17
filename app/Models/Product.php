@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -101,10 +102,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \App\Models\ProductImage $image
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Storage[] $storages
  * @property-read int|null $storages_count
+ * @property string $service_code
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Product filter($filters)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Product whereServiceCode($value)
  */
 class Product extends Model
 {
     use EagerLoadPivotTrait;
+    use Filterable;
 
     protected $table = 'products';
 
@@ -143,9 +148,9 @@ class Product extends Model
 
     public $timestamps = false;
 
-    public function storage()
+    public function storage($storage_id)
     {
-        return $this->belongsTo(Storage::class, 'storage_id');
+        return $this->storages->where('id', $storage_id)->first();
     }
 
     public function storage_list(): HasMany
@@ -157,7 +162,7 @@ class Product extends Model
 
     public function storages()
     {
-        return $this->belongsToMany(Storage::class, 'product_storage');
+        return $this->belongsToMany(Storage::class, 'product_storage')->withPivot('count');
     }
 
     public function images(): HasMany

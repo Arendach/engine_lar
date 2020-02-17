@@ -38,7 +38,7 @@
     <ul>
         @foreach (assets('menu') as $k => $item)
             @if (!isset($item['access']) || $item['access'] == false || can($item['access']))
-                <li {{ isset($item['menu']) ? 'class="dropdown"' : '' }}>
+                <li {!! isset($item['menu']) ? 'class="dropdown"' : '' !!}>
                     <a href="{{ $item['url'] }}">
                         <i class="fa fa-{{ $item['icon'] }}"></i>
                         <span>{{ $item['name'] }}</span>
@@ -80,7 +80,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     @foreach(assets('menu') as $k => $item )
                         @if(!isset($item['access']) || $item['access'] == false || can($item['access']))
-                            <li {{ isset($item['menu']) ? 'class="dropdown"' : '' }}>
+                            <li {!! isset($item['menu']) ? 'class="dropdown"' : '' !!}>
                                 <a href="{{ $item['url'] }}" class="dropdown-toggle" data-toggle="dropdown">
                                     <span>{{ $item['name'] }}</span>
                                     @isset($item['menu'])

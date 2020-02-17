@@ -47,6 +47,10 @@ class Filter
             }
         }
 
+        if (method_exists($this, 'default')) {
+            $this->default();
+        }
+
         return $this->builder;
     }
 }

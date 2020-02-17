@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Закупка по виробнику: "<?= $data->manufacturer_name ?>"</title>
+    <title>Закупка по виробнику: "{{ $purchase->manufacturer->name ?? null }}"</title>
     <style>
         table {
             font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
@@ -48,22 +48,20 @@
         <th>Тип предзамовлення</th>
     </tr>
     <tr>
-        <td><?= date_for_humans($data->date) ?></td>
-        <td><?= $data->manufacturer_name ?></td>
-        <td><?= $data->storage_name ?></td>
-        <td><?= number_format($data->sum, 2) ?></td>
-        <td>
-            <?php if ($data->status == 0) echo 'Не оплачено';
-            elseif ($data->status == 1) echo 'Сплачено частково';
-            else echo 'Сплачено'; ?>
-        </td>
-        <td><?= $data->type == 0 ? 'Необхідно закупити' : 'Прийнято на облік' ?></td>
+        <td>{{ $purchase->created_date_human }}</td>
+        <td>{{ $purchase->manufacturer->name ?? null }}</td>
+        <td>{{ $purchase->storage_name }}</td>
+        <td>{{ number_format($purchase->sum) }}</td>
+        <td>{{ $purchase->status_name }}</td>
+        <td>{{ $purchase->type_name }}</td>
     </tr>
-    <?php if ($data->comment != '') { ?>
+    @if($purchase->comment != '')
         <tr>
-            <td colspan="6" align="left" style="padding: 10px">Коментар: <?= $data->comment ?></td>
+            <td colspan="6" align="left" style="padding: 10px">
+                Коментар: {{ $purchase->comment }}
+            </td>
         </tr>
-    <?php } ?>
+    @endif
 </table>
 
 <br>
@@ -75,14 +73,14 @@
         <th>По ціні($)</th>
         <th>В сумі</th>
     </tr>
-    <?php foreach ($data->products as $product) { ?>
+    @foreach($purchase->products as $product)
         <tr>
-            <td><?= $product->name ?></td>
-            <td><?= $product->amount ?></td>
-            <td><?= number_format($product->price, 2) ?></td>
-            <td><?= number_format($product->price * $product->amount, 2) ?></td>
+            <td>{{ $product->name }}</td>
+            <td>{{ $product->pivot->amount }}</td>
+            <td>{{ number_format($product->pivot->price) }}</td>
+            <td>{{ number_format($product->pivot->price * $product->pivot->amount) }}</td>
         </tr>
-    <?php } ?>
+    @endforeach
 </table>
 
 </body>

@@ -35,7 +35,7 @@ class MainController extends Controller
             $data['nco'] = 0;
         }*/
 
-        return view('index', $data);
+        return view('pages.index', $data);
     }
 
     public function actionChangeTheme(string $theme)

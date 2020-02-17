@@ -24,7 +24,7 @@ class UserController extends Controller
 
     public function sectionLogin()
     {
-        return view('login');
+        return view('pages.login');
     }
 
     public function sectionList()

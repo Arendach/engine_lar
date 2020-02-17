@@ -15,8 +15,8 @@ return [
         'menu'   => [
             [
                 'name'   => 'Закупки',
-                'url'    => uri('purchases'),
-                'access' => 'purchases',
+                'url'    => uri('purchase/main'),
+                'access' => 'purchase',
             ],
             [
                 'name'   => 'Інвентаризація',

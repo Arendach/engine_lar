@@ -18,7 +18,7 @@ class Authenticate extends Middleware
                     'message' => 'Для продовження необхідно авторизуватись!'
                 ], 401);
             } else {
-                echo view('login');
+                echo view('pages.login');
                 exit;
             }
         } else {
