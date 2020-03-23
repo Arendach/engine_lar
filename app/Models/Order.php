@@ -5,6 +5,7 @@ namespace App\Models;
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use App\Traits\DateHuman;
 use App\Traits\Filterable;
+use App\Traits\NumberFormat;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -142,6 +143,7 @@ class Order extends Model
     use EagerLoadPivotTrait;
     use Filterable;
     use DateHuman;
+    use NumberFormat;
 
     protected $table = 'orders';
 
@@ -392,5 +394,11 @@ class Order extends Model
     public function scopeILiable(Builder $query)
     {
         $query->where('liable_id', user()->id);
+    }
+
+
+    public function getFullAddress()
+    {
+
     }
 }

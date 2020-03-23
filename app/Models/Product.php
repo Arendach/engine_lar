@@ -4,6 +4,7 @@ namespace App\Models;
 
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use App\Traits\Filterable;
+use App\Traits\NumberFormat;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -110,6 +111,7 @@ class Product extends Model
 {
     use EagerLoadPivotTrait;
     use Filterable;
+    use NumberFormat;
 
     protected $table = 'products';
 
@@ -144,6 +146,10 @@ class Product extends Model
         'meta_description_uk',
         'meta_description_ru',
         'product_key',
+    ];
+
+    protected $casts = [
+        'attributes' => 'array'
     ];
 
     public $timestamps = false;

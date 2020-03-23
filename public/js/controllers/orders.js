@@ -135,7 +135,7 @@ $(document).on('change keyup', '#search_field, #search_category', function() {
   var $this, data;
   $this = $(this);
   data = {
-    search: $this.val,
+    search: $this.val(),
     type: $this.data('search')
   };
   return $.post('/orders/search_products', data, function(res) {
@@ -144,15 +144,14 @@ $(document).on('change keyup', '#search_field, #search_category', function() {
 });
 
 $(document).on('click', '.searched', function() {
-  var id;
+  var id, type;
   id = $(this).data('id');
-  $.post('/orders/get_product', {type, id}, function(res) {
-    return $('#product-list tbody').append(res);
+  type = order.type;
+  $.post('/orders/get_product', {type, id}, function(response) {
+    return $('#product-list tbody').prepend(response);
   });
   return checkPrice;
 });
-
-$('');
 
 $(document).on('change', '#city_select', function() {
   var $selected, text, value;

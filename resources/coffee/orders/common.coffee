@@ -28,17 +28,17 @@ $(document).on 'keyup', '#delivery_cost, #discount', checkPrice
 $(document).on 'change keyup', '#search_field, #search_category', ->
     $this = $(@)
     data =
-        search: $this.val
+        search: $this.val()
         type: $this.data 'search'
     $.post '/orders/search_products', data, (res) -> $('.products').html(res)
 
 $(document).on 'click', '.searched', ->
-    id = $(@).data 'id'
-    $.post '/orders/get_product', {type, id}, (res) ->
-        $('#product-list tbody').append(res)
+    id = $(@).data('id')
+    type = order.type
+    $.post '/orders/get_product', {type, id}, (response) ->
+        $('#product-list tbody').prepend(response)
     checkPrice
 
-$('')
 
 $(document).on 'change', '#city_select', ->
     $selected = $(@)

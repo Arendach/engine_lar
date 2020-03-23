@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" id="baze-theme" href="{{ asset('css/themes/' . user()->theme . '.css') }}">
+    <link href="/assets/css/colorbox.css" rel="stylesheet">
 
     <script>
         @isset($toJs)
@@ -17,8 +18,9 @@
     </script>
 
     <script src="{{ asset('js/libs.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('packages/barryvdh/elfinder/js/standalonepopup.min.js') }}"></script>
 
-    @if (isset($editor) && $editor == 'full')
+@if (isset($editor) && $editor == 'full')
         <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
     @else
         <script src="{{ asset('ckeditor_basic/ckeditor.js') }}"></script>
@@ -154,9 +156,9 @@
                     <li><a href="@uri('/')"><i class="fa fa-dashboard"></i></a></li>
                     @foreach ($breadcrumbs as $item)
                         @if ($loop->last)
-                            <li class="active"><span>{{ $item[0] }}</span></li>
+                            <li class="active"><span>{!! $item[0] !!}</span></li>
                         @else
-                            <li><a href="{{ $item[1] }}">{{ $item[0] }}</a></li>
+                            <li><a href="{!! $item[1] !!}">{!! $item[0] !!}</a></li>
                         @endif
                     @endforeach
                 </ol>

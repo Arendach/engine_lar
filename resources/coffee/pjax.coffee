@@ -1,4 +1,4 @@
-$(document).pjax 'a', '#pjax-container', fragment: '#pjax-container'
+$(document).pjax 'a', '#pjax-container', {fragment: '#pjax-container', timeout: false}
 
 $(document).on 'pjax:beforeSend', () -> resetEventStorage()
 

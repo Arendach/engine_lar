@@ -22,6 +22,7 @@
     <input type="hidden" name="id" value="{{ $order->id }}">
 
     <table id="product-list" class="table table-bordered">
+        <thead>
         <tr>
             <th>Товар</th>
             <th>Склад</th>
@@ -29,13 +30,14 @@
             <th>Вартість</th>
             <th style="width: 71px">Сума</th>
             <th>Атрибути</th>
-            <?php if ($type == 'sending') { ?>
+            @if($type == 'sending')
                 <th>Місце</th>
-            <?php } ?>
-            <th style="width: 39px;">Дії</th>
+            @endif
+            <th class="action-1">Дії</th>
         </tr>
-        <?php if ($order->products->count()) { ?>
-            <?php foreach ($order->products as $product) { ?>
+        </thead>
+        @if($order->products->count())
+            @foreach($order->products as $product)
                 <?php $rand = rand32() ?>
                 <tr class="product">
                     <td class="product_name">
@@ -69,23 +71,22 @@
 
                     <td>
                         <input class="form-control price"
-                               name="products[<?= $rand ?>][price]"
-                               value="<?= $product->pivot->price; ?>" data-inspect="decimal">
+                               name="products[{{ $rand }}][price]"
+                               value="{{ $product->pivot->price }}" data-inspect="decimal">
                     </td>
 
                     <td>
-                        <input disabled class="form-control sum"
-                               value="<?= $product->pivot->price * $product->pivot->amount; ?>">
+                        <input disabled class="form-control sum" value="{{ $product->pivot->price * $product->pivot->amount }}">
                     </td>
 
                     <td class="attributes">
                         <div class="attr-edit">
-                            <?php foreach ($product->attributes as $key => $attr) {
-                                $rand = rand32(); ?>
-                                <label><?= $key ?></label><br>
+                            @foreach($product->attributes as $key => $attr)
+                                <?php $rand = rand32() ?>
+                                <label>{{ $key }}</label><br>
                                 <input type="hidden"
-                                       name="products[<?= $product->id ?>][attributes][<?= $rand ?>][key]"
-                                       value="<?= $key ?>">
+                                       name="products[{{ $product->id }}][attributes][{{ $rand }}][key]"
+                                       value="{{ $key }}">
                                 <select name="products[<?= $product->id ?>][attributes][<?= $rand ?>][value]"
                                         class="form-control" data-key="<?= $key ?>">
                                     <?php foreach ($attr as $val) { ?>
@@ -99,30 +100,26 @@
                         </div>
                     </td>
 
-                    <?php if ($type == 'sending') { ?>
+                    @if($type == 'sending')
                         <td>
                             <select data-name="place" class="form-control">
-                                <?php for ($i = 1; $i < 11; $i++) { ?>
-                                    <option <?= $product->pivot->place == $i ? 'selected' : '' ?>
-                                            value="<?= $i ?>">
-                                        <?= $i ?>
-                                    </option>
-                                <?php } ?>
+                                @for($i = 1; $i < 11; $i++)
+                                    <option  @selected($product->pivot->place == $i) value="{{ $i }}">{{ $i }}</option>
+                                @endfor
                             </select>
                         </td>
-                    <?php } ?>
+                    @endif
 
                     <td>
                         <button type="button" class="btn btn-danger btn-xs drop_product delete"
-                                data-order-id="<?= $order->id ?>"
-                                data-pto="<?= $product->id; ?>">
+                                data-order-id="{{ $order->id }}"
+                                data-pto="{{ $product->id }}">
                             <span class="glyphicon glyphicon-remove"></span>
                         </button>
                     </td>
                 </tr>
-
-            <?php } ?>
-        <?php } ?>
+            @endforeach
+        @endif
     </table>
 
     <div class="form-horizontal" style="margin-top: 15px;">

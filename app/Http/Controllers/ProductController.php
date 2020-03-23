@@ -19,13 +19,19 @@ class ProductController extends Controller
 {
     public $access = 'products';
 
-    public function sectionMain(CategoryTree $categoryTree)
+    public function sectionMain(CategoryTree $categoryTree, bool $archive = false)
     {
         $products = Product::with([
             'category',
             'manufacturer',
             'storage_list'
-        ])->paginate(25);
+        ]);
+
+        if ($archive) {
+            $products = $products->onlyTrashed()->paginate(25);
+        } else {
+            $products = $products->paginate(25);
+        }
 
         $productsSum = $products->sum(function (Product $item) {
             return $item->procurement_costs * $item->storage_list->sum('count');
@@ -40,21 +46,6 @@ class ProductController extends Controller
         ];
 
         return view('product.main', $data);
-    }
-
-    public function sectionArchive()
-    {
-        $data = [
-            'title'       => 'Каталог :: Архів товарів',
-            'scripts'     => ['text_change.js', 'products/product.js'],
-            'products'    => Products::getAll(true),
-            'breadcrumbs' => [
-                ['Товари', uri('product')],
-                ['Архів']
-            ]
-        ];
-
-        $this->view->display('product.main', $data);
     }
 
     public function sectionCreate()

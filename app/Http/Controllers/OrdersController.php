@@ -167,7 +167,7 @@ class OrdersController extends Controller
         else
             $builder->where(function (Builder $builder) use ($search) {
                 $builder->where('name', 'like', "%$search%")
-                    ->orWhere('services_code', 'like', "%$search%")
+                    ->orWhere('service_code', 'like', "%$search%")
                     ->orWhere('articul', 'like', "%$search%")
                     ->orWhere('model', 'like', "%$search%")
                     ->orWhere('name_ru', 'like', "%$search%");
@@ -188,7 +188,7 @@ class OrdersController extends Controller
     {
         $result[] = Product::find($id);
 
-        $this->view->display('buy.show_found_products', ['products' => $result, 'type' => $type]);
+        return view('buy.show_found_products', ['products' => $result, 'type' => $type]);
     }
 
     public function action_change_type($post)
@@ -280,10 +280,13 @@ class OrdersController extends Controller
 
         $data = ['order' => $order];
 
-        if ($order->type == 'sending' && $order->street != '')
-            $data['marker'] = container(NewPostService::class)->getMarker($order);
+        /* if ($order->type == 'sending' && $order->street != '') {
+             $data['marker'] = app(NewPostService::class)->getMarker($order);
+         }*/
 
-        $this->view->display('orders.print.receipt' . ($official ? '_official' : '_new'), $data);
+        $view = $official ? 'receipt_official' : 'receipt';
+
+        return view("orders.print.$view", $data);
     }
 
     // Рахунок фактура

@@ -17,4 +17,26 @@ class ArticleController extends Controller
 
         return view('article.list', $data);
     }
+
+    public function sectionMain()
+    {
+        return view('article.main');
+    }
+
+    public function actionAll()
+    {
+        return Article::all();
+    }
+
+    public function actionCreate(Request $request)
+    {
+        Article::create($request->all());
+    }
+
+    public function actionDelete(int $id)
+    {
+        // Article::findOrFail($id)->delete();
+
+        return response(1, 200);
+    }
 }

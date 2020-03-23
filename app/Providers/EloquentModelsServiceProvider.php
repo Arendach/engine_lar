@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Article;
 use App\Models\Bonus;
 use App\Models\Client;
 use App\Models\ClientGroup;
@@ -11,6 +12,7 @@ use App\Models\OrderHistory;
 use App\Models\Payout;
 use App\Models\User;
 use App\Models\UserAccess;
+use App\Observers\ArticleObserver;
 use App\Observers\BonusObserver;
 use App\Observers\ClientGroupObserver;
 use App\Observers\ClientObserver;
@@ -39,5 +41,6 @@ class EloquentModelsServiceProvider extends ServiceProvider
         Inventory::observe(InventoryObserver::class);
         Order::observe(OrderObserver::class);
         OrderHistory::observe(OrderHistoryObserver::class);
+        Article::observe(ArticleObserver::class);
     }
 }

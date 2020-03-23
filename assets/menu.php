@@ -83,8 +83,8 @@ return [
         'menu'   => [
             [
                 'name'   => 'Налаштування',
-                'url'    => uri('settings/main'),
-                'access' => 'settings'
+                'url'    => uri('setting'),
+                'access' => 'setting'
             ],
             [
                 'name'   => 'Статистика',

@@ -31,7 +31,7 @@
 
         <div class="form-group">
             <label>Фото</label>
-            @include('tools.image', ['multiple' => true, 'name' => 'image_id', 'return' => 'id'])
+            @include('tools.manager', ['multiple' => true, 'name' => 'image_id', 'return' => 'id'])
         </div>
 
         <div class="form-group">

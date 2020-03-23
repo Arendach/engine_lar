@@ -9,16 +9,21 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
         "ajcastro/eager-load-pivot-relations": "^0.2.2",
+        "barryvdh/laravel-elfinder": "^0.4.4",
         "fideloper/proxy": "^4.0",
         "imangazaliev/didom": "^1.14",
         "laravel/framework": "^6.2",
         "laravel/tinker": "^2.0",
         "lis-dev/nova-poshta-api-2": "^0.1.1",
         "mobizon/mobizon-php": "^2.0",
+        "mtownsend/xml-to-array": "^1.0",
         "sergeynezbritskiy/privatbank-api": "^3.0",
+        "spatie/array-to-xml": "^2.11",
         "symfony/dom-crawler": "^5.0",
-      "ext-json": "*"
+      "ext-dom": "*",
+      "ext-zip": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",

@@ -4,7 +4,7 @@
 
 @breadcrumbs(
     ['Налаштування', '/setting'],
-    [$title]
+    ['Смс шаблони']
 )
 
 @section('content')
@@ -21,10 +21,10 @@
     @if($items->count())
         <table class="table table-bordered">
             <tr>
-                <td><b>Назва(для списку)</b></td>
-                <td><b>Тип</b></td>
-                <td><b>Текст повідомлення</b></td>
-                <td class="action-2 centered"><b>Дії</b></td>
+                <th>Назва(для списку)</th>
+                <th>Тип</th>
+                <th>Текст повідомлення</th>
+                <th class="action-2 centered">Дії</th>
             </tr>
             @foreach($items as $item)
                 <tr data-id="{{ $item->id }}">
