@@ -1,3 +1,5 @@
+@php /** @var $order \App\Models\Order */ @endphp
+
 <div class="order_search_products">
     <div class="row">
         <div class="col-md-8">
@@ -36,75 +38,84 @@
             <th class="action-1">Дії</th>
         </tr>
         </thead>
+        <tbody>
         @if($order->products->count())
             @foreach($order->products as $product)
                 <?php $rand = rand32() ?>
                 <tr class="product">
                     <td class="product_name">
-                        <a target="_blank" href="<?= uri('product/update', ['id' => $product->id]) ?>">
-                            <?= $product->name ?>
+                        <a target="_blank" href="@uri('product/update', ['id' => $product->id])">
+                            {{ $product->name }}
                         </a>
 
-                        <input type="hidden" name="products[<?= $rand ?>][id]" value="<?= $product->id ?>">
-                        <input type="hidden" name="products[<?= $rand ?>][pto]" value="<?= $product->pivot->id ?>">
+                        <input type="hidden" name="products[{{ $rand }}][id]" value="{{ $product->id }}">
+                        <input type="hidden" name="products[{{ $rand }}][pto]" value="{{ $product->pivot->id }}">
                     </td>
 
                     <td>
-                        <select name="products[<?= $rand ?>][storage_id]" class="form-control">
-                            <?php foreach ($product->storage_list as $storage) { ?>
-                                <option <?= $storage->storage_id == $product->pivot->storage_id ? 'selected' : '' ?>
-                                        value="<?= $storage->storage_id ?>">
-                                    <?= $storage->count ?>: <?= $storage->storage->name ?>
+                        <select name="products[{{ $rand }}][storage_id]" class="form-control">
+                            @foreach($product->storage_list as $storage)
+                                <option @selected($storage->storage_id == $product->pivot->storage_id) value="{{ $storage->storage_id }}">
+                                    {{ $storage->count }}: {{ $storage->storage->name }}
                                 </option>
-                            <?php } ?>
+                            @endforeach
                         </select>
                     </td>
 
                     <td>
                         <div class="input-group">
-                            <input name="products[<?= $rand ?>][amount]"
+                            <input name="products[{{ $rand }}][amount]"
                                    class="form-control amount"
-                                   value="<?= $product->pivot->amount; ?>"
-                                   data-inspect="integer">
+                                   value="{{ $product->pivot->amount }}"
+                                   data-inspect="integer"
+                            >
                         </div>
                     </td>
 
                     <td>
                         <input class="form-control price"
                                name="products[{{ $rand }}][price]"
-                               value="{{ $product->pivot->price }}" data-inspect="decimal">
+                               value="{{ $product->pivot->price }}"
+                               data-inspect="decimal"
+                        >
                     </td>
 
                     <td>
-                        <input disabled class="form-control sum" value="{{ $product->pivot->price * $product->pivot->amount }}">
+                        <input disabled
+                               class="form-control sum"
+                               value="{{ $product->pivot->price * $product->pivot->amount }}"
+                        >
                     </td>
 
                     <td class="attributes">
                         <div class="attr-edit">
-                            @foreach($product->attributes as $key => $attr)
-                                <?php $rand = rand32() ?>
+                            @foreach($product->attributes as $key => $attributes)
+                                <?php $randAttribute = rand32() ?>
                                 <label>{{ $key }}</label><br>
+
                                 <input type="hidden"
-                                       name="products[{{ $product->id }}][attributes][{{ $rand }}][key]"
+                                       name="products[{{ $product->id }}][attributes][{{ $randAttribute }}][key]"
                                        value="{{ $key }}">
-                                <select name="products[<?= $product->id ?>][attributes][<?= $rand ?>][value]"
-                                        class="form-control" data-key="<?= $key ?>">
-                                    <?php foreach ($attr as $val) { ?>
-                                        <option <?= isset($product->pivot->attributes[$key]) && $val == $product->pivot->attributes[$key] ? 'selected' : '' ?>
-                                                value="<?= $val ?>">
-                                            <?= $val ?>
+
+                                <select name="products[{{ $product->id }}][attributes][{{ $randAttribute }}][value]"
+                                        class="form-control"
+                                        data-key="{{ $key }}"
+                                >
+                                    @foreach($attributes as $attribute)
+                                        <option @selected($product->pivot->attributes->get($key) == $attribute) value="{{ $attribute }}">
+                                            {{ $attribute }}
                                         </option>
-                                    <?php } ?>
+                                    @endforeach
                                 </select><br>
-                            <?php } ?>
+                            @endforeach
                         </div>
                     </td>
 
                     @if($type == 'sending')
                         <td>
                             <select data-name="place" class="form-control">
-                                @for($i = 1; $i < 11; $i++)
-                                    <option  @selected($product->pivot->place == $i) value="{{ $i }}">{{ $i }}</option>
+                                @for($i = 1; $i <= 10; $i++)
+                                    <option @selected($product->pivot->place == $i) value="{{ $i }}">{{ $i }}</option>
                                 @endfor
                             </select>
                         </td>
@@ -120,6 +131,7 @@
                 </tr>
             @endforeach
         @endif
+        </tbody>
     </table>
 
     <div class="form-horizontal" style="margin-top: 15px;">
@@ -128,7 +140,7 @@
             <div class="col-md-5">
                 <input id="delivery_cost"
                        name="data[delivery_cost]"
-                       class="form-control" value="<?= $order->delivery_cost ?>"
+                       class="form-control" value="{{ $order->delivery_cost }}"
                        data-inspect="decimal">
             </div>
         </div>
@@ -139,8 +151,9 @@
                 <input id="discount"
                        name="data[discount]"
                        class="form-control"
-                       value="<?= $order->discount ?>"
-                       data-inspect="decimal">
+                       value="{{ $order->discount }}"
+                       data-inspect="decimal"
+                >
             </div>
         </div>
 
@@ -148,14 +161,14 @@
             <label for="sum" class="col-md-4 control-label">Вартість товарів</label>
             <div class="col-md-5">
                 <input disabled id="sum" class="form-control"
-                       value="<?= $order->full_sum - $order->delivery_cost + $order->discount ?>">
+                       value="{{ $order->full_sum - $order->delivery_cost + $order->discount }}">
             </div>
         </div>
 
         <div class="form-group">
             <label for="full_sum" class="col-md-4 control-label">Сума</label>
             <div class="col-md-5">
-                <input disabled id="full_sum" class="form-control" value="<?= $order->full_sum ?>">
+                <input disabled id="full_sum" class="form-control" value="{{ $order->full_sum }}">
             </div>
         </div>
 

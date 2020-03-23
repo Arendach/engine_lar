@@ -4,19 +4,19 @@
 
     <div class="form-group">
         <label>
-            <input @disabled($order->liable != user()->id) checked type="radio" name="type" value="bonus"> Бонус
+            <input @disabled($order->liable_id != user()->id) checked type="radio" name="type" value="bonus"> Бонус
         </label>
 
         <br>
 
         <label>
-            <input @disabled($order->liable != user()->id) type="radio" name="type" value="fine"> Штраф
+            <input @disabled($order->liable_id != user()->id) type="radio" name="type" value="fine"> Штраф
         </label>
     </div>
 
     <div class="form-group">
         <label>Співробітник</label>
-        <select @disabled($order->liable != user()->id) class="form-control" name="user_id">
+        <select @disabled($order->liable_id != user()->id) class="form-control" name="user_id">
             <option value=""></option>
             @foreach ($userModel->all() as $item)
                 @continue($order->bonuses->where('user_id', $item->id)->count())
@@ -29,11 +29,11 @@
 
     <div class="form-group">
         <label for="sum">Сума</label>
-        <input @disabled($order->liable != user()->id) class="form-control" name="sum">
+        <input @disabled($order->liable_id != user()->id) class="form-control" name="sum">
     </div>
 
     <div class="form-group">
-        <button @disabled($order->liable != user()->id) class="btn btn-primary">Зберегти</button>
+        <button @disabled($order->liable_id != user()->id) class="btn btn-primary">Зберегти</button>
     </div>
 </form>
 

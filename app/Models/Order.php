@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
+use App\Casts\CollectionCast;
 use App\Traits\DateHuman;
 use App\Traits\Filterable;
 use App\Traits\NumberFormat;
@@ -12,132 +13,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * App\Models\Order
- *
- * @property int $id
- * @property int $author_id Автор замовлення
- * @property mixed $type Тип замовлення
- * @property string|null $fio ПІБ
- * @property string|null $phone Телефон
- * @property string|null $phone2 Додатковий телефон
- * @property string|null $email Електронка
- * @property \Illuminate\Support\Carbon|null $created_at Дата створення замовлення
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $date_delivery Дата доставки
- * @property string|null $time_with ГПЧД Від
- * @property string|null $time_to ГПЧД До
- * @property string|null $city Місто або ід міста
- * @property string|null $address Адреса
- * @property string|null $comment_address Коментар до адреси
- * @property int|null $pay_id Ідентифікатор способу оплати
- * @property int|null $courier_id ІД курєра (users)
- * @property string|null $coupon Купон (6)
- * @property string|null $comment Коментар до замовлення
- * @property string|null $warehouse Склад
- * @property int|null $logistic_id Ідентифікатор транспортної компанії
- * @property mixed|null $pay_delivery Оплата доставки
- * @property mixed|null $imposed Хто оплачує наложений платіж
- * @property int|null $status Статус замовлення
- * @property int|null $discount Знижка
- * @property int|null $delivery_cost Ціна доставки
- * @property int|null $hint_id ІД підказки
- * @property int|null $payment_status Статус оплати
- * @property float|null $prepayment Сума предоплати
- * @property string|null $street Вулиця
- * @property float|null $full_sum Сума замовлення
- * @property int|null $order_professional_id Тип професійного замовлення
- * @property int|null $liable_id Відповідальний менеджер(users)
- * @property int|null $site
- * @property int|null $sending_variant
- * @property int|null $client_id
- * @property-read \App\Models\User $author
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Bonus[] $bonuses
- * @property-read int|null $bonuses_count
- * @property-read \App\Models\Client|null $client
- * @property-read \App\Models\User|null $courier
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\OrderFile[] $files
- * @property-read int|null $files_count
- * @property-read mixed $date_delivery_human
- * @property-read mixed $phone_format
- * @property-read mixed $sending_city_name
- * @property-read mixed $sending_status_color
- * @property-read mixed $sending_status_name
- * @property-read mixed $sending_warehouse_name
- * @property-read mixed $status_color
- * @property-read mixed $status_name
- * @property-read mixed $sum
- * @property-read mixed $time
- * @property-read mixed $type_name
- * @property-read \App\Models\OrderHint|null $hint
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\OrderHistory[] $history
- * @property-read int|null $history_count
- * @property-read \App\Models\User|null $liable
- * @property-read \App\Models\Logistic|null $logistic
- * @property-read \App\Models\Pay|null $pay
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Product[] $products
- * @property-read int|null $products_count
- * @property-read \App\Models\OrderProfessional|null $professional
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SmsMessage[] $sms_messages
- * @property-read int|null $sms_messages_count
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order filter($filters)
- * @method static \AjCastro\EagerLoadPivotRelations\EagerLoadPivotBuilder|\App\Models\Order newModelQuery()
- * @method static \AjCastro\EagerLoadPivotRelations\EagerLoadPivotBuilder|\App\Models\Order newQuery()
- * @method static \AjCastro\EagerLoadPivotRelations\EagerLoadPivotBuilder|\App\Models\Order query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereAuthorId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereCity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereClientId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereComment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereCommentAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereCoupon($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereCourierId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereDateDelivery($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereDeliveryCost($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereDiscount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereFio($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereFullSum($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereHintId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereImposed($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereLiableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereLogisticId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereOrderProfessionalId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order wherePayDelivery($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order wherePayId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order wherePaymentStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order wherePhone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order wherePhone2($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order wherePrepayment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereSendingVariant($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereSite($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereStreet($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereTimeTo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereTimeWith($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order whereWarehouse($value)
- * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order closed()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order delivery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order opened()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order self()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order sending()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order iAuthor()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order iCourier()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Order iLiable()
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\OrderTransaction[] $transactions
- * @property-read int|null $transactions_count
- * @property-read mixed $is_c_lose
- * @property-read mixed $is_open
- * @property-read \App\Models\NewPostCity|null $sending_city
- * @property-read \App\Models\NewPostWarehouse|null $sending_warehouse
- * @property-read string $created_date_human
- * @property-read string $updated_date_human
- */
 class Order extends Model
 {
     use EagerLoadPivotTrait;
@@ -185,6 +60,10 @@ class Order extends Model
     ];
 
     protected $dates = ['created_at', 'date_delivery', 'updated_at', 'deleted_at'];
+
+    protected $casts = [
+        'products.pivot.attributes' => CollectionCast::class
+    ];
 
     public $timestamps = true;
 
@@ -400,5 +279,10 @@ class Order extends Model
     public function getFullAddress()
     {
 
+    }
+
+    public function getPayDeliveryTitleAttribute(): string
+    {
+        return $this->pay_delivery == 'sender' ? 'Відпрвник' : 'Отримувач';
     }
 }

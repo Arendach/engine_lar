@@ -11,7 +11,7 @@ class UpdateSendingAddressRequest extends FormRequest
         return can('orders');
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [];
     }

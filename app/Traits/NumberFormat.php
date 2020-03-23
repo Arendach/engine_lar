@@ -6,12 +6,16 @@ use Exception;
 
 trait NumberFormat
 {
-    public function numberFormat(string $field): string
+    public function numberFormat($field): string
     {
-        if (!is_numeric($this->$field)) {
-            throw new Exception("Field $field is not numeric");
+        if (is_string($field) && is_numeric($this->$field)) {
+            return number_format($this->$field);
         }
 
-        return number_format($this->$field);
+        if (is_numeric($field)) {
+            return number_format($field);
+        }
+
+        throw new Exception("Field is not numeric");
     }
 }

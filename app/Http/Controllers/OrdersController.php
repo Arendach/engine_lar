@@ -126,7 +126,8 @@ class OrdersController extends Controller
         ];
 
         if ($order->type == 'sending' && $order->logistic->name == 'НоваПошта') {
-            $data['warehouses'] = NewPostWarehouse::where('city_ref', $order->sending_city->ref)->get();
+            //$data['warehouses'] = NewPostWarehouse::where('city_ref', $order->sending_city->ref)->get();
+            $data['warehouses'] = [];
         }
 
         return view('buy.update.main', $data);
@@ -163,8 +164,9 @@ class OrdersController extends Controller
     {
         $builder = Product::limit(50);
 
-        if ($type == 'category') $builder->where('category', $search);
-        else
+        if ($type == 'category') {
+            $builder->where('category_id', $search);
+        } else {
             $builder->where(function (Builder $builder) use ($search) {
                 $builder->where('name', 'like', "%$search%")
                     ->orWhere('service_code', 'like', "%$search%")
@@ -172,6 +174,7 @@ class OrdersController extends Controller
                     ->orWhere('model', 'like', "%$search%")
                     ->orWhere('name_ru', 'like', "%$search%");
             });
+        }
 
         $result = '';
         foreach ($builder->get() as $product) {
@@ -200,7 +203,7 @@ class OrdersController extends Controller
 
     public function actionPreview(int $id)
     {
-        $this->view->display('orders.preview', ['order' => Order::findOrFail($id)]);
+        return view('orders.preview', ['order' => Order::findOrFail($id)]);
     }
 
     public function action_create_user_bonus($post)

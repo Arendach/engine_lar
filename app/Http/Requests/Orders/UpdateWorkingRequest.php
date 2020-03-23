@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Requests\Orders;
+namespace App\Http\Requests\Orders;
 
 use App\Models\Order;
-use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateWorkingRequest extends FormRequest

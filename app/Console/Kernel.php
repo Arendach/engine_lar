@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\MakeCast;
 use App\Console\Commands\ReloadNewPostWarehouses;
 use App\Console\Commands\ReportRelation;
 use Illuminate\Console\Scheduling\Schedule;
@@ -11,7 +12,8 @@ class Kernel extends ConsoleKernel
 {
     protected $commands = [
         ReloadNewPostWarehouses::class,
-        ReportRelation::class
+        ReportRelation::class,
+        MakeCast::class,
     ];
 
     protected function schedule(Schedule $schedule)
