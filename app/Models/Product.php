@@ -4,6 +4,7 @@ namespace App\Models;
 
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use App\Casts\ProductAttributesCast;
+use App\Casts\ProductName;
 use App\Traits\Filterable;
 use App\Traits\NumberFormat;
 use Illuminate\Database\Eloquent\Model;
@@ -54,7 +55,8 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'attributes' => ProductAttributesCast::class
+        'attributes'   => ProductAttributesCast::class,
+        'is_accounted' => 'boolean'
     ];
 
     public $timestamps = false;
@@ -130,4 +132,8 @@ class Product extends Model
         return trim($level2);
     }
 
+    public function getNameAttribute($value): string
+    {
+        return $this->articul . ' ' . $value;
+    }
 }

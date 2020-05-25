@@ -186,7 +186,8 @@ class VodafoneController extends Controller
                     $coordinatesNode = $dom->createElement('coordinates', $coordinates);
                     $linearRingNode->appendChild($coordinatesNode);
                 } else {
-                    // dump($polygon);
+                    echo 'not found';
+                    //dump($polygon);
                 }
             }
         } else {
@@ -241,15 +242,11 @@ class VodafoneController extends Controller
                         // placemark -> MultiGeometry -> Polygon -> outerBoundaryIs -> LinearRing -> coordinates
                         $coordinates = $innerBoundary['LinearRing']['coordinates'];
 
-                        $coordinates = preg_replace('~[\s\n\t]+~', " ", $coordinates);
+                        // $coordinates = preg_replace('~[\s\n\t]+~', " ", $coordinates);
                         $coordinatesNode = $dom->createElement('coordinates', $coordinates);
                         $linearRingNode->appendChild($coordinatesNode);
-                    } else {
-                        // dump($polygon);
                     }
                 }
-            } else {
-                // dump($polygon);
             }
         }
     }

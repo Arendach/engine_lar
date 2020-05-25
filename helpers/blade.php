@@ -28,7 +28,7 @@ function blade_share($variable, $data): string
  */
 function blade_selected($param1, $param2 = null): string
 {
-    if (is_bool($param1)) {
+    if (is_bool($param1) || is_null($param1)) {
         return $param1 ? 'selected' : '';
     } else {
         return request()->get($param1) === $param2 ? 'selected' : '';

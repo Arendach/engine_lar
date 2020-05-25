@@ -1,7 +1,5 @@
 <?php
 
-namespace Web\Model;
-
 use Web\App\Model;
 use RedBeanPHP\R;
 

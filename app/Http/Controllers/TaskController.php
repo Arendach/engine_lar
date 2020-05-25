@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Task\CreateUpdateTaskRequest;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -30,8 +31,9 @@ class TaskController extends Controller
 
     public function actionCreate(CreateUpdateTaskRequest $request)
     {
-        $data = $request->all();
-        $data['author_id'] = user()->id;
+        $data = $request->merge([
+            'author_id' => user()->id
+        ]);
 
         Task::create($data);
     }
@@ -46,18 +48,17 @@ class TaskController extends Controller
         return view('task.update_form', ['task' => Task::findOrFail($id)]);
     }
 
-    // todo
-    public function action_close($post)
+    public function actionClose(Request $request)
     {
-        Task::update(['comment' => $post->comment, 'success' => $post->type == 'success' ? '1' : '2'], $post->id);
-
-        response(200, 'Задача вдало закрита!');
+        Task::findOrFail($request->id)->update($request->all());
     }
 
-    // todo
-    public function action_close_form($post)
+    public function actionCloseForm(Request $request)
     {
-        echo $this->view->render('task.close_form', ['id' => $post->id, 'type' => $post->type]);
+        $task = Task::findOrFail($request->id);
+        $type = $request->get('type', 'success');
+
+        return view('task.close_form', compact('task', 'type'));
     }
 
     public function actionDelete(int $id)

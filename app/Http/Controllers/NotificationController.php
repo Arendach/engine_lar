@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-
-use Web\Model\Notification;
+use App\Models\Notification;
+use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-    public function action_close_notification($post)
+    public function actionCloseNotification(Request $request)
     {
-        Notification::update(['see' => 1], $post->id);
+        Notification::findOrFail($request->id)->update(['see' => 1]);
     }
 }

@@ -84,19 +84,16 @@ class ProductController extends Controller
         return view('product.update.main', $data);
     }
 
-    public function action_update_accounted($post)
+    public function actionUpdateAccounted(int $id, bool $is_accounted)
     {
-        Products::update($post, $post->id);
-
-        response(200, DATA_SUCCESS_UPDATED);
+        Product::findOrFail($id)->update([
+            'is_accounted' => $is_accounted
+        ]);
     }
 
-    public function actionUpdateStorage(UpdateStorageRequest $request)
+    public function actionUpdateStorage(int $id, UpdateStorageRequest $request)
     {
-        ProductStorage::all();
-        foreach ($request->storage as $storage) {
-
-        }
+        Product::findOrFail($id)->storages()->sync($request->get('storage'));
     }
 
     public function action_update_combine($post)

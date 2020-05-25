@@ -46,12 +46,12 @@
 
         @if ($product->combine)
             <div class="tab-pane" id="combine">
-                {{--                @include('product.update.combine')--}}
+                @include('product.update.combine')
             </div>
         @endif
 
         <div class="tab-pane" id="attributes">
-            {{--            @include('product.update.attributes')--}}
+            @include('product.update.attributes')
         </div>
 
         <div class="tab-pane" id="characteristics">

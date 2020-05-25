@@ -174,36 +174,41 @@
 
 
         @if ($tasks->count())
-            @foreach ($tasks as $item)
-                <div class="alert alert-{{ $item->type }}">
+            @foreach ($tasks as $task)
+                @php /** @var \App\Models\Task $task */ @endphp
+                <div class="alert alert-{{ $task->type }}">
                     <div class="row">
                         <div class="col-md-9">
-                            @if($item->price > 0)
+                            @if($task->price)
                                 <b>Бюджет задачі:</b>
                                 <span class="text-success">
-                                {{ number_format($item->price, 0) }}
-                            </span>
+                                    {{ $task->numberFormat('price') }}
+                                </span>
                                 <br>
                             @endif
                             <div>
-                                {!! $item->content !!}
+                                {!! $task->content !!}
                             </div>
                         </div>
                         <div class="right col-md-3">
                             <div class="form-group">
-                                Задача поставлена: {{ $item->created_at->format('d.m.Y') }}<br>
-                                @if(!is_null($item->updated_at))
-                                    Ост. редагування: {{ $item->updated_at->format('d.m.Y') }} <br>
+                                Задача поставлена: {{ $task->created_at->format('d.m.Y') }}<br>
+                                @if(!is_null($task->updated_at))
+                                    Ост. редагування: {{ $task->updated_at->format('d.m.Y') }} <br>
                                 @endif
                             </div>
 
                             <div class="form-group">
-                                <button data-type="success" data-id="{{ $item->id }}"
-                                        class="close_task btn btn-xs btn-success">
+                                <button data-type="get_form"
+                                        data-uri="@uri('task@closeForm')"
+                                        data-post="@params(['id' => $task->id, 'type' => 'success'])"
+                                        class="btn btn-xs btn-success">
                                     Виконано
                                 </button>
-                                <button data-type="danger" data-id="{{ $item->id }}"
-                                        class="close_task btn btn-xs btn-danger">
+                                <button data-type="get_form"
+                                        data-uri="@uri('task@closeForm')"
+                                        data-post="@params(['id' => $task->id, 'type' => 'danger'])"
+                                        class="btn btn-xs btn-danger">
                                     Не виконано
                                 </button>
                             </div>

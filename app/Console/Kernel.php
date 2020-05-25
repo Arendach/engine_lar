@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Import\OrderHints;
 use App\Console\Commands\MakeCast;
 use App\Console\Commands\ReloadNewPostWarehouses;
 use App\Console\Commands\ReportRelation;
@@ -14,6 +15,7 @@ class Kernel extends ConsoleKernel
         ReloadNewPostWarehouses::class,
         ReportRelation::class,
         MakeCast::class,
+        OrderHints::class
     ];
 
     protected function schedule(Schedule $schedule)
