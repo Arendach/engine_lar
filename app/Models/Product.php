@@ -4,7 +4,7 @@ namespace App\Models;
 
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use App\Casts\ProductAttributesCast;
-use App\Casts\ProductName;
+use App\Traits\Editable;
 use App\Traits\Filterable;
 use App\Traits\NumberFormat;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +18,7 @@ class Product extends Model
     use EagerLoadPivotTrait;
     use Filterable;
     use NumberFormat;
+    use Editable;
 
     protected $table = 'products';
 

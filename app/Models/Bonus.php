@@ -6,53 +6,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * App\Models\Bonus
- *
- * @property int $id
- * @property string $data
- * @property mixed $type
- * @property float $sum
- * @property int $user_id
- * @property string $date
- * @property string $source
- * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus whereData($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus whereDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus whereSource($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus whereSum($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus whereUserId($value)
- * @mixin \Eloquent
- * @property-read mixed $color
- * @property-read mixed $type_text
- * @property-read mixed $date_human
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus fromMonth($year, $month, $user_id = 0)
- * @property-read mixed $source_link
- * @property-read mixed $source_text
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bonus whereUpdatedAt($value)
- */
 class Bonus extends Model
 {
     protected $table = 'bonuses';
 
-    protected $fillable = [
-        'data',
-        'type',
-        'sum',
-        'user_id',
-        'date',
-        'source'
-    ];
+    public $timestamps = false;
 
-    protected $dates = ['date'];
+    protected $guarded = [];
 
     public function user(): BelongsTo
     {
@@ -106,13 +66,4 @@ class Bonus extends Model
     {
         return date_for_humans($this->date->format('Y-m-d'));
     }
-
-   protected static function boot()
-   {
-       parent::boot();
-
-       static::creating(function () {
-
-       });
-   }
 }

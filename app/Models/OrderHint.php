@@ -9,12 +9,7 @@ class OrderHint extends Model
 {
     protected $table = 'order_hints';
 
-    protected $fillable = [
-        'id',
-        'color',
-        'description',
-        'type'
-    ];
+    protected $guarded = [];
 
     public $timestamps = false;
 

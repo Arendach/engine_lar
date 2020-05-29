@@ -5,13 +5,13 @@ window.ErrorHandler = require './handlers/ErrorHandler.coffee'
 window.DeleteOnClick = require './handlers/DeleteOnClick.coffee'
 
 patterns =
-  comma: /\,/
-  space: /\s/
-  letter: /[a-zA-Zа-яА-Я]/
-  anySym: /[\!\@\#\$\%\^\&\*\(\)\=\_\`\~\'\\\|\/\+\:\;\>\<\?]/
-  point: /\./g
-  hyphen: /\-/
-  number: /\D/
+    comma: /\,/
+    space: /\s/
+    letter: /[a-zA-Zа-яА-Я]/
+    anySym: /[\!\@\#\$\%\^\&\*\(\)\=\_\`\~\'\\\|\/\+\:\;\>\<\?]/
+    point: /\./g
+    hyphen: /\-/
+    number: /\D/
 
 window.ElementsExists = false
 window.inputCache = ''
@@ -210,7 +210,6 @@ eventRegister 'click', '.map-signs', (event) ->
         $.cookie 'left-content-state', 'open', expires: 5
 
 
-
 eventRegister 'hide.bs.modal', '.modal', -> $(@).remove()
 
 
@@ -231,6 +230,25 @@ $(document).on 'click', '.change-theme', (event) ->
     $.post '/main/change_theme', {theme: theme}
 
 $(document).on 'formLoaded', ->
-    # CKEDITOR Initiable
+# CKEDITOR Initiable
     $('[data-type="ckeditor"]').each ->
         CKEDITOR.replace($(@).attr('name'))
+
+window.contentEdit = (context) ->
+    element = $ context
+    id = element.data('id')
+    model = element.data('model')
+    field = element.data('field')
+    value = element.text()
+
+    $.ajax({
+        type: 'post'
+        url: '/universal/update'
+        data:
+            field: field
+            value: value
+            model: model
+            id: id
+        success: (response) -> console.log(response)
+        error: (response) -> console.log(response)
+    })

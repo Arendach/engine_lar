@@ -12,12 +12,7 @@ class ProductStorage extends Model
 
     protected $table = 'product_storage';
 
-    protected $fillable = [
-        'product_id',
-        'storage_id',
-        'count',
-        'deleted_at'
-    ];
+    protected $guarded = [];
 
     public $timestamps = false;
 

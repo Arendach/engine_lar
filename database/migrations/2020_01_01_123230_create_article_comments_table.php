@@ -19,8 +19,8 @@ class CreateArticleCommentsTable extends Migration
             $table->longText('content');
             $table->timestamps();
 
-            $table->foreign('author_id')->references('id')->on('users');
-            $table->foreign('article_id')->references('id')->on('articles');
+            //$table->foreign('author_id')->references('id')->on('users');
+            //$table->foreign('article_id')->references('id')->on('articles');
         });
     }
 

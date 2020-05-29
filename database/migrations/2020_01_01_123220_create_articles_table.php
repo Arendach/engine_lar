@@ -19,7 +19,7 @@ class CreateArticlesTable extends Migration
             $table->boolean('is_fixed')->default(false);
             $table->timestamps();
 
-            $table->foreign('author_id')->references('id')->on('users');
+            // $table->foreign('author_id')->references('id')->on('users');
         });
     }
 

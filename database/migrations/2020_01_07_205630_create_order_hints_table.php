@@ -12,7 +12,6 @@ class CreateOrderHintsTable extends Migration
             $table->string('color', 32);
             $table->string('description', 256);
             $table->set('type', ['delivery', 'self', 'sending', 0])->default(0);
-            $table->timestamps();
         });
     }
 

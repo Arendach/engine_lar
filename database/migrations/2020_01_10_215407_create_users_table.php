@@ -10,10 +10,10 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('login',32);
+            $table->string('login', 32);
             $table->string('password', 32);
             $table->string('email', 64)->nullable();
-            $table->string('name', 32);
+            $table->string('name', 256);
             $table->string('pin', 3)->default('000');
             $table->decimal('reserve_funds', 10, 2)->default(0);
             $table->decimal('rate', 10, 2)->default(0);
@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->integer('user_position_id')->nullable()->unsigned();
             $table->boolean('is_courier')->default(true);
             $table->string('theme', 32)->default('flatfly');
+            $table->json('access')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

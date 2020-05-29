@@ -430,6 +430,31 @@ $(document).on('formLoaded', function() {
   });
 });
 
+window.contentEdit = function(context) {
+  var element, field, id, model, value;
+  element = $(context);
+  id = element.data('id');
+  model = element.data('model');
+  field = element.data('field');
+  value = element.text();
+  return $.ajax({
+    type: 'post',
+    url: '/universal/update',
+    data: {
+      field: field,
+      value: value,
+      model: model,
+      id: id
+    },
+    success: function(response) {
+      return console.log(response);
+    },
+    error: function(response) {
+      return console.log(response);
+    }
+  });
+};
+
 
 /***/ }),
 

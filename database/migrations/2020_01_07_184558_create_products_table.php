@@ -11,13 +11,13 @@ class CreateProductsTable extends Migration
             $table->increments('id');
 
             // main info
-            $table->string('name', 256);
+            $table->string('name_uk', 256);
             $table->string('name_ru', 256)->nullable();
             $table->string('article', 256);
-            $table->string('model', 256);
+            $table->string('model_uk', 256);
             $table->string('model_ru', 256)->nullable();
             $table->string('service_code', 256)->nullable();
-            $table->text('description')->nullable();
+            $table->text('description_uk')->nullable();
             $table->text('description_ru')->nullable();
 
             // prices
@@ -29,10 +29,14 @@ class CreateProductsTable extends Migration
             $table->boolean('is_combine')->default(false);
 
             // attributes
-            $table->string('storage', 256)->nullable();
             $table->text('attributes')->nullable();
             $table->decimal('weight', 10, 3)->default(0);
-            $table->string('volume')->nullable();
+            $table->json('volume')->nullable();
+
+            // new fields
+            $table->json('packing')->nullable();
+            $table->string('video', 256)->nullable();
+            $table->string('id_storage', 256)->nullable();
 
             // seo
             $table->string('meta_title_uk', 256)->nullable();
@@ -52,9 +56,9 @@ class CreateProductsTable extends Migration
             $table->integer('manufacturer_id')->unsigned();
             $table->integer('author_id')->unsigned();
 
-            $table->foreign('category_id')->references('id')->on('categories');
-            $table->foreign('manufacturer_id')->references('id')->on('manufacturers');
-            $table->foreign('author_id')->references('id')->on('users');
+            // $table->foreign('category_id')->references('id')->on('categories');
+            // $table->foreign('manufacturer_id')->references('id')->on('manufacturers');
+            // $table->foreign('author_id')->references('id')->on('users');
         });
     }
 

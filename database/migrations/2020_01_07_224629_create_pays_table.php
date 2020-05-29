@@ -15,7 +15,6 @@ class CreatePaysTable extends Migration
             $table->string('provider', 128)->nullable();
             $table->string('address', 128)->nullable();
             $table->string('ipn', 128)->nullable();
-            $table->string('ipn', 128)->nullable();
             $table->string('account', 128)->nullable();
             $table->string('bank', 128)->nullable();
             $table->string('mfo', 128)->nullable();

@@ -116,7 +116,7 @@
                     <td>{{ $item->combine ? 'Комбінований' : 'Одиничний' }}</td>
                     <td>{{ $item->category->name ?? '' }}</td>
                     <td>{{ $item->manufacturer->name ?? '' }}</td>
-                    <td>{{ $item->articul }}</td>
+                    <td>{!! $item->editable('articul') !!}</td>
                     <td>{{ $item->identefire_storage }}</td>
                     <td>{{ $item->costs }}</td>
                     <td>0</td>

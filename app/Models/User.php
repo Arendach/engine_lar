@@ -6,102 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * App\Models\User
- *
- * @property int $id
- * @property string $login
- * @property string $password
- * @property string $email
- * @property string $first_name
- * @property string $last_name
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property string $access
- * @property string $pin
- * @property string $name
- * @property string $instruction
- * @property float $reserve_funds
- * @property float $rate
- * @property int $archive
- * @property int $schedule_notice
- * @property int $position
- * @property int $is_courier
- * @property string|null $theme
- * @property-read mixed $is_online
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User couriers()
- * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User query()
- * @method static bool|null restore()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereAccess($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereArchive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereFirstName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereInstruction($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereIsCourier($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLogin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePosition($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereRate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereReserveFunds($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereScheduleNotice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereTheme($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User withTrashed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User withoutTrashed()
- * @mixin \Eloquent
- * @property-read mixed $theme_path
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Notification[] $notifications
- * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Task[] $tasks
- * @property-read int|null $tasks_count
- * @property string $user_access_id
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUserAccessId($value)
- * @property-read \App\Models\UserAccess $user_access
- * @property-read mixed $full_name
- * @property-read mixed $online_color
- * @property-read mixed $online_text
- * @property int $user_position_id
- * @property-read \App\Models\UserPosition $userPosition
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUserPositionId($value)
- */
 class User extends Model
 {
     use SoftDeletes;
 
     protected $table = 'users';
 
-    protected $fillable = [
-        'login',
-        'password',
-        'email',
-        'first_name',
-        'last_name',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'user_access_id',
-        'pin',
-        'name',
-        'instruction',
-        'reserve_funds',
-        'rate',
-        'archive',
-        'schedule_notice',
-        'user_position_id',
-        'is_courier',
-        'theme'
-    ];
+    protected $guarded = [];
 
     public function scopeCouriers(Builder $query): void
     {

@@ -8,9 +8,9 @@ class CreatePurchasesTable extends Migration
     public function up()
     {
         Schema::create('purchases', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
 
-            $table->increments('manufacturer_id')->unsigned();
+            $table->integer('manufacturer_id')->unsigned();
             $table->tinyInteger('status')->default(0);
             $table->tinyInteger('type')->default(0);
             $table->decimal('sum', 10, 2)->default(0);

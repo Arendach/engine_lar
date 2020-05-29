@@ -8,12 +8,12 @@ class CreateTasksTable extends Migration
     public function up()
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id('id');
 
             $table->integer('user_id')->unsigned();
             $table->integer('author_id')->unsigned();
             $table->longText('content');
-            $table->string('type', ['success', 'info', 'danger', 'warning'])->default('info');
+            $table->enum('type', ['success', 'info', 'danger', 'warning'])->default('info');
             $table->boolean('is_success')->default(false);
             $table->text('comment')->nullable();
             $table->decimal('price', 10, 2)->nullable();

@@ -9,7 +9,7 @@ class CreateProductAssetsTable extends Migration
     {
         Schema::create('product_assets', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 32);
+            $table->string('name', 256);
             $table->integer('storage_id')->unsigned();
             $table->decimal('price', 10, 2);
             $table->decimal('course', 10, 2)->default(1);

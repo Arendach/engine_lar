@@ -30,7 +30,7 @@ mix
 
 
     .less('resources/less/login.less', 'public/css/login.css')
-s    .less('resources/less/app.less', 'public/css/app.css')
+    .less('resources/less/app.less', 'public/css/app.css')
     .less('resources/less/print.less', 'public/css/print.css')
 
 
