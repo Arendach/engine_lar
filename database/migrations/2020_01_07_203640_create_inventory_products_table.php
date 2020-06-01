@@ -7,7 +7,7 @@ class CreateInventoryProductsTable extends Migration
 {
     public function up()
     {
-        Schema::create('inventory_products', function (Blueprint $table) {
+        Schema::create('inventory_product', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('inventory_id')->unsigned();
             $table->integer('product_id')->unsigned();
@@ -18,6 +18,6 @@ class CreateInventoryProductsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('inventory_products');
+        Schema::dropIfExists('inventory_product');
     }
 }

@@ -7,8 +7,8 @@ class CreateCombineProductsTable extends Migration
 {
     public function up()
     {
-        Schema::create('combine_products', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('product_linked', function (Blueprint $table) {
+            $table->id();
             $table->integer('product_id')->unsigned();
             $table->integer('linked_id')->unsigned();
             $table->decimal('price', 10,2)->default(0);
@@ -18,6 +18,6 @@ class CreateCombineProductsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('combine_products');
+        Schema::dropIfExists('product_linked');
     }
 }

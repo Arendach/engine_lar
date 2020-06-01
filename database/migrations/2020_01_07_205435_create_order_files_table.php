@@ -8,10 +8,12 @@ class CreateOrderFilesTable extends Migration
     public function up()
     {
         Schema::create('order_files', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
 
             $table->string('path', 1024);
+            $table->string('name', 256);
             $table->integer('user_id')->unsigned();
+            $table->integer('order_id')->unsigned();
 
             $table->timestamps();
         });

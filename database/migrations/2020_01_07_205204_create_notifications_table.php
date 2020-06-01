@@ -12,6 +12,7 @@ class CreateNotificationsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->text('content');
             $table->boolean('is_see');
+            $table->string('type', 256)->default('info');
             $table->timestamps();
         });
     }

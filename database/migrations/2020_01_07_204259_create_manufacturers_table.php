@@ -9,12 +9,12 @@ class CreateManufacturersTable extends Migration
     {
         Schema::create('manufacturers', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 256);
+            $table->string('name', 256)->nullable();
+            $table->string('name_ru', 256)->nullable();
             $table->string('email', 256)->nullable();
             $table->string('phone', 256)->nullable();
             $table->string('address', 256)->nullable();
             $table->text('info')->nullable();
-            $table->timestamps();
         });
     }
 

@@ -14,7 +14,7 @@ class CreateOrderProductTable extends Migration
             $table->integer('product_id')->unsigned();
             $table->integer('storage_id')->unsigned();
 
-            $table->text('attributes')->nullable();
+            $table->json('attributes')->nullable();
             $table->integer('amount')->default(1);
             $table->decimal('price', 10, 2)->default(0);
             $table->tinyInteger('place')->default(1);

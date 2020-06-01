@@ -10,18 +10,8 @@ class OrderProduct extends Pivot
 {
     use NumberFormat;
 
-    protected $fillable = [
-        'order_id',
-        'attribute',
-        'product_id',
-        'storage_id',
-        'amount',
-        'price',
-        'place'
-    ];
-
+    protected $guarded = [];
     protected $table = 'order_product';
-
     public $timestamps = false;
 
     protected $casts = [

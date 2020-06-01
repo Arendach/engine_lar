@@ -4,7 +4,9 @@ namespace App\Models;
 
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use App\Casts\CollectionCast;
+use App\Casts\Phone;
 use App\Traits\DateHuman;
+use App\Traits\Editable;
 use App\Traits\Filterable;
 use App\Traits\NumberFormat;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,6 +21,7 @@ class Order extends Model
     use Filterable;
     use DateHuman;
     use NumberFormat;
+    use Editable;
 
     protected $table = 'orders';
 
@@ -62,7 +65,9 @@ class Order extends Model
     protected $dates = ['created_at', 'date_delivery', 'updated_at', 'deleted_at'];
 
     protected $casts = [
-        'products.pivot.attributes' => CollectionCast::class
+        'products.pivot.attributes' => CollectionCast::class,
+        'phone'                     => Phone::class,
+        'phone2'                    => Phone::class
     ];
 
     public $timestamps = true;
