@@ -18,6 +18,7 @@ class CreateClientsTable extends Migration
             $table->integer('client_group_id');
             $table->smallInteger('percentage')->default(1);
             $table->integer('user_id');
+            $table->integer('count_orders')->default(0);
 
             $table->timestamps();
         });

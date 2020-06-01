@@ -7,7 +7,7 @@ class CreateScheduleTable extends Migration
 {
     public function up()
     {
-        Schema::create('schedule', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->increments('id');
 
             $table->tinyInteger('type');
@@ -23,6 +23,6 @@ class CreateScheduleTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('schedule');
+        Schema::dropIfExists('schedules');
     }
 }

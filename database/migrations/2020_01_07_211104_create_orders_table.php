@@ -14,7 +14,7 @@ class CreateOrdersTable extends Migration
             $table->tinyInteger('status')->default(0);
 
             // contacts
-            $table->string('fio', 64);
+            $table->string('fio', 256);
             $table->string('phone', 13);
             $table->string('phone2', 13)->nullable();
             $table->string('email', 64)->nullable();
@@ -24,20 +24,18 @@ class CreateOrdersTable extends Migration
             $table->string('address', 256)->nullable();
             $table->string('street', 256)->nullable();
             $table->string('comment_address', 1024)->nullable();
-            $table->string('warehouse', 256);
+            $table->string('warehouse', 256)->nullable();
 
             // pays
-            $table->set('pay_delivery', ['receiver', 'sender'])->default('receiver');
-            $table->set('pay_imposed', ['receiver', 'sender'])->default('receiver');
-            $table->boolean('is_payed')->default(0);
+            $table->boolean('is_payed')->default(0)->nullable();
             $table->decimal('prepayment', 10, 2)->nullable();
 
             // prices
             $table->decimal('discount', 10, 2)->nullable();
             $table->decimal('delivery_price', 10, 2)->nullable();
-            $table->decimal('full_sum', 10, 2);
+            $table->decimal('full_sum', 10, 2)->default(0);
 
-            $table->text('comment');
+            $table->text('comment')->nullable();
             $table->integer('sending')->default(0);
 
 
@@ -51,10 +49,12 @@ class CreateOrdersTable extends Migration
             $table->integer('client_id')->unsigned()->nullable();
             $table->integer('site_id')->unsigned()->nullable();
             $table->integer('order_professional_id')->unsigned()->nullable();
+            $table->integer('new_post_city_id')->unsigned()->nullable();
+            $table->integer('new_post_warehouse_id')->unsigned()->nullable();
 
             // dates
-            $table->time('time_with', false);
-            $table->time('time_to', false);
+            $table->time('time_with', false)->nullable();
+            $table->time('time_to', false)->nullable();
             $table->date('date_delivery')->nullable();
             $table->softDeletes();
             $table->timestamps();

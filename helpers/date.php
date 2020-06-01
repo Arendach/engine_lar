@@ -212,8 +212,14 @@ function date_to_day(string $date): string
  * @param string $str
  * @return string
  */
-function string_to_time(string $str): string
+function string_to_time(?string $str): ?string
 {
+    if (is_null($str)) {
+        return null;
+    }
+
+    $str = preg_replace('/[.\s]/', '', $str);
+
     if (preg_match('/[0-9]{1,2}:[0-9]{1,2}/', $str)) $str = time_to_string($str);
 
     if (mb_strlen($str) == 4)

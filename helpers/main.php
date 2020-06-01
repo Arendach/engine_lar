@@ -118,7 +118,7 @@ function morph($n, $f1, $f2, $f5)
  * @param $phone
  * @return string
  */
-function get_number_world_format($phone)
+function get_number_world_format($phone): ?string
 {
     if (preg_match('/\+38[0-9]{10,10}/', $phone)) {
         return $phone;
@@ -136,7 +136,7 @@ function get_number_world_format($phone)
         return '+380' . $phone;
     }
 
-    return 'error!!';
+    return $phone;
 }
 
 /**

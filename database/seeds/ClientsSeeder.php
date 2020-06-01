@@ -30,5 +30,35 @@ class ClientsSeeder extends Seeder
                 'updated_at'      => now()
             ]);
         });
+
+        /* DB::connection('old')->table('orders')->distinct('phone')->get()->each(function (stdClass $item) {
+            $count = DB::connection('old')->table('orders')->where('phone', $item->phone)->count();
+
+            if ($count < 2) {
+                return;
+            }
+
+            if (Client::where('phone', $item->phone)->count()) {
+                return;
+            }
+
+            if (!preg_match('/[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}/', $item->phone)) {
+                return;
+            }
+
+            Client::create([
+                'name'            => $item->fio,
+                'email'           => $item->email,
+                'phone'           => $item->phone,
+                'address'         => $item->address,
+                'info'            => 'Створено автоматично',
+                'client_group_id' => 1,
+                'percentage'      => 0,
+                'user_id'         => 1,
+                'created_at'      => now(),
+                'updated_at'      => now(),
+                'count_orders'    => $count
+            ]);
+        });*/
     }
 }

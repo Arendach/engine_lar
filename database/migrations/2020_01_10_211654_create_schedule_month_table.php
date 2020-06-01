@@ -7,7 +7,7 @@ class CreateScheduleMonthTable extends Migration
 {
     public function up()
     {
-        Schema::create('schedule_month', function (Blueprint $table) {
+        Schema::create('schedule_months', function (Blueprint $table) {
             $table->id();
 
             $table->decimal('price_month', 10, 2)->default(0);
@@ -25,6 +25,6 @@ class CreateScheduleMonthTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('schedule_month');
+        Schema::dropIfExists('schedule_months');
     }
 }

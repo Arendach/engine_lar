@@ -5,52 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * App\Models\Schedule
- *
- * @property int $id
- * @property string $date
- * @property int $type
- * @property int $turn_up
- * @property int $went_away
- * @property int $work_day
- * @property int $dinner_break
- * @property int $user_id
- * @property-read mixed $type_name
- * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereDinnerBreak($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereTurnUp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereWentAway($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereWorkDay($value)
- * @mixin \Eloquent
- * @property int|null $schedule_month_id
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereScheduleMonthId($value)
- * @property-read mixed $day
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule isHoliday()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule isHospital()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule isVacation()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule isWorking()
- * @property-read mixed $type_color
- * @property-read mixed $worked
- * @property-read mixed $worked_color
- * @property string|null $updated_at
- * @property string|null $created_at
- * @property-read mixed $recycling
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Schedule whereUpdatedAt($value)
- */
 class Schedule extends Model
 {
-    protected $table = 'schedule';
+    protected $table = 'schedules';
 
-    protected $fillable = [
+/*    protected $fillable = [
         'date',
         'type',
         'turn_up',
@@ -58,9 +17,11 @@ class Schedule extends Model
         'dinner_break',
         'user_id',
         'schedule_month_id'
-    ];
+    ];*/
 
-    public $timestamps = false;
+    protected $guarded = [];
+
+    public $timestamps = true;
 
     private $types = [
         'holiday'  => 'Вихідний',
