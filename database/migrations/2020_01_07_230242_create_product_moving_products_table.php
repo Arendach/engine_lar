@@ -7,7 +7,7 @@ class CreateProductMovingProductsTable extends Migration
 {
     public function up()
     {
-        Schema::create('product_moving_products', function (Blueprint $table) {
+        Schema::create('product_moving_product', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('product_id')->unsigned();
             $table->integer('product_moving_id')->unsigned();
@@ -17,6 +17,6 @@ class CreateProductMovingProductsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('product_moving_products');
+        Schema::dropIfExists('product_moving_product');
     }
 }

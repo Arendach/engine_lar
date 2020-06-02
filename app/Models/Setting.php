@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\Editable;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderTransaction extends Model
+class Setting extends Model
 {
+    use Editable;
+
     protected $guarded = [];
 }

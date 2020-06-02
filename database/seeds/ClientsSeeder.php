@@ -31,7 +31,10 @@ class ClientsSeeder extends Seeder
             ]);
         });
 
-        /* DB::connection('old')->table('orders')->distinct('phone')->get()->each(function (stdClass $item) {
+        /*$clientGroup = ClientGroup::create([
+           'name' => 'Додані автоматично'
+       ]);*/
+        /* DB::connection('old')->table('orders')->distinct('phone')->get()->each(function (stdClass $item) use($clientGroup) {
             $count = DB::connection('old')->table('orders')->where('phone', $item->phone)->count();
 
             if ($count < 2) {
@@ -52,7 +55,7 @@ class ClientsSeeder extends Seeder
                 'phone'           => $item->phone,
                 'address'         => $item->address,
                 'info'            => 'Створено автоматично',
-                'client_group_id' => 1,
+                'client_group_id' => $clientGroup->id,
                 'percentage'      => 0,
                 'user_id'         => 1,
                 'created_at'      => now(),

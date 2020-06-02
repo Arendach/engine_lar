@@ -14,16 +14,9 @@ class CreatePurchaseProductTable extends Migration
             $table->integer('purchase_id')->unsigned();
             $table->integer('amount')->unsigned();
             $table->decimal('price', 10, 2)->default(0);
-
-            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('purchase_product');

@@ -11,7 +11,7 @@ class CreateProductImagesTable extends Migration
             $table->increments('id');
             $table->integer('product_id')->unsigned();
             $table->string('path', 256);
-            $table->string('alt', 64)->nullable();
+            $table->string('alt', 256)->nullable();
             $table->boolean('is_main')->default(false);
             $table->softDeletes();
             $table->timestamps();

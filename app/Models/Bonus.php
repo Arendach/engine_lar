@@ -10,7 +10,7 @@ class Bonus extends Model
 {
     protected $table = 'bonuses';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $guarded = [];
 

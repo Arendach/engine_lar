@@ -10,14 +10,13 @@ class CreateStorageTable extends Migration
         Schema::create('storage', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('name', 32);
+            $table->string('name', 256);
             $table->boolean('is_accounted')->default(true);
             $table->text('info')->nullable();
             $table->boolean('is_delivery')->default(true);
             $table->boolean('is_self')->default(true);
             $table->boolean('is_sending')->default(true);
-
-            $table->timestamps();
+            $table->integer('priority')->default(0);
         });
     }
 

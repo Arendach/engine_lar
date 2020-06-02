@@ -15,7 +15,7 @@ class OrderProductsSeeder extends Seeder
                 'attributes' => $item->attributes == '{}' ? null : json_decode($item->attributes),
                 'amount'     => $item->amount,
                 'price'      => $item->price,
-                'place'      => $item->place
+                'place'      => !is_numeric($item->place) ? 1 : $item->place
             ]);
         });
     }

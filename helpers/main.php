@@ -279,3 +279,14 @@ function assets(string $asset): array
 {
     return require base_path("assets/$asset.php");
 }
+
+
+function setting(string $key, $default = null)
+{
+    return app(\App\Services\SettingService::class)->get($key, $default);
+}
+
+function settingEditable(string $key, $default = null)
+{
+    return app(\App\Services\SettingService::class)->getEditable($key, $default);
+}

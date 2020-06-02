@@ -8,11 +8,18 @@ class OrderFilesSeeder extends Seeder
     public function run()
     {
         DB::connection('old')->table('order_images')->get()->each(function (stdClass $item) {
+            $path = $this->getNewPath($item->path);
+
             OrderFile::create([
-                'path'     => $this->getNewPath($item->path),
-                'order_id' => $item->order_id
+                'path'     => $path,
+                'order_id' => $item->order_id,
+                'name'     => $this->getFileName($item->path),
+                'user_id'  => 1
             ]);
         });
+
+        $this->deleteOldFiles();
+
     }
 
     private function getNewPath(string $path): string
@@ -26,7 +33,21 @@ class OrderFilesSeeder extends Seeder
     {
         $pathInfo = pathinfo($path);
 
-        dd($pathInfo);
-        return pathinfo($path)['basename'];
+        return $pathInfo['basename'];
+    }
+
+    private function deleteOldFiles()
+    {
+        $files = scandir(public_path('storage/orders'));
+
+        unset($files[0], $files[1]);
+
+        foreach ($files as $file) {
+            $path = "/storage/orders/$file";
+
+            if (!OrderFile::where('path', $path)->count()) {
+                unlink(public_path($path));
+            }
+        }
     }
 }

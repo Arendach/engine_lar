@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductHistory extends Model
 {
-    protected $table = 'history_product';
+    protected $table = 'product_history';
 
-    public $timestamps = false;
+    public $timestamps = true;
+
+    protected $guarded = [];
 }

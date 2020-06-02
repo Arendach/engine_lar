@@ -6,42 +6,12 @@ use App\Traits\File;
 use App\Traits\Image;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * App\Models\ProductImage
- *
- * @property int $id
- * @property int $product_id
- * @property string $path
- * @property string|null $alt
- * @property string|null $deleted_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage whereAlt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage wherePath($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage whereProductId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage whereUpdatedAt($value)
- * @mixin \Eloquent
- * @property int $is_main
- * @property-read mixed $base_name
- * @property-read mixed $create_date
- * @property-read mixed $icon
- * @property-read mixed $image_size
- * @property-read mixed $public_path
- * @property-read mixed $size
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ProductImage whereIsMain($value)
- */
 class ProductImage extends Model
 {
     use File, Image;
 
     protected $table = 'product_images';
-
+/*
     protected $fillable = [
         'product_id',
         'path',
@@ -50,7 +20,9 @@ class ProductImage extends Model
         'created_at',
         'updated_at',
         'is_main'
-    ];
+    ];*/
+
+    protected $guarded = [];
 
     public $timestamps = true;
 

@@ -7,12 +7,12 @@ class CreatePurchasePaymentTable extends Migration
 {
     public function up()
     {
-        Schema::create('purchase_payment', function (Blueprint $table) {
+        Schema::create('purchase_payments', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('user_id')->unsigned();
             $table->decimal('sum', 10, 2)->default(0);
-            $table->decimal('course', 10, 2);
+            $table->decimal('course', 10, 2)->default(1);
 
             $table->timestamps();
         });
@@ -20,6 +20,6 @@ class CreatePurchasePaymentTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('purchase_payment');
+        Schema::dropIfExists('purchase_payments');
     }
 }

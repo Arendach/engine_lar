@@ -22,8 +22,6 @@ class CreatePaysTable extends Migration
             $table->string('director', 128)->nullable();
             $table->boolean('is_cashless')->default(false);
             $table->boolean('is_pdv')->default(false);
-
-            $table->timestamps();
         });
     }
 

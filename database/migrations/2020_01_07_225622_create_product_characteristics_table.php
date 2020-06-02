@@ -13,8 +13,10 @@ class CreateProductCharacteristicsTable extends Migration
             $table->integer('characteristic_id')->unsigned();
             $table->integer('product_id')->unsigned();
 
-            $table->string('value_uk', 64);
-            $table->string('value_ru', 64);
+            $table->string('value_uk', 256)->nullable();
+            $table->string('value_ru', 256)->nullable();
+            $table->string('filter_uk', 256)->nullable();
+            $table->string('filter_ru', 256)->nullable();
         });
     }
 

@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Article;
-use App\Models\Bonus;
 use App\Models\Client;
 use App\Models\ClientGroup;
 use App\Models\Inventory;
@@ -13,7 +12,6 @@ use App\Models\Payout;
 use App\Models\User;
 use App\Models\UserAccess;
 use App\Observers\ArticleObserver;
-use App\Observers\BonusObserver;
 use App\Observers\ClientGroupObserver;
 use App\Observers\ClientObserver;
 use App\Observers\InventoryObserver;
@@ -32,7 +30,6 @@ class EloquentModelsServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        Bonus::observe(BonusObserver::class);
         Payout::observe(PayoutObserver::class);
         UserAccess::observe(UserAccessObserver::class);
         User::observe(UserObserver::class);

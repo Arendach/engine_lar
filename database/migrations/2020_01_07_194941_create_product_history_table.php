@@ -12,8 +12,8 @@ class CreateProductHistoryTable extends Migration
 
             $table->integer('product_id')->unsigned();
             $table->string('type', 32);
-            $table->text('data');
-            $table->integer('user_id');
+            $table->json('data');
+            $table->integer('user_id')->unsigned();
 
             $table->timestamps();
         });

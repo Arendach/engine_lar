@@ -11,7 +11,7 @@ class CreateProductAttributeVariantsTable extends Migration
             $table->increments('id');
 
             $table->integer('product_attribute_id')->unsigned();
-            $table->string('value', 256);
+            $table->string('value_uk', 256);
             $table->string('value_ru', 256);
         });
     }
