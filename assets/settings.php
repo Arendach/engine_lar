@@ -8,8 +8,10 @@ use App\Models\Merchant;
 use App\Models\OrderHint;
 use App\Models\OrderProfessional;
 use App\Models\Pay;
+use App\Models\Setting;
 use App\Models\Shop;
 use App\Models\Site;
+use App\Models\Street;
 
 return [
     'hints' => [
@@ -239,6 +241,62 @@ return [
             'name' => [
                 'type'  => 'text',
                 'title' => 'Назва'
+            ]
+        ]
+    ],
+
+    'streets' => [
+        'title'    => 'Вулиці',
+        'model'    => Street::class,
+        'paginate' => 100,
+        'fields'   => [
+            'street_type' => [
+                'filter'  => true,
+                'type'    => 'select',
+                'title'   => 'Тип обєкта',
+                'options' => [
+                    'Вулиця'    => 'Вулиця',
+                    'Провулок'  => 'Провулок',
+                    'Площа'     => 'Площа',
+                    'Узвіз'     => 'Узвіз',
+                    'Проспект'  => 'Проспект',
+                    'Бульвар'   => 'Бульвар',
+                    'Шосе'      => 'Шосе',
+                    'Дорога'    => 'Дорога',
+                    'Проїзд'    => 'Проїзд',
+                    'Алея'      => 'Алея',
+                    'Набережна' => 'Набережна',
+                    'Тупик'     => 'Тупик',
+
+                ]
+            ],
+            'name'        => [
+                'filter' => true,
+                'type'   => 'text',
+                'title'  => 'Назва'
+            ],
+            'district'    => [
+                'filter'   => true,
+                'type'     => 'text',
+                'title'    => 'Район',
+                'required' => true
+            ],
+        ]
+    ],
+
+    'settings' => [
+        'title'    => 'Глобальні перемінні',
+        'model'    => Setting::class,
+        'paginate' => 100,
+        'fields'   => [
+            'key'   => [
+                'type'     => 'text',
+                'title'    => 'Ключ',
+                'disabled' => true,
+            ],
+            'value' => [
+                'type'  => 'text',
+                'title' => 'Значення'
             ]
         ]
     ]

@@ -9,9 +9,9 @@ class CreateUserAccessTable extends Migration
     {
         Schema::create('user_access', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 32);
+            $table->string('name', 256);
             $table->string('description', 256)->nullable();
-            $table->text('params');
+            $table->json('params');
         });
     }
 

@@ -27,9 +27,13 @@ class SettingController extends Controller
     {
         $config = assets('settings')[$part];
 
+        $items = isset($config['paginate'])
+            ? $config['model']::paginate($config['paginate'])
+            : $config['model']::all();
+
         $data = [
             'title'  => $config['title'],
-            'items'  => $config['model']::all(),
+            'items'  => $items,
             'fields' => $config['fields'],
             'part'   => $part
         ];

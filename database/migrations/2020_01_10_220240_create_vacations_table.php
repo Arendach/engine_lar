@@ -8,7 +8,7 @@ class CreateVacationsTable extends Migration
     public function up()
     {
         Schema::create('vacations', function (Blueprint $table) {
-            $table->integer('id');
+            $table->id();
             $table->date('date');
             $table->integer('user_id')->unsigned();
             $table->timestamps();

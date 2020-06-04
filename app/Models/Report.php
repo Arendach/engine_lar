@@ -5,61 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * App\Models\Report
- *
- * @property int $id
- * @property string $name_operation
- * @property string $date
- * @property string $data
- * @property float $sum
- * @property string $comment
- * @property int $user
- * @property string $type
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereComment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereData($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereNameOperation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereSum($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereUser($value)
- * @mixin \Eloquent
- * @property-read mixed $type_color
- * @property-read mixed $type_name
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report type($type)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report my()
- * @property int $user_id
- * @property-read mixed $moving_status
- * @property-read mixed $moving_user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereUserId($value)
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property int|null $report_item_id
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $day
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereReportItemId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Report whereUpdatedAt($value)
- */
 class Report extends Model
 {
     protected $table = 'reports';
 
-    protected $fillable = [
-        'type',
-        'name_operation',
-        'created_at',
-        'updated_at',
-        'data',
-        'sum',
-        'comment',
-        'user_id',
-        'type',
-        'report_item_id'
-    ];
+    /*    protected $fillable = [
+            'type',
+            'name_operation',
+            'created_at',
+            'updated_at',
+            'data',
+            'sum',
+            'comment',
+            'user_id',
+            'type',
+            'report_item_id'
+        ];*/
+
+    protected $guarded = [];
 
     public $timestamps = true;
 
@@ -127,7 +90,7 @@ class Report extends Model
 
     public function getMovingStatusAttribute(): int
     {
-        [,$status] = explode(':', $this->data);
+        [, $status] = explode(':', $this->data);
 
         return (int)$status;
     }

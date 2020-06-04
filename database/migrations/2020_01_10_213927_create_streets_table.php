@@ -9,10 +9,10 @@ class CreateStreetsTable extends Migration
     {
         Schema::create('streets', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('city', 32);
-            $table->string('district', 32);
-            $table->string('street_type', 32);
-            $table->string('name', 32);
+            $table->string('city', 256);
+            $table->string('district', 256);
+            $table->string('street_type', 256);
+            $table->string('name', 256);
         });
     }
 

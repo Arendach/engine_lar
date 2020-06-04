@@ -28,6 +28,31 @@
                     Дії
                 </th>
             </tr>
+            <tr>
+                @foreach($fields as $name => $field)
+                    <td>
+                        @if(isset($field['filter']) and $field['filter'])
+                            @if($field['type'] == 'text')
+                                <input class="form-control input-sm" name="{{ $name }}" value="{{ request($name) }}">
+                            @elseif($field['type'] == 'select')
+                                <select class="form-control input-sm" name="{{ $name }}">
+                                    <option value=""></option>
+                                    @foreach($field['options'] as $optionValue => $optionText)
+                                        <option @selected($name, $optionValue) value="{{ $optionValue }}">
+                                            {{ $optionText }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endif
+                        @endif
+                    </td>
+                @endforeach
+                <td class="action-2 centered">
+                    <button class="btn btn-primary btn-sm">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </td>
+            </tr>
             @foreach($items as $item)
                 <tr>
                     @foreach($fields as $name => $field)
@@ -76,6 +101,12 @@
                 </tr>
             @endforeach
         </table>
+
+        @if($items instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            <div class="centered">
+                {!! $items->links() !!}
+            </div>
+        @endif
     @else
         <h4 class="centered">
             Тут пусто :(

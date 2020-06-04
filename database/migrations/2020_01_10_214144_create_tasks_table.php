@@ -8,7 +8,7 @@ class CreateTasksTable extends Migration
     public function up()
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->id('id');
+            $table->id();
 
             $table->integer('user_id')->unsigned();
             $table->integer('author_id')->unsigned();

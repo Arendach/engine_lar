@@ -8,11 +8,21 @@ class OrderProductsSeeder extends Seeder
     public function run()
     {
         DB::connection('old')->table('product_to_order')->get()->each(function (stdClass $item) {
+            try {
+                $attributes = json_decode($item->attributes, true);
+            } catch (Exception $exception) {
+                $attributes = [];
+            }
+
+            if (count($attributes)) {
+                $attributes = null;
+            }
+
             OrderProduct::create([
                 'order_id'   => $item->order_id,
                 'product_id' => $item->product_id,
                 'storage_id' => $item->storage_id,
-                'attributes' => $item->attributes == '{}' ? null : json_decode($item->attributes),
+                'attributes' => $attributes,
                 'amount'     => $item->amount,
                 'price'      => $item->price,
                 'place'      => !is_numeric($item->place) ? 1 : $item->place
