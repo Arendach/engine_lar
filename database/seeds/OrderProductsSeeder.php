@@ -14,8 +14,12 @@ class OrderProductsSeeder extends Seeder
                 $attributes = [];
             }
 
-            if (count($attributes)) {
+            if (!is_array($attributes) || !count($attributes)) {
                 $attributes = null;
+            }
+
+            if (is_null($item->order_id) || is_null($item->product_id)){
+                return null;
             }
 
             OrderProduct::create([
