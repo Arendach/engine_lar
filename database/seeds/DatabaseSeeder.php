@@ -6,7 +6,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        Artisan::call('migrate:refresh');
+        ini_set('memory_limit', -1);
 
         $this->call(AttributesSeeder::class);
         $this->call(BonusesSeeder::class);
