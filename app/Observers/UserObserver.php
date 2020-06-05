@@ -9,7 +9,9 @@ class UserObserver
 {
     public function creating(User $user)
     {
-        $user->password = UserAuth::hash($user->password);
+        if (mb_strlen($user->password) != 32) {
+            $user->password = UserAuth::hash($user->password);
+        }
     }
 
     public function updating(User $user)
