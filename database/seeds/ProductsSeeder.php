@@ -23,6 +23,21 @@ class ProductsSeeder extends Seeder
                 $productKey = $item->product_key;
             }
 
+            try {
+                $volume = json_decode($item->volume);
+                $volume = json_encode($volume);
+            } catch (Exception $exception) {
+                $volume = null;
+            }
+
+            try {
+                $attr = json_decode($item->attributes);
+                $attr = json_encode($attr);
+            } catch (Exception $exception) {
+                $attr = null;
+            }
+
+
             Product::create([
                 'id'                  => $item->id,
                 'name_uk'             => htmlspecialchars_decode($item->name),
@@ -37,9 +52,9 @@ class ProductsSeeder extends Seeder
                 'procurement_price'   => $item->procurement_costs,
                 'is_accounted'        => $item->accounted,
                 'is_combine'          => $item->combine,
-                'attributes'          => in_array($item->attributes, ['', null, 'null', '[]']) ? null : htmlspecialchars_decode($item->attributes),
+                'attributes'          => $attr,
                 'weight'              => $item->weight,
-                'volume'              => in_array($item->volume, ['', 0, null, 'null']) or is_numeric($item->volume) ? null : $item->volume,
+                'volume'              => $volume,
                 'author_id'           => $item->author,
                 'created_at'          => $date,
                 'updated_at'          => $date,
