@@ -17,7 +17,7 @@ class ProductHistorySeeder extends Seeder
             ProductHistory::create([
                 'product_id' => $item->product,
                 'type'       => $item->type,
-                'data'       => $data,
+                'data'       => json_encode($data),
                 'user_id'    => $item->author,
                 'created_at' => $item->date
             ]);
