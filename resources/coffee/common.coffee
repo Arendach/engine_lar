@@ -234,21 +234,5 @@ $(document).on 'formLoaded', ->
     $('[data-type="ckeditor"]').each ->
         CKEDITOR.replace($(@).attr('name'))
 
-window.contentEdit = (context) ->
-    element = $ context
-    id = element.data('id')
-    model = element.data('model')
-    field = element.data('field')
-    value = element.text()
 
-    $.ajax({
-        type: 'post'
-        url: '/universal/update'
-        data:
-            field: field
-            value: value
-            model: model
-            id: id
-        success: (response) -> console.log(response)
-        error: (response) -> console.log(response)
-    })
+require('./editable.coffee')

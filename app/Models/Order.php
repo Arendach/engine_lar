@@ -25,44 +25,9 @@ class Order extends Model
 
     protected $table = 'orders';
 
-    protected $fillable = [
-        'author_id',
-        'type',
-        'fio',
-        'phone',
-        'phone2',
-        'email',
-        'created_at',
-        'updated_at',
-        'date_delivery',
-        'time_with',
-        'time_to',
-        'city',
-        'address',
-        'comment_address',
-        'pay_id',
-        'courier_id',
-        'comment',
-        'warehouse',
-        'logistic_id',
-        'pay_delivery',
-        'imposed',
-        'status',
-        'discount',
-        'delivery_cost',
-        'hint_id',
-        'payment_status',
-        'prepayment',
-        'street',
-        'full_sum',
-        'order_professional_id',
-        'liable_id',
-        'site',
-        'sending_variant',
-        'client_id'
-    ];
+    protected $guarded = [];
 
-    protected $dates = ['created_at', 'date_delivery', 'updated_at', 'deleted_at'];
+    protected $dates = ['date_delivery'];
 
     protected $casts = [
         'products.pivot.attributes' => CollectionCast::class,

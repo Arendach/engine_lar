@@ -8,18 +8,18 @@ class ProductSearchFilter extends Filter
 {
     public function default()
     {
-       $this->builder->limit(50);
+        $this->builder->limit(50);
     }
 
     public function name($value): void
     {
         $this->builder->where(function (Builder $builder) use ($value) {
-            $builder->where('name', 'like', "%$value%")
+            $builder->where('name_uk', 'like', "%$value%")
                 ->orWhere('name_ru', 'like', "%$value%")
-                ->orWhere('model', 'like', "%$value%")
+                ->orWhere('model_uk', 'like', "%$value%")
                 ->orWhere('model_ru', 'like', "%$value%")
                 ->orWhere('service_code', 'like', "%$value%")
-                ->orWhere('articul', 'like', "%$value%");
+                ->orWhere('article', 'like', "%$value%");
         });
     }
 

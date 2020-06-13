@@ -8,7 +8,7 @@ trait Image
     {
         if (!is_file(public_path($this->path))) return null;
 
-        list($width, $height) = getimagesize($this->path);
+        [$width, $height] = getimagesize(public_path($this->path));
 
         return "{$width}x{$height}";
     }

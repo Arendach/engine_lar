@@ -71,23 +71,16 @@
                     @endif
                 </td>
 
-                <td>{{ $item->fio }}</td>
+                <td>{!! $item->editable('fio') !!}</td>
 
-                <td>{{ $item->phone }}</td>
+                <td>{!! $item->editable('phone') !!}</td>
 
                 <td style="width: 88px;">{{ $item->time }}</td>
 
                 <td>{{ $item->street . ' ' . $item->address }}</td>
 
                 <td>
-                    <select class="courier form-control input-sm">
-                        <option @disabled(!$item->status) value="0">Не вибрано</option>
-                        @foreach ($couriers as $courier)
-                            <option @selected($courier->id == $item->courier_id) value="{{ $courier->id }}">
-                                {{ $courier->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    {!! $item->select('courier_id', \App\Models\User::toOptions()) !!}
                 </td>
 
                 <td>{{ number_format($item->full_sum) }}</td>

@@ -11,8 +11,8 @@ class OrderHintsSeeder extends Seeder
             OrderHint::create([
                 'id'          => $item->id,
                 'color'       => $item->color,
-                'description' => $item->description,
-                'type'        => $item->type
+                'description' => htmlspecialchars_decode($item->description),
+                'type'        => in_array($item->type, ['delivery', 'self', 'sending']) ? $item->type : 'common'
             ]);
         });
     }

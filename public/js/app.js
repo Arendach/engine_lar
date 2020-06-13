@@ -430,13 +430,69 @@ $(document).on('formLoaded', function() {
   });
 });
 
-window.contentEdit = function(context) {
+__webpack_require__(/*! ./editable.coffee */ "./resources/coffee/editable.coffee");
+
+
+/***/ }),
+
+/***/ "./resources/coffee/editable.coffee":
+/*!******************************************!*\
+  !*** ./resources/coffee/editable.coffee ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var timeout;
+
+window.delay = function(fn, ms) {
+  var timer;
+  timer = 0;
+  return function(...args) {
+    clearTimeout(timer);
+    return timer = setTimeout(fn.bind(this, ...args), ms || 0);
+  };
+};
+
+timeout = null;
+
+$(document).on('keyup', '.contentEditable', function() {
+  if (timeout !== null) {
+    clearTimeout(timeout);
+  }
+  return timeout = setTimeout(() => {
+    var element, field, id, model, value;
+    timeout = null;
+    element = $(this);
+    id = element.data('id');
+    model = element.data('model');
+    field = element.data('field');
+    value = element.html();
+    return $.ajax({
+      type: 'post',
+      url: '/universal/update',
+      data: {
+        field: field,
+        value: value,
+        model: model,
+        id: id
+      },
+      success: function(response) {
+        return toastr.success('Збережено');
+      },
+      error: function(response) {
+        return toastr.error('Помилка');
+      }
+    });
+  }, 2000);
+});
+
+window.switchField = function(context) {
   var element, field, id, model, value;
   element = $(context);
   id = element.data('id');
   model = element.data('model');
   field = element.data('field');
-  value = element.text();
+  value = element.is(':checked');
   return $.ajax({
     type: 'post',
     url: '/universal/update',
@@ -447,13 +503,67 @@ window.contentEdit = function(context) {
       id: id
     },
     success: function(response) {
-      return console.log(response);
+      return toastr.success('Збережено');
+    },
+    error: function(response) {
+      return toastr.error('Помилка');
+    }
+  });
+};
+
+window.changeField = function(context) {
+  var element, field, html, id, model, value;
+  element = $(context);
+  id = element.data('id');
+  model = element.data('model');
+  field = element.data('field');
+  value = element.val();
+  html = element.find('option:selected').html();
+  return $.ajax({
+    type: 'post',
+    url: '/universal/update',
+    data: {
+      field: field,
+      value: value,
+      model: model,
+      id: id
+    },
+    success: (response) => {
+      toastr.success('Збережено');
+      element.parent().hide();
+      return element.parent().siblings('.content-editable-text').html(html).show();
+    },
+    error: function(response) {
+      return toastr.error(response.responseJSON.message);
+    }
+  });
+};
+
+$(document).on('click', '.content-editable-text', function() {
+  $(this).hide();
+  return $(this).siblings('.content-editable-element').show();
+});
+
+$(document).on('submit', '[data-type="editableForm"]', function(event) {
+  var data, element, value;
+  event.preventDefault();
+  data = new FormData(this);
+  element = this;
+  value = data.get('value');
+  return $.ajax({
+    type: 'post',
+    url: '/universal/update',
+    data: data,
+    processData: false,
+    contentType: false,
+    success: function(response) {
+      return $(element).parents('.content-editable-popup').hide().siblings('.content-editable-text').html(value).show();
     },
     error: function(response) {
       return console.log(response);
     }
   });
-};
+});
 
 
 /***/ }),

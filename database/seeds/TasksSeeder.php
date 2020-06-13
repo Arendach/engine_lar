@@ -9,6 +9,7 @@ class TasksSeeder extends Seeder
     {
         DB::connection('old')->table('tasks')->get()->each(function (stdClass $item) {
             Task::create([
+                'id'         => $item->id,
                 'user_id'    => $item->user,
                 'author_id'  => $item->author,
                 'content'    => htmlspecialchars_decode($item->content),

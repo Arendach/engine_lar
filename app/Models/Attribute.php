@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\Translatable;
 
 class Attribute extends Model
 {
-    protected $table = 'attributes';
-
     protected $guarded = [];
-
     public $timestamps = false;
+    protected $casts = [
+        'name' => Translatable::class
+    ];
 }

@@ -11,6 +11,7 @@ class CreatePurchasePaymentTable extends Migration
             $table->increments('id');
 
             $table->integer('user_id')->unsigned();
+            $table->integer('purchase_id')->unsigned();
             $table->decimal('sum', 10, 2)->default(0);
             $table->decimal('course', 10, 2)->default(1);
 

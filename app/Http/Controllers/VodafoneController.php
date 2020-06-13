@@ -97,7 +97,9 @@ class VodafoneController extends Controller
         // Iterates through the MySQL results, creating one Placemark for each row.
         /** @var $file UploadedFile */
         foreach ($request->kmls as $file) {
-            $placeMarks = xml_to_array($file->get())['Folder']['Placemark'];
+            $content = xml_to_array($file->get());
+
+            $placeMarks = isset($content['Folder']) ? $content['Folder']['Placemark'] : $content['Document']['Placemark'];
             foreach ($placeMarks as $placeMark) {
                 if (!isset($placeMark['Polygon']) && !isset($placeMark['MultiGeometry'])) {
                     continue;
@@ -115,7 +117,8 @@ class VodafoneController extends Controller
                 // placemark -> description
                 $descNode = $dom->createElement('description');
                 $cleanDescription = preg_replace('~[\s\n\t]+~', " ", $placeMark['description'] ?? '');
-                $descNode->appendChild($dom->createCDATASection($cleanDescription));
+                // $descNode->appendChild($dom->createCDATASection($cleanDescription));
+                $descNode->appendChild($dom->createCDATASection(''));
                 $place->appendChild($descNode);
 
                 // placemark -> style url
@@ -186,7 +189,7 @@ class VodafoneController extends Controller
                     $coordinatesNode = $dom->createElement('coordinates', $coordinates);
                     $linearRingNode->appendChild($coordinatesNode);
                 } else {
-                    echo 'not found';
+                    // echo 'not found';
                     //dump($polygon);
                 }
             }
@@ -293,6 +296,8 @@ class VodafoneController extends Controller
 
     private function convertToKML()
     {
+        $this->output = preg_replace('~[\s\n\t]+~', ' ', $this->output);
+
         file_put_contents($this->getFilePath(), $this->output);
 
         return response()->download($this->getFilePath(), "$this->nameFile.$this->extensionFile", [

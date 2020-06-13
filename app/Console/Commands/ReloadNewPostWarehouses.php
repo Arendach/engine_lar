@@ -9,7 +9,7 @@ use App\Services\NewPost;
 
 class ReloadNewPostWarehouses extends Command
 {
-    protected $signature = 'ReloadNewPostWarehouses';
+    protected $signature = 'new-post:reload';
 
     protected $description = 'Перезавантаження міст та відділень нової пошти!';
 

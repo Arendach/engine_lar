@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layout', ['editor' => 'full'])
 
 @section('title', 'Адмінка')
 
@@ -187,7 +187,7 @@
                                 <br>
                             @endif
                             <div>
-                                {!! $task->content !!}
+                                {!! $task->editable('content') !!}
                             </div>
                         </div>
                         <div class="right col-md-3">

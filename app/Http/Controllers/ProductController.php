@@ -48,18 +48,13 @@ class ProductController extends Controller
         return view('product.main', $data);
     }
 
-    public function sectionCreate()
+    public function sectionCreate(CategoryTree $categoryTree)
     {
         $data = [
-            'title'         => 'Товари :: Новий товар',
-            'scripts'       => ['text_change.js', 'products/product.js', 'products/add.js', 'ckeditor/ckeditor.js'],
-            'manufacturers' => Manufacturers::getAll(),
-            'categories'    => Categories::get(),
-            'breadcrumbs'   => [
-                ['Товари', uri('product')],
-                ['Новий товар']
-            ],
-            'ids'           => Storage::getIds()
+            'manufacturers' => Manufacturer::all(),
+            'categories'    => $categoryTree->option(),
+
+            'ids' => Storage::getIds()
         ];
 
         $this->view->display('product.create', $data);
@@ -125,7 +120,7 @@ class ProductController extends Controller
     public function actionUpdateInfo(UpdateInfoRequest $request)
     {
         $data = $request->except('level1', 'level2');
-        $data['identefire_storage'] = $request->get('level1') . '-' . $request->get('level2');
+        $data['id_storage'] = $request->get('level1') . '-' . $request->get('level2');
         $data['volume'] = json_encode($request->get('volume'));
 
         Product::findOrFail($request->get('id'))->update($data);

@@ -21,8 +21,8 @@ class Bonus extends Model
 
     public function scopeFromMonth(Builder $builder, int $year, int $month, int $user_id = 0): void
     {
-        $builder->whereYear('date', $year ? $year : date('Y'))
-            ->whereMonth('date', $month ? $month : date('m'))
+        $builder->whereYear('created_at', $year ? $year : date('Y'))
+            ->whereMonth('created_at', $month ? $month : date('m'))
             ->where('user_id', user($user_id)->id);
     }
 

@@ -22,6 +22,7 @@
         <table class="table table-bordered">
             <tr>
                 @foreach($fields as $field)
+                    @continue($field['hideFromIndex'] ?? false)
                     <th>{{ $field['title'] }}</th>
                 @endforeach
                 <th class="action-2">
@@ -30,22 +31,8 @@
             </tr>
             <tr>
                 @foreach($fields as $name => $field)
-                    <td>
-                        @if(isset($field['filter']) and $field['filter'])
-                            @if($field['type'] == 'text')
-                                <input class="form-control input-sm" name="{{ $name }}" value="{{ request($name) }}">
-                            @elseif($field['type'] == 'select')
-                                <select class="form-control input-sm" name="{{ $name }}">
-                                    <option value=""></option>
-                                    @foreach($field['options'] as $optionValue => $optionText)
-                                        <option @selected($name, $optionValue) value="{{ $optionValue }}">
-                                            {{ $optionText }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            @endif
-                        @endif
-                    </td>
+                    @continue($field['hideFromIndex'] ?? false)
+                    <td>@include('setting.filter.' . $field['type'])</td>
                 @endforeach
                 <td class="action-2 centered">
                     <button class="btn btn-primary btn-sm">
@@ -56,29 +43,12 @@
             @foreach($items as $item)
                 <tr>
                     @foreach($fields as $name => $field)
+                        @continue($field['hideFromIndex'] ?? false)
                         <td>
-                            @if($field['type'] == 'select')
-                                {{ $field['options'][$item->{$name}] ?? null }}
-                            @elseif($field['type'] == 'boolean')
-                                @if($item->$name)
-                                    <i class="fa fa-check text-success"></i>
-                                @else
-                                    <i class="fa fa-remove text-danger"></i>
-                                @endif
-                            @elseif($field['type'] == 'date')
-                                {{ $item->$name->format('Y / m / d') }}
-                            @elseif($field['type'] == 'color')
-                                <div style="background-color: {{ $item->{$name} }}; padding: 5px">
-                                    {{ $item->$name }}
-                                </div>
-                            @elseif($field['type'] == 'url')
-                                <a href="{{ $item->$name }}">
-                                    {{ $item->$name }}
-                                </a>
-                            @elseif(isset($field['display']))
-                                {!! $field['display']($item->{$name}) !!}
+                            @if(isset($field['display']) and is_callable($field['display']))
+                                {!! $field['display']($item->$name) !!}
                             @else
-                                {!! $item->{"$name"} !!}
+                                @include("setting.display.{$field['type']}", compact('name', 'field'))
                             @endif
                         </td>
                     @endforeach

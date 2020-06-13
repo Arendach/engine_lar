@@ -17,6 +17,7 @@ class CreateStorageTable extends Migration
             $table->boolean('is_self')->default(true);
             $table->boolean('is_sending')->default(true);
             $table->integer('priority')->default(0);
+            $table->softDeletes();
         });
     }
 

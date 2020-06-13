@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class OrderHint extends Model
 {
@@ -14,7 +13,7 @@ class OrderHint extends Model
     public $timestamps = false;
 
     private $types = [
-        '0'        => 'Загальний',
+        'common'   => 'Загальний',
         'self'     => 'Самовивози',
         'delivery' => 'Доставки',
         'sending'  => 'Відправки'

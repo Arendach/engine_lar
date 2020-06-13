@@ -18,7 +18,8 @@ class InventoryController extends Controller
 
     public function sectionMain()
     {
-        $inventory = Inventory::with('products', 'user', 'manufacturer', 'storage')
+        $inventory = Inventory::with( 'user', 'manufacturer', 'storage')
+            ->withCount('products')
             ->latest()
             ->paginate(config('app.items'));
 

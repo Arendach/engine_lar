@@ -4,6 +4,8 @@ namespace App\Models;
 
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use App\Casts\ProductAttributesCast;
+use App\Casts\ProductName;
+use App\Casts\Translatable;
 use App\Traits\Editable;
 use App\Traits\Filterable;
 use App\Traits\NumberFormat;
@@ -22,42 +24,16 @@ class Product extends Model
 
     protected $table = 'products';
 
-    protected $fillable = [
-        'name',
-        'name_ru',
-        'articul',
-        'model',
-        'model_ru',
-        'identefire_storage',
-        'services_code',
-        'count_on_storage',
-        'procurement_costs',
-        'is_combine',
-        'costs',
-        'storage',
-        'archive',
-        'attributes',
-        'manufacturer_id',
-        'category_id',
-        'weight',
-        'volume',
-        'author_id',
-        'date',
-        'is_accounted',
-        'description',
-        'description_ru',
-        'meta_title_uk',
-        'meta_title_ru',
-        'meta_keywords_uk',
-        'meta_keywords_ru',
-        'meta_description_uk',
-        'meta_description_ru',
-        'product_key',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
-        'attributes'   => ProductAttributesCast::class,
-        'is_accounted' => 'boolean'
+        'attributes'       => ProductAttributesCast::class,
+        'is_accounted'     => 'boolean',
+        'name'             => ProductName::class,
+        'model'            => Translatable::class,
+        'meta_description' => Translatable::class,
+        'meta_keywords'    => Translatable::class,
+        'meta_title'       => Translatable::class,
     ];
 
     public $timestamps = false;
@@ -121,20 +97,15 @@ class Product extends Model
 
     public function getLevel1Attribute(): ?string
     {
-        [$level1] = explode('-', $this->identefire_storage);
+        [$level1] = explode('-', $this->id_storage);
 
         return trim($level1);
     }
 
     public function getLevel2Attribute(): ?string
     {
-        [, $level2] = explode('-', $this->identefire_storage);
+        [, $level2] = explode('-', $this->id_storage);
 
         return trim($level2);
-    }
-
-    public function getNameAttribute($value): string
-    {
-        return $this->articul . ' ' . $value;
     }
 }

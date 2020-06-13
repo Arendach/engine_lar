@@ -8,11 +8,11 @@ class ProductName implements CastsAttributes
 {
     public function get($model, string $key, $value, array $attributes)
     {
-        return $model->getOriginal('articul') . ' ' . $model->getOriginal('name');
+        return $model->article . ' ' . $model->name_uk;
     }
 
     public function set($model, string $key, $value, array $attributes)
     {
-
+        return null;
     }
 }

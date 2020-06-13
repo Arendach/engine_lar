@@ -19,25 +19,31 @@ return [
         'model'  => OrderHint::class,
         'fields' => [
             'color'       => [
-                'type'    => 'color',
-                'title'   => 'Колір',
-                'display' => function ($value) {
+                'required' => true,
+                'type'     => 'color',
+                'title'    => 'Колір',
+                'filter'   => true,
+                'display'  => function ($value) {
                     return "<span style='display: inline-block; width: 50px; height: 25px; background-color: $value'>$value</span>";
                 }
             ],
             'description' => [
-                'type'  => 'text',
-                'title' => 'Текст'
+                'required' => true,
+                'filter'   => true,
+                'type'     => 'text',
+                'title'    => 'Текст'
             ],
             'type'        => [
-                'type'    => 'select',
-                'title'   => 'Показувати в',
-                'options' => OrderHint::getTypes()
+                'required' => true,
+                'type'     => 'select',
+                'filter'   => true,
+                'title'    => 'Показувати в',
+                'options'  => OrderHint::getTypes()
             ]
         ]
     ],
 
-    'delivery' => [
+    'logistic' => [
         'title'  => 'Логістичні компанії',
         'model'  => Logistic::class,
         'fields' => [
@@ -60,9 +66,7 @@ return [
             'merchant_id' => [
                 'type'    => 'select',
                 'title'   => 'Мерчант',
-                'options' => Merchant::all()->mapWithKeys(function (Merchant $merchant) {
-                    return [$merchant->id => $merchant->name];
-                })
+                'options' => Merchant::toOptions()
             ],
             'provider'    => [
                 'type'  => 'text',
@@ -112,8 +116,9 @@ return [
         'model'  => Attribute::class,
         'fields' => [
             'name' => [
-                'title' => 'Назва',
-                'type'  => 'localize'
+                'filter' => true,
+                'title'  => 'Назва',
+                'type'   => 'localize'
             ]
         ]
     ],
@@ -127,8 +132,11 @@ return [
                 'title' => 'Назва'
             ],
             'color' => [
-                'type'  => 'color',
-                'title' => 'Колір'
+                'type'    => 'color',
+                'title'   => 'Колір',
+                'display' => function ($value) {
+                    return "<span style='display: inline-block; width: 50px; height: 25px; background-color: $value'>$value</span>";
+                }
             ]
         ]
     ],
@@ -194,8 +202,9 @@ return [
                 'required' => true
             ],
             'url_path' => [
-                'type'  => 'url',
-                'title' => 'Адреса маршруту(URL)'
+                'type'          => 'url',
+                'title'         => 'Адреса маршруту(URL)',
+                'hideFromIndex' => true
             ]
         ]
     ],
@@ -217,14 +226,11 @@ return [
                 'title' => 'Постфікс',
                 'type'  => 'localize',
             ],
-            'value'   => [
-                'title' => 'Значення',
-                'type'  => 'localize',
-            ],
             'type'    => [
-                'title'   => 'Тип',
-                'type'    => 'select',
-                'options' => Characteristic::getTypes()
+                'title'    => 'Тип',
+                'type'     => 'select',
+                'options'  => Characteristic::getTypes(),
+                'required' => true
             ]
         ]
     ],

@@ -1,0 +1,1 @@
+{!! $item->editable($name)->localize() !!}

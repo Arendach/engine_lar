@@ -1,0 +1,1 @@
+{!! $item->editable($name)->required($field['required'] ?? false)->editor(true) !!}

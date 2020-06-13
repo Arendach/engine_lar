@@ -20,7 +20,7 @@
     <script src="{{ asset('js/libs.js') }}"></script>
     <script type="text/javascript" src="{{ asset('packages/barryvdh/elfinder/js/standalonepopup.min.js') }}"></script>
 
-@if (isset($editor) && $editor == 'full')
+    @if(isset($editor) && $editor == 'full')
         <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
     @else
         <script src="{{ asset('ckeditor_basic/ckeditor.js') }}"></script>
@@ -175,9 +175,9 @@
 
                 <script>
                     @if(is_file(public_path('js/Reinitiable.js')))
-                        {!! file_get_contents(public_path('js/Reinitiable.js')) !!}
+                    {!! file_get_contents(public_path('js/Reinitiable.js')) !!}
                     @else
-                        alert('Reinitiable failed')
+                    alert('Reinitiable failed')
                     @endif
                 </script>
 

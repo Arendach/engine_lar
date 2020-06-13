@@ -1,6 +1,6 @@
 <div class="form-group">
     <label>
-        @if(isset($field['required']) && $field['required'])
+        @if($field['required'] ?? false)
             <i class="text-danger">*</i>
         @endif
         {{ $field['title'] }}
@@ -12,10 +12,10 @@
                 <span class="input-group-addon">
                     <img src="{{ asset('icons/uk.ico') }}">
                 </span>
-                <input @displayIf(isset($field['required']) && $field['required'], 'required')
+                <input @displayIf($field['required'] ?? false, 'required')
                        class="form-control input-sm"
-                       value="{{ isset($value) ? $value : '' }}"
-                       name="{{ $name }}">
+                       value="{{ $row->{"{$name}_uk"} ?? '' }}"
+                       name="{{ $name }}_uk">
             </div>
         </div>
         <div class="col-md-6">
@@ -23,9 +23,9 @@
                 <span class="input-group-addon">
                     <img src="{{ asset('icons/ru.ico') }}">
                 </span>
-                <input @displayIf(isset($field['required']) && $field['required'], 'required')
+                <input @displayIf($field['required'] ?? false, 'required')
                        class="form-control input-sm"
-                       value="{{ isset($row->{"$name"."_ru"}) ? $row->{"$name"."_ru"} : '' }}"
+                       value="{{ $row->{"{$name}_ru"} ?? '' }}"
                        name="{{ $name }}_ru">
             </div>
         </div>

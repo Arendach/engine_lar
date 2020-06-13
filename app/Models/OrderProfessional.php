@@ -2,19 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\Color;
 
 class OrderProfessional extends Model
 {
     protected $table = 'order_professional';
-
-/*    protected $fillable = [
-        'name',
-        'color'
-    ];*/
-
     protected $guarded = [];
-
     public $timestamps = false;
-
+    protected $casts = [
+        'color' => Color::class
+    ];
 }

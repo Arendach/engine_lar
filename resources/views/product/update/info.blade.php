@@ -21,26 +21,26 @@
     <input type="hidden" name="id" value="{{ $product->id }}">
 
     <div class="tab-content">
-        @foreach (['', 'ru'] as $item)
-            <div class="tab-pane {{ $item == '' ? 'active' : '' }}" id="{{ $item == '' ? 'uk' : 'ru' }}">
+        @foreach (['uk', 'ru'] as $lang)
+            <div class="tab-pane @displayIf($loop->first, 'active')" id="{{ $lang }}">
                 <div class="form-group">
                     <label class="col-md-4 control-label">Назва <i class="text-danger">*</i></label>
                     <div class="col-md-5">
-                        <input name="{{ $item == '' ? 'name' : 'name_ru' }}" value="{{ $product->{$item == '' ? 'name' : 'name_ru'} }}" class="form-control">
+                        <input name="{{ "name_{$lang}" }}" value="{{ $product->{"name_{$lang}"} }}" class="form-control">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-md-4 control-label">Модель <i class="text-danger">*</i></label>
                     <div class="col-md-5">
-                        <input value="<?= $product->{$item == '' ? 'model' : 'model_ru'} ?>" name="<?= $item == '' ? 'model' : 'model_ru' ?>" class="form-control">
+                        <input value="{{ $product->{"model_{$lang}"} }}" name="{{ "model_{$lang}" }}" class="form-control">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-md-4 control-label">Опис</label>
                     <div class="col-md-5">
-                        <textarea name="{{ $item == '' ? 'description' : 'description_ru' }}" class="form-control">{{ $product->{$item == '' ? 'description' : 'description_ru'} }}</textarea>
+                        <textarea data-type="ckeditor" name="{{ "description_$lang" }}" class="form-control">{{ $product->{"description_$lang"} }}</textarea>
                     </div>
                 </div>
             </div>
@@ -52,21 +52,21 @@
     <div class="form-group">
         <label class="col-md-4 control-label">Артикул <i class="text-danger">*</i></label>
         <div class="col-md-5">
-            <input value="{{ $product->articul }}" name="articul" class="form-control">
+            <input value="{{ $product->article }}" name="article" class="form-control">
         </div>
     </div>
 
     <div class="form-group">
         <label class="col-md-4 control-label">Сервісний код <i class="text-danger">*</i></label>
         <div class="col-md-5">
-            <input value="{{ $product->services_code }}" name="services_code" class="form-control">
+            <input value="{{ $product->service_code }}" name="service_code" class="form-control">
         </div>
     </div>
 
     <div class="form-group">
         <label class="col-md-4 control-label">Закупівельна вартість(в доларах) <i class="text-danger">*</i></label>
         <div class="col-md-5">
-            <input value="{{ $product->procurement_costs }}" name="procurement_costs" class="form-control">
+            <input value="{{ $product->procurement_price }}" name="procurement_price" class="form-control">
         </div>
     </div>
 
@@ -74,7 +74,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label">Роздрібна вартість <i class="text-danger">*</i></label>
             <div class="col-md-5">
-                <input value="{{ $product->costs }}" name="costs" class="form-control">
+                <input value="{{ $product->price }}" name="price" class="form-control">
             </div>
         </div>
     @endif
@@ -86,7 +86,7 @@
     <div class="form-group">
         <label class="col-md-4 control-label">Категорія</label>
         <div class="col-md-5">
-            <select name="category" class="form-control" id="category">
+            <select name="category_id" class="form-control" id="category">
                 <option hidden selected value="{{ $product->category_id }}">{{ $product->category->name }}</option>
                 {!! $categories !!}
             </select>

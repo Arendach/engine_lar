@@ -14,31 +14,28 @@ class UpdateInfoRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'              => 'required',
+            'name_uk'           => 'required',
             'name_ru'           => 'required',
-            'articul'           => 'required',
-            'model'             => 'required',
+            'article'           => 'required',
+            'model_uk'          => 'required',
             'model_ru'          => 'required',
-            'services_code'     => 'required|numeric',
-            'procurement_costs' => 'required|numeric',
-            'costs'             => 'required|numeric'
+            'service_code'      => 'required|numeric',
+            'procurement_price' => 'required|numeric',
+            'price'             => 'required|numeric'
         ];
     }
 
-    public function messages()
+    public function attributes()
     {
         return [
-            'name.required'              => 'Заповніть назву товару',
-            'name_ru.required'           => 'Заповніть назву товару',
-            'articul.required'           => 'Заповніть артикул',
-            'model.required'             => 'Заповніть модель',
-            'model_ru.required'          => 'Заповніть модель',
-            'services_code.required'     => 'Заповніть сервісний код',
-            'services_code.numeric'      => 'Тільки цифри',
-            'procurement_costs.required' => 'Заповніть закупівельну вартість',
-            'procurement_costs.numeric'  => 'Тільки цифри',
-            'costs.required'             => 'Заповніть ціну',
-            'costs.numeric'              => 'Тільки цифри',
+            'name_uk'           => 'назва',
+            'name_ru'           => 'назва',
+            'article'           => 'артикул',
+            'model_uk'          => 'модель',
+            'model_ru'          => 'модель',
+            'service_code'      => 'сервісний код',
+            'procurement_price' => 'закупівельна ціна',
+            'price'             => 'ціна'
         ];
     }
 }

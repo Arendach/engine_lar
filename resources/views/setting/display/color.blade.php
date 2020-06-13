@@ -1,0 +1,1 @@
+{!! $item->editable($name)->editor(false)->element('input')->type('color') !!}

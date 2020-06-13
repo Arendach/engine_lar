@@ -8,8 +8,8 @@ class OrderHistoryObserver
 {
     public function creating(OrderHistory $orderHistory)
     {
-        if (is_null($orderHistory->author_id) && user()) {
-            $orderHistory->author_id = user()->id;
+        if (is_null($orderHistory->user_id) && user()) {
+            $orderHistory->user_id = user()->id;
         }
 
         if (is_array($orderHistory->data)) {

@@ -436,7 +436,7 @@ table.table > tbody > tr > td.vertical-centered {
   font-size: 12px;
 }
 
-.orders-table .form-control, .products-table .form-control{
+.orders-table .form-control, .products-table .form-control {
   height: 25px;
   padding: 0;
 }
@@ -669,4 +669,31 @@ table {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.content-editable-select {
+  &.content-editable-element {
+    display: none;
+  }
+}
+
+.content-editable-popup {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #000;
+  top: 0;
+  left: 0;
+  width: 400px;
+  height: 440px;
+  display: none;
+  z-index: 2;
+  padding: 20px;
+
+  &.content-editable-popup-header {
+    margin-bottom: 20px;
+
+    &button {
+      margin: 10px 0 !important;
+    }
+  }
 }

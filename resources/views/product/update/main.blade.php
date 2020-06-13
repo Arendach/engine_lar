@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layout', ['editor' => 'full'])
 
 @section('title', 'Товари :: Редагування товару')
 

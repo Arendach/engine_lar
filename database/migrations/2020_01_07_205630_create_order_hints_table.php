@@ -11,7 +11,7 @@ class CreateOrderHintsTable extends Migration
             $table->increments('id');
             $table->string('color', 32);
             $table->string('description', 256);
-            $table->set('type', ['delivery', 'self', 'sending', 0])->default(0);
+            $table->string('type', 256)->default('common');
         });
     }
 

@@ -1,5 +1,12 @@
 @extends('layout')
 
+@section('title', 'Товари :: Новий товар')
+
+@breadcrumbs(
+    ['Товари', uri('Product@main')],
+    ['Новий товар']
+)
+
 @section('content')
     <form class="form-horizontal" data-type="ajax" action="@uri('ProductController@actionCreate')">
         <div class="form-group">

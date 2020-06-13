@@ -81,7 +81,7 @@ class OrdersController extends Controller
             'full'        => $full,
             'type'        => $type,
             'orders'      => $orders,
-            'couriers'    => User::where('archive', 0)->get(),
+            'couriers'    => User::get(),
             'shops'       => Shop::all(),
             'request'     => $request,
             'breadcrumbs' => [

@@ -1,3 +1,5 @@
+@php /* @var \App\Models\Order $order */ @endphp
+@inject('logistic', App\Models\Logistic)
 <table class="table table-bordered orders-table">
     <thead>
     <tr>
@@ -16,10 +18,10 @@
     </thead>
 
     <tr class="tr_search">
-        <td><input class="search form-control input-sm" id="id" value="{{ request('id') }}"></td>
-        <td><input class="search form-control input-sm" id="fio" value="{{ request('fio') }}"></td>
-        <td><input class="search form-control input-sm" id="phone" value="{{ request('phone') }}"></td>
-        <td><input class="search form-control input-sm" id="street" value="{{ request('street') }}"></td>
+        <td><input class="search form-control input-sm" id="id" value="@request('id')"></td>
+        <td><input class="search form-control input-sm" id="fio" value="@request('fio')"></td>
+        <td><input class="search form-control input-sm" id="phone" value="@request('phone')"></td>
+        <td><input class="search form-control input-sm" id="street" value="@request('street')"></td>
         <td></td>
         <td>
             <select class="search form-control input-sm" id="courier_id">
@@ -57,57 +59,58 @@
     </tr>
 
     @if($orders->count())
-        @foreach ($orders as $item)
-            <tr id="{{ $item->id }}" @displayIf($item->client_id != '', 'class="client-order"')>
+        @foreach ($orders as $order)
+            <tr id="{{ $order->id }}" @displayIf($order->client_id != '', 'class="client-order"')>
                 <td>
-                    @if ($item->delivery == 'НоваПошта')
-                        <input type="checkbox" data-id="{{ $item->id }}" class="order_check">
+                    @if ($order->logistic->name == 'НоваПошта')
+                        <input type="checkbox" data-id="{{ $order->id }}" class="order_check">
                     @endif
-                    {{ $item->id }}
+                    {{ $order->id }}
                 </td>
-                <td>{{ $item->fio }}</td>
-                <td>{{ $item->phone }}</td>
-                <td>{{ $item->street }}</td>
-                <td>{{ $item->delivery }}</td>
+                <td>{!! $order->editable('fio') !!}</td>
+                <td>{!! $order->editable('phone')->element('textarea') !!}</td>
+                <td>{!! $order->editable('street')->editor() !!}</td>
+                <td>
+                    {!! $order->select('logistic_id', $logistic->toOptions())->required() !!}
                 <td>
                     <select class="courier form-control input-sm">
-                        <option @disabled(!$item->status) @selected(!$item->courier_id) value="0">Не вибрано</option>
+                        <option @disabled(!$order->status) @selected(!$order->courier_id) value="0">Не вибрано</option>
                         @foreach($couriers as $courier)
-                            <option @selected($courier->id == $item->courier_id) value="{{ $courier->id }}">{{ $courier->name }}</option>
+                            <option @selected($courier->id == $order->courier_id) value="{{ $courier->id }}">{{ $courier->name }}</option>
                         @endforeach
                     </select>
                 </td>
-                <td>{{ number_format($item->full_sum) }}</td>
-                <td><span style="color: {{ $item->status_color }}">{{ $item->status_name }}</span></td>
-                <td><span style="color: {{ $item->sending_status_color }}">{{ $item->sending_status_name }}</span></td>
-                <td>{{ $item->date_delivery_human }}</td>
+                <td>{{ number_format($order->full_sum) }}</td>
+                <td><span style="color: {{ $order->status_color }}">{{ $order->status_name }}</span></td>
+                <td><span style="color: {{ $order->sending_status_color }}">{{ $order->sending_status_name }}</span></td>
+                <td>{{ $order->date_delivery_human }}</td>
                 <td class="action-2 relative">
-                    <div id="preview_{{ $item->id }}" class="preview_container"></div>
+                    <div id="preview_{{ $order->id }}" class="preview_container"></div>
                     <div class="buttons-2">
                         <button class="btn btn-primary btn-xs preview">
                             <span class="glyphicon glyphicon-eye-open"></span>
                         </button>
-                        <a class="btn btn-primary btn-xs" href="{{ uri('orders/update', ['id' => $item->id]) }}"
+                        <a class="btn btn-primary btn-xs" href="{{ uri('orders/update', ['id' => $order->id]) }}"
                            title="Редагувати">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                     </div>
                     <div class="buttons-2">
-                        <a class="btn btn-primary btn-xs" href="{{ uri('orders/changes', ['id' => $item->id]) }}"
+                        <a class="btn btn-primary btn-xs" href="{{ uri('orders/changes', ['id' => $order->id]) }}"
                            title="Історія змін">
                             <span class="glyphicon glyphicon-time"></span>
                         </a>
-                        <a target="_blank" href="{{ uri('orders/receipt', ['id' => $item->id]) }}"
-                           data-id="#print_{{ $item->id }}" class="btn btn-primary btn-xs print_button"
+                        <a target="_blank" href="{{ uri('orders/receipt', ['id' => $order->id]) }}"
+                           data-id="#print_{{ $order->id }}" class="btn btn-primary btn-xs print_button"
                            title="Друкувати">
                             <span class="glyphicon glyphicon-print"></span>
                         </a>
                     </div>
-                    @if (!is_null($item->hint))
+                    @if (!is_null($order->hint))
                         <div class="centered">
                             <button class="btn btn-xs" data-toggle="tooltip"
-                                    style="background-color: #{{ $item->hint->color }}"
-                                    title="{{ $item->hint->description }}">
+                                    style="background-color: #{{ $order->hint->color }}"
+                                    title="{{ $order->hint->description }}">
                                 <span class="glyphicon glyphicon-comment"></span>
                             </button>
                         </div>

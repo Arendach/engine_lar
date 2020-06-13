@@ -49,9 +49,9 @@
             @foreach ($tasks as $item)
                 <tr class="alert-{{ $item->type }}" data-id="{{ $item->id }}">
                     <td>{{ $item->created_date_human }}</td>
-                    <td>{!! $item->content !!}</td>
+                    <td>{!! $item->editable('content') !!}</td>
                     <td>{!! $item->status_name !!}</td>
-                    <td>{!! $item->comment !!}</td>
+                    <td>{!! $item->editable('comment') !!}</td>
                     <td>{{ number_format($item->price) }}</td>
                     <td class="right action-4">
                         <button title="Затвердити задачу"

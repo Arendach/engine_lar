@@ -10,7 +10,7 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->set('type', ['delivery', 'self', 'sending']);
+            $table->string('type', 256);
             $table->tinyInteger('status')->default(0);
 
             // contacts
@@ -42,7 +42,7 @@ class CreateOrdersTable extends Migration
             // relations
             $table->integer('author_id')->unsigned()->default(1);
             $table->integer('pay_id')->unsigned()->nullable();
-            $table->integer('courier_id')->unsigned()->default(0);
+            $table->integer('courier_id')->unsigned()->nullable();
             $table->integer('logistic_id')->unsigned()->nullable();
             $table->integer('hint_id')->unsigned()->nullable();
             $table->integer('liable_id')->unsigned()->nullable();

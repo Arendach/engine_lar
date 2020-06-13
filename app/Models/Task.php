@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\DateHuman;
+use App\Traits\Editable;
 use App\Traits\NumberFormat;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -12,27 +13,9 @@ class Task extends Model
 {
     use DateHuman;
     use NumberFormat;
+    use Editable;
 
-    protected $table = 'tasks';
-
-    protected $fillable = [
-        'user_id',
-        'author_id',
-        'created_at',
-        'updated_at',
-        'content',
-        'type',
-        'is_success',
-        'comment',
-        'price',
-        'is_approve'
-    ];
-
-    protected $dates = [
-        'created_at',
-        'updated_at'
-    ];
-
+    protected $guarded = [];
     public $timestamps = true;
 
     public function user(): BelongsTo

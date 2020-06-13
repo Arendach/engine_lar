@@ -9,7 +9,7 @@ class CreateAttributesTable extends Migration
     {
         Schema::create('attributes', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 255);
+            $table->string('name_uk', 255);
             $table->string('name_ru', 255);
         });
     }

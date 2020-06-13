@@ -33,11 +33,12 @@ class PurchasesSeeder extends Seeder
                 ->where('purchase_id', $item->id)->get()
                 ->map(function (stdClass $item) {
                     return [
-                        'user_id'    => $item->user_id,
-                        'sum'        => $item->sum,
-                        'created_at' => $item->date,
-                        'updated_at' => $item->date,
-                        'course'     => $item->course,
+                        'user_id'     => $item->user_id,
+                        'sum'         => $item->sum,
+                        'created_at'  => $item->date,
+                        'updated_at'  => $item->date,
+                        'course'      => $item->course,
+                        'purchase_id' => $item->purchase_id
                     ];
                 })->toArray();
 

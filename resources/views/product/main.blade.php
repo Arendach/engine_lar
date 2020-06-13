@@ -11,7 +11,7 @@
 
     <div class="right" style="margin-bottom: 10px">
         <button class="btn btn-success more">Додатково</button>
-        @if(request()->hasAny(['name', 'combine', 'category', 'manufacturer', 'identefire_storage', 'costs', 'articul']))
+        @if(request()->hasAny(['name', 'is_combine', 'category_id', 'manufacturer_id', 'id_storage', 'price', 'article']))
             <button class="btn btn-primary print_products">Друкувати</button>
         @endif
         <a href="@uri('product/moving')" class="btn btn-primary">Переміщення</a>
@@ -55,24 +55,25 @@
             </tr>
             <tr>
                 <td>
-                    <input class="form-control input-sm" data-action="search" data-column="name" value="@request('name')">
+                    <input class="form-control input-sm" data-action="search" data-column="name"
+                           value="@request('name')">
                 </td>
                 <td>
-                    <select class="form-control input-sm" data-action="search" data-column="accounted">
+                    <select class="form-control input-sm" data-action="search" data-column="is_accounted">
                         <option value=""></option>
-                        <option @selected('accounted', 1) value="1">Так</option>
-                        <option @selected('accounted', 0) value="0">Ні</option>
+                        <option @selected('is_accounted', 1) value="1">Так</option>
+                        <option @selected('is_accounted', 0) value="0">Ні</option>
                     </select>
                 </td>
                 <td>
-                    <select class="form-control input-sm" data-action="search" data-column="combine">
+                    <select class="form-control input-sm" data-action="search" data-column="is_combine">
                         <option value=""></option>
-                        <option @selected('combine', 1) value="1">Комбіновані</option>
-                        <option @selected('combine', 0) value="0">Одиничні</option>
+                        <option @selected('is_combine', 1) value="1">Комбіновані</option>
+                        <option @selected('is_combine', 0) value="0">Одиничні</option>
                     </select>
                 </td>
                 <td>
-                    <select data-action="search" data-column="category" class="form-control input-sm">
+                    <select data-action="search" data-column="category_id" class="form-control input-sm">
                         @if(request()->has('category_id'))
                             <option value="@request('category_id')" class="none">{{ $category_name ?? '' }}</option>
                         @endif
@@ -81,7 +82,7 @@
                     </select>
                 </td>
                 <td>
-                    <select class="form-control input-sm" data-action="search" data-column="manufacturer">
+                    <select class="form-control input-sm" data-action="search" data-column="manufacturer_id">
                         <option value=""></option>
                         @foreach($manufacturers as $item)
                             <option value="{{ $item->id }}" @selected('manufacturer_id', $item->id)>
@@ -91,56 +92,59 @@
                     </select>
                 </td>
                 <td>
-                    <input class="form-control input-sm" data-action="search" data-column="articul" value="@request('articul')">
+                    <input class="form-control input-sm" data-action="search" data-column="article"
+                           value="@request('article')">
                 </td>
                 <td>
-                    <input class="form-control input-sm" data-action="search" data-column="identefire_storage" value="@request('identefire_storage')">
+                    <input class="form-control input-sm" data-action="search" data-column="id_storage"
+                           value="@request('id_storage')">
                 </td>
                 <td>
-                    <input class="form-control input-sm" data-action="search" data-column="products-costs" value="@request('products-costs')">
+                    <input class="form-control input-sm" data-action="search" data-column="price"
+                           value="@request('price')">
                 </td>
                 <td></td>
                 <td></td>
                 <td>
                     <button class="btn btn-primary btn-xs" id="search">
-                        <span class="glyphicon glyphicon-search"></span>
+                        <span class="fa fa-search"></span>
                     </button>
                 </td>
             </tr>
             @foreach ($products as $item)
                 <tr>
                     <td>
-                        <span data-value="{{ $item->id }}" class="checkbox product_item"> {{ $item->name }}</span>
+                        <span data-value="{{ $item->id }}" class="checkbox product_item"> {!! $item->editable('name_uk') !!}</span>
                     </td>
-                    <td>{{ $item->combine ? 'Ні' : ($item->accounted ? 'Так' : 'Ні') }}</td>
-                    <td>{{ $item->combine ? 'Комбінований' : 'Одиничний' }}</td>
+                    <td>{{ $item->is_combine ? 'Ні' : ($item->is_accounted ? 'Так' : 'Ні') }}</td>
+                    <td>{{ $item->is_combine ? 'Так' : 'Ні' }}</td>
                     <td>{{ $item->category->name ?? '' }}</td>
                     <td>{{ $item->manufacturer->name ?? '' }}</td>
-                    <td>{!! $item->editable('articul') !!}</td>
-                    <td>{{ $item->identefire_storage }}</td>
-                    <td>{{ $item->costs }}</td>
+                    <td>{!! $item->editable('article') !!}</td>
+                    <td>{!! $item->editable('id_storage') !!}</td>
+                    <td>{!! $item->editable('price') !!}</td>
                     <td>0</td>
                     {{--                        <td>{{ !empty($item->delivery_count) ? $item->delivery_count : '0' }}</td>--}}
                     <td>
                         @if($item->is_accounted)
-                             <div class="relative product-pts-more pointer">
-                                 <div class="none product-pts-more-inner">
-                                     <table>
-                                         @foreach($item->storage_list as $storage)
+                            <div class="relative product-pts-more pointer">
+                                <div class="none product-pts-more-inner">
+                                    <table>
+                                        @foreach($item->storage_list as $storage)
                                             <tr>
                                                 <td class="text-primary">{{ $storage->storage->name }}</td>
                                                 <td class="text-success"><b>{{ $storage->count }}</b></td>
                                             </tr>
-                                         @endforeach
+                                        @endforeach
                                     </table>
-                                 </div>
-                                 {{ $item->storage_list->sum('count') }}
-                             </div>
+                                </div>
+                                {{ $item->storage_list->sum('count') }}
+                            </div>
                         @endif
                     </td>
                     <td class="action-2">
                         <a class="btn btn-primary btn-xs" href="@uri('product/update', ['id' => $item->id])">
-                            <span class="glyphicon glyphicon-pencil"></span>
+                            <span class="fa fa-pencil"></span>
                         </a>
                         <a class="btn btn-primary btn-xs" href="@uri('product/history', ['id' => $item->id])">
                             <span class="glyphicon glyphicon-time"></span>

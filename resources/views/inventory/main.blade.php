@@ -26,8 +26,8 @@
                     <td>{{ $item->manufacturer->name ?? null }}</td>
                     <td>{{ $item->storage->name ?? null }}</td>
                     <td>{{ $item->user->login ?? null }}</td>
-                    <td>{{ $item->products->count() }}</td>
-                    <td>{{ $item->comment }}</td>
+                    <td>{{ $item->products_count }}</td>
+                    <td>{!! $item->editable('comment') !!}</td>
                     <td>
                         <a href="@uri('InventoryController@sectionPrint', ['id' => $item->id])" class="btn btn-primary btn-xs">
                             <span class="fa fa-eye"></span>

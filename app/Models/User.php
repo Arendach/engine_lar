@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Editable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 class User extends Model
 {
     use SoftDeletes;
+    use Editable;
 
     protected $table = 'users';
 
@@ -22,7 +24,7 @@ class User extends Model
     public function notifications()
     {
         return $this->hasMany(Notification::class)
-            ->where('see', 0);
+            ->where('is_see', 0);
     }
 
     public function tasks()
@@ -106,7 +108,10 @@ class User extends Model
 
     public function getSchedulesNotWrite(): int
     {
-        $countWrite = Schedule::whereMonth('date', date('m'))->whereYear('date', date('Y'))->where('user_id', user()->id)->count();
+        $countWrite = Schedule::whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->where('user_id', user()->id)
+            ->count();
 
         return (int)date('d') - $countWrite - 1;
     }
@@ -117,8 +122,8 @@ class User extends Model
         $month = previous_month();
 
         $countWrite = Schedule::where('user_id', user()->id)
-            ->whereMonth('date', $month)
-            ->whereYear('date', $year)
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
             ->count();
 
         return (int)date('t', strtotime("$year-$month-01")) - $countWrite - 1;
