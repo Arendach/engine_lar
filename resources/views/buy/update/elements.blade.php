@@ -321,10 +321,10 @@
     <div class="form-group">
         <label class="col-md-4 control-label">Сайт</label>
         <div class="col-md-5">
-            <select name="site" class="form-control">
+            <select name="site_id" class="form-control">
                 <option value=""></option>
                 @foreach ($site->all() as $item)
-                    <option @selected($order->site == $item->id) value="{{ $item->id }}">
+                    <option @selected($order->site_id == $item->id) value="{{ $item->id }}">
                         {{ $item->name }}
                     </option>
                 @endforeach

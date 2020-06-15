@@ -245,12 +245,6 @@ class Order extends Model
         $query->where('liable_id', user()->id);
     }
 
-
-    public function getFullAddress()
-    {
-
-    }
-
     public function getPayDeliveryTitleAttribute(): string
     {
         return $this->pay_delivery == 'sender' ? 'Відпрвник' : 'Отримувач';

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Events\Order\UpdateContacts;
 use App\Http\Requests\Orders\UpdateSendingAddressRequest;
+use App\Models\BlackDate;
 use App\Models\NewPostCity;
 use App\Models\NewPostWarehouse;
 use App\Orders\OrderUpdate;
@@ -25,14 +27,13 @@ use App\Models\SmsTemplate;
 use App\Models\Storage;
 use App\Models\User;
 use App\Filters\OrdersListFilter;
-use App\Requests\Orders\CreateDeliveryRequest;
-use App\Requests\Orders\CreateSelfRequest;
-use App\Requests\Orders\UpdateCourierRequest;
-use App\Requests\Orders\UpdateDeliveryAddressRequest;
-use App\Requests\Orders\UpdateContactsRequest;
-use App\Requests\Orders\UpdateStatusRequest;
-use App\Requests\Orders\UpdateWorkingRequest;
-use App\Services\NewPost;
+use App\Http\Requests\Orders\CreateDeliveryRequest;
+use App\Http\Requests\Orders\CreateSelfRequest;
+use App\Http\Requests\Orders\UpdateCourierRequest;
+use App\Http\Requests\Orders\UpdateDeliveryAddressRequest;
+use App\Http\Requests\Orders\UpdateContactsRequest;
+use App\Http\Requests\Orders\UpdateStatusRequest;
+use App\Http\Requests\Orders\UpdateWorkingRequest;
 
 class OrdersController extends Controller
 {
@@ -43,25 +44,9 @@ class OrdersController extends Controller
 
     private function checkBlackDate()
     {
-        return;
-        if (!request('date_delivery'))
-            return;
-
-        $filepath = ROOT . '/server/black_dates.txt';
-
-        if (!file_exists($filepath))
-            file_put_contents($filepath, null);
-
-        $filecontent = file_get_contents($filepath);
-
-        if (mb_strlen($filecontent) < 5) return;
-
-        $black_dates = explode(',', $filecontent);
-
-        $black_dates = array_map('trim', $black_dates);
-
-        if (in_array(trim(request('date_delivery')), $black_dates))
-            response(400, 'На цю дату неможливо завести замовлення!');
+        if (request()->has('date_delivery') && BlackDate::where('date', request('date_delivery'))->count()) {
+            throw new Exception('На цей день заводити замовлення неможна!');
+        }
     }
 
     public function sectionView(OrdersListFilter $filter, Request $request, string $type = 'delivery')
@@ -96,14 +81,13 @@ class OrdersController extends Controller
     public function sectionCreate(CategoryTree $categoryTree, string $type = 'delivery')
     {
         $data = [
-            'title'      => 'Замовлення :: Нове замовлення',
             'categories' => $categoryTree->option(),
             'type'       => $type,
             'hints'      => OrderHint::type($type)->get(),
             'pays'       => Pay::all(),
             'users'      => User::all(),
             'deliveries' => Logistic::all(),
-            'storage'    => Storage::accounted()->sort()->get()
+            'storage'    => Storage::where('is_accounted', true)->orderBy('priority')->get()
         ];
 
         return view('buy.create.main', $data);
@@ -120,7 +104,7 @@ class OrdersController extends Controller
             'order'         => $order,
             'categories'    => $categoryTree->option(),
             'sms_templates' => SmsTemplate::type($order->type)->get(),
-            'storage'       => Storage::accounted()->sort()->get(),
+            'storage'       => Storage::where('is_accounted', true)->orderBy('priority')->get(),
             'clients'       => Client::all(),
             'closedOrder'   => Report::type('order')->where('data', $id)->count(),
         ];
@@ -388,8 +372,6 @@ class OrdersController extends Controller
     public function actionUpdateContacts(UpdateContactsRequest $request, Order $order)
     {
         $order->findOrFail($request->id)->update($request->all());
-
-        response()->json(['message' => 'Контакти вдало оновлені!']);
     }
 
     // Оновлення службової інформації
@@ -402,17 +384,11 @@ class OrdersController extends Controller
     public function actionUpdateDeliveryAddress(UpdateDeliveryAddressRequest $request, OrderUpdate $orderUpdate)
     {
         Order::findOrFail($request->id)->update($request->all());
-
-        response()->json([
-            'message' => 'Адресу вдало змінено!'
-        ]);
     }
 
     public function actionUpdateSendingAddress(OrderUpdate $orderUpdate, UpdateSendingAddressRequest $request)
     {
         $orderUpdate->init($request->id)->sendingAddress($request);
-
-        return response()->json(['message' => 'Адреса оновлена!']);
     }
 
     // Оновлення інформаціїї про оплату

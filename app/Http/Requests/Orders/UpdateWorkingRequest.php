@@ -15,12 +15,20 @@ class UpdateWorkingRequest extends FormRequest
 
         return [
             'date_delivery' => "required|date_format:Y-m-d|after:$date",
-            'site'          => 'required'
+            'site_id'       => 'required'
         ];
     }
 
     public function authorize()
     {
         return can('orders');
+    }
+
+    public function attributes()
+    {
+        return [
+            'site_id'       => 'Сайт',
+            'date_delivery' => 'Дата доставки'
+        ];
     }
 }
