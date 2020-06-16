@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Orders;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
 
 class CreateSelfRequest extends FormRequest
 {
@@ -14,6 +14,7 @@ class CreateSelfRequest extends FormRequest
         $date = now()->format('Y-m-d');
 
         return [
+            'type'           => 'required',
             'client_id'      => 'nullable|integer',
             'fio'            => 'required',
             'phone'          => "required|regex:{$phoneRegex}",
@@ -31,7 +32,7 @@ class CreateSelfRequest extends FormRequest
             'prepayment'     => 'nullable|numeric',
             'delivery_price' => 'nullable|numeric',
             'discount'       => 'nullable|numeric',
-            'products[]'     => 'required'
+            'products'       => 'required|array'
         ];
     }
 

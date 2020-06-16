@@ -42,14 +42,14 @@
 
 @if($key == 'email')
     <div class="form-group">
-        <label class="col-md-4 control-label" for="email">E-mail</label>
+        <label class="col-md-4 control-label">E-mail</label>
         <div class="col-md-5">
             <input id="email" name="email" class="form-control" type="email">
         </div>
     </div>
 @endif
 
-@if($key == 'hint')
+@if($key == 'hint_id')
     <div class="form-group">
         <label class="col-md-4 control-label">
             @if($type == 'sending') <span class="text-danger">Підказка *</span> @else Підказка @endif
@@ -57,7 +57,7 @@
         <div class="col-md-5">
             <select @displayIf($type == 'sending', 'required') name="hint_id" class="form-control">
                 @if($type != 'sending')
-                    <option value="0"></option>
+                    <option value=""></option>
                 @endif
                 @foreach($hints as $item)
                     <option value="{{ $item->id }}">{{ $item->description }}</option>
@@ -105,7 +105,7 @@
         <label class="col-md-4 control-label">Курєр</label>
         <div class="col-md-5">
             <select name="courier_id" class="form-control">
-                <option value="0">Не вибрано</option>
+                <option value="">Не вибрано</option>
                 @foreach ($users as $item)
                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach
@@ -150,7 +150,7 @@
     </div>
 @endif
 
-@if($key == 'pay_method')
+@if($key == 'pay_id')
     <div class="form-group">
         <label class="col-md-4 control-label">Варіант оплати</label>
         <div class="col-md-5">
@@ -174,11 +174,11 @@
     </div>
 @endif
 
-@if($key == 'delivery')
+@if($key == 'logistic_id')
     <div class="form-group">
         <label class="col-md-4 control-label">Транспортна компанія</label>
         <div class="col-md-5">
-            <select name="delivery" class="form-control">
+            <select name="logistic_id" class="form-control">
                 @foreach($logisticModel->all() as $item)
                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach
@@ -191,14 +191,14 @@
     <div class="form-group">
         <label class="col-md-4 control-label">Місто <span class="text-danger">*</span></label>
         <div class="col-md-5">
-            <select class="form-control" name="city" id="sending_city"></select>
+            <select class="form-control" name="new_post_city_id" id="sending_city"></select>
         </div>
     </div>
 
     <div class="form-group">
         <label class="col-md-4 control-label">Відділення <span class="text-danger">*</span></label>
         <div class="col-md-5">
-            <select disabled id="warehouse" name="warehouse" class="form-control">
+            <select disabled id="warehouse" name="new_post_warehouse_id" class="form-control">
                 <option>Виберіть відділення</option>
             </select>
         </div>
@@ -210,7 +210,7 @@
         <label class="col-md-4 control-label">Доставку оплачує <i class="text-danger">*</i></label>
         <div class="col-md-5">
             <select class="form-control" name="pay_delivery">
-                <option value=""></option>
+                <option value="">Виберіть платника доставки</option>
                 <option value="recipient">Отримувач</option>
                 <option value="sender">Відправник</option>
             </select>
@@ -230,11 +230,11 @@
     </div>
 @endif
 
-@if($key == 'warehouse')
+@if($key == 'shop_id')
     <div class="form-group">
         <label class="col-md-4 control-label">Магазин</label>
         <div class="col-md-5">
-            <select name="warehouse" class="form-control">
+            <select name="shop_id" class="form-control">
                 @foreach($shopModel->all() as $item)
                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach
@@ -243,12 +243,12 @@
     </div>
 @endif
 
-@if($key == 'site')
+@if($key == 'site_id')
     <div class="form-group">
         <label class="col-md-4 control-label">Сайт <i class="text-danger">*</i></label>
         <div class="col-md-5">
-            <select name="site" class="form-control">
-                <option value=""></option>
+            <select name="site_id" class="form-control">
+                <option value="">Виберіть сайт</option>
                 @foreach($siteModel->all() as $item)
                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach
@@ -275,9 +275,9 @@
         <label class="col-md-4 control-label">Клієнт</label>
         <div class="col-md-5">
             <select name="client_id" class="form-control" id="client_id">
-                <option value="0"></option>
+                <option value=""></option>
                 @foreach ($clientModel->all() as $item)
-                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                    <option @data(['fio' => $item->name, 'phone' => $item->phone, 'email' => $item->email]) value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach
             </select>
         </div>

@@ -13,6 +13,7 @@ use App\Models\NewPostWarehouse;
 use App\Orders\OrderUpdate;
 use App\Services\CategoryTree;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use SergeyNezbritskiy\PrivatBank\AuthorizedClient;
 use SergeyNezbritskiy\PrivatBank\Merchant as MerchantApi;
 use Illuminate\Support\Collection;
@@ -352,14 +353,12 @@ class OrdersController extends Controller
         ]);
     }
 
-    public function actionCreateSelf(CreateSelfRequest $request, OrderService $orderService)
+    public function actionCreateSelf(CreateSelfRequest $request, OrderService $orderService): JsonResponse
     {
         $id = $orderService->createSelf($request->validated());
 
-        response(200, [
-            'action'  => 'redirect',
-            'uri'     => uri('orders', ['section' => 'update', 'id' => $id]),
-            'message' => 'Замовлення вдало створено!'
+        return response()->json([
+            'url' => uri('orders/update', ['id' => $id])
         ]);
     }
 

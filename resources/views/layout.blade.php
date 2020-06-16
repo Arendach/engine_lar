@@ -173,6 +173,8 @@
                     </script>
                 @endisset
 
+                @stack('scripts')
+
                 <script>
                     @if(is_file(public_path('js/Reinitiable.js')))
                     {!! file_get_contents(public_path('js/Reinitiable.js')) !!}

@@ -54,13 +54,13 @@ class OrderHistoryService
         return $this->order;
     }
 
-    public function create(): Order
+    public function create(array $products): void
     {
-        $this->order->save();
+        $data = array_merge($this->order->toArray(), [
+            'products' => $products
+        ]);
 
-        $this->save($this->order->toArray(), 'created');
-
-        return $this->order;
+        $this->save($data, 'created');
     }
 
     private function save(array $data, string $type = 'update_fields'): void

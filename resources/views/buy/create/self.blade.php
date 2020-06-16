@@ -6,18 +6,18 @@
 
 <hr>
 
-@include('buy.create.elements', ['key' => 'hint'])
+@include('buy.create.elements', ['key' => 'hint_id'])
 @include('buy.create.elements', ['key' => 'date_delivery'])
-@include('buy.create.elements', ['key' => 'site'])
+@include('buy.create.elements', ['key' => 'site_id'])
 @include('buy.create.elements', ['key' => 'time'])
 @include('buy.create.elements', ['key' => 'courier_id'])
 @include('buy.create.elements', ['key' => 'comment'])
 
 <hr>
 
-@include('buy.create.elements', ['key' => 'warehouse'])
+@include('buy.create.elements', ['key' => 'shop_id'])
 
 <hr>
 
-@include('buy.create.elements', ['key' => 'pay_method'])
+@include('buy.create.elements', ['key' => 'pay_id'])
 @include('buy.create.elements', ['key' => 'prepayment'])

@@ -18,8 +18,22 @@ class OrderService
 
     public function createSelf(array $data): int
     {
-        $order = Order::make($data)->withHistory()->create();
+        // get products
+        $products = $data['products'];
+        unset($data['products']);
 
+        // create order
+        $order = Order::create($data);
+
+        // attach products
+        $order->products()->sync($products);
+
+        // set order sum
+        $order->full_sum = $order->sum;
+
+        $order->withHistory()->create($products);
+
+        // return order id
         return $order->id;
     }
 }

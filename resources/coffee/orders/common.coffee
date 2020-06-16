@@ -1,11 +1,10 @@
 checkPrice = ->
     sum = 0
-    discount = $('#discount').val
-    delivery_cost = $'#delivery_cost'.val
-    $('.product').each ->
-        sum += +$(this).find('.sum').val
-    $('#sum').val sum
-    $('#full_sum').val sum - discount + delivery_cost
+    discount = +$('#discount').val()
+    delivery_cost = +$('#delivery_cost').val()
+    $('.product').each -> sum += +$(this).find('.sum').val()
+    $('#sum').val(sum)
+    $('#full_sum').val(sum - discount + delivery_cost)
 
 search_warehouses = (city_id) ->
     $.ajax
@@ -17,13 +16,13 @@ search_warehouses = (city_id) ->
             $('#warehouse').html(answer).removeAttr 'disabled'
 
 $(document).on 'keyup', '.amount, .price', ->
-    $product = $(@).parents '.product'
-    amount = $product.find('.amount').val
-    price = $product.find('.price').val
-    $product.find('.sum').val amount * price
-    do checkPrice
+    $product = $(@).parents('.product')
+    amount = $product.find('.amount').val()
+    price = $product.find('.price').val()
+    $product.find('.sum').val(amount * price)
+    checkPrice()
 
-$(document).on 'keyup', '#delivery_cost, #discount', checkPrice
+$(document).on('keyup', '#delivery_cost, #discount', checkPrice)
 
 $(document).on 'change keyup', '#search_field, #search_category', ->
     $this = $(@)
@@ -37,7 +36,7 @@ $(document).on 'click', '.searched', ->
     type = window.type
     $.post '/orders/get_product', {type, id}, (response) ->
         $('#product-list tbody').prepend(response)
-    checkPrice()
+        checkPrice()
 
 
 $(document).on 'change', '#city_select', ->
@@ -70,14 +69,13 @@ $(document).ready ->
         CKEDITOR.replace 'comment'
 
     if $('#client_id').length
-        $('#client_id').select2 {tags: "true", placeholder: "Select an option"}
+        $('#client_id').select2({tags: "true", placeholder: "Виберіть клієнта"})
 
     $(document).on 'change', '#client_id', (event) ->
-        selected = $(event.currentTarget).find ':selected'
-
-        $('#fio').val selected.data 'fio'
-        $('#phone').val selected.data 'phone'
-        $('#email').val selected.data 'email'
+        selected = $(event.currentTarget).find(':selected')
+        $('#fio').val(selected.data('fio'))
+        $('#phone').val(selected.data('phone'))
+        $('#email').val(selected.data('email'))
 
 
     $('#street').typeahead

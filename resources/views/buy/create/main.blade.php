@@ -28,7 +28,7 @@
 
         <hr>
 
-        <form id="create_order">
+        <form id="createOrder" method="POST" action="@uri("orders/create_{$type}")">
             <input type="hidden" name="type" value="{{ $type }}">
             <div class="tab-content">
                 <div id="main" class="tab-pane fade in active">
@@ -46,3 +46,7 @@
     <script>window.type = '<?= $type ?>'</script>
 
 @stop
+
+@push('scripts')
+    <script src="{{ asset('js/orderCreate.js') }}"></script>
+@endpush

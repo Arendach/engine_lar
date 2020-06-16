@@ -98,10 +98,10 @@ var checkPrice, search_warehouses;
 checkPrice = function() {
   var delivery_cost, discount, sum;
   sum = 0;
-  discount = $('#discount').val;
-  delivery_cost = $`#delivery_cost`.val;
+  discount = +$('#discount').val();
+  delivery_cost = +$('#delivery_cost').val();
   $('.product').each(function() {
-    return sum += +$(this).find('.sum').val;
+    return sum += +$(this).find('.sum').val();
   });
   $('#sum').val(sum);
   return $('#full_sum').val(sum - discount + delivery_cost);
@@ -123,8 +123,8 @@ search_warehouses = function(city_id) {
 $(document).on('keyup', '.amount, .price', function() {
   var $product, amount, price;
   $product = $(this).parents('.product');
-  amount = $product.find('.amount').val;
-  price = $product.find('.price').val;
+  amount = $product.find('.amount').val();
+  price = $product.find('.price').val();
   $product.find('.sum').val(amount * price);
   return checkPrice();
 });
@@ -147,10 +147,10 @@ $(document).on('click', '.searched', function() {
   var id, type;
   id = $(this).data('id');
   type = window.type;
-  $.post('/orders/get_product', {type, id}, function(response) {
-    return $('#product-list tbody').prepend(response);
+  return $.post('/orders/get_product', {type, id}, function(response) {
+    $('#product-list tbody').prepend(response);
+    return checkPrice();
   });
-  return checkPrice();
 });
 
 $(document).on('change', '#city_select', function() {
@@ -198,7 +198,7 @@ $(document).ready(function() {
   if ($('#client_id').length) {
     $('#client_id').select2({
       tags: "true",
-      placeholder: "Select an option"
+      placeholder: "Виберіть клієнта"
     });
   }
   $(document).on('change', '#client_id', function(event) {
