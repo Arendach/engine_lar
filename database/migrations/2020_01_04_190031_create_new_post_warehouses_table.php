@@ -12,6 +12,7 @@ class CreateNewPostWarehousesTable extends Migration
             $table->string('name', 128);
             $table->string('ref', 128)->unique();
             $table->string('city_ref', 128);
+            $table->integer('city_id')->unsigned();
             $table->integer('number');
             $table->integer('max_weight_place')->nullable()->default(0);
             $table->integer('max_weight_all')->nullable()->default(0);

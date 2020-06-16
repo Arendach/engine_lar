@@ -23,7 +23,7 @@ class PurchaseController extends Controller
             ->paginate(config('app.items'))
             ->appends(request()->all());
 
-        $storage = Storage::accounted(true)->get();
+        $storage = Storage::where('is_accounted', true)->orderBy('priority')->get();
         $manufacturers = Manufacturer::all();
 
         return view('purchase.main', compact('purchases', 'storage', 'manufacturers'));

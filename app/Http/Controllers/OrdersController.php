@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Orders\UpdateSelfAddressRequest;
+use App\Services\OrderService;
 use Exception;
 use App\Events\Order\UpdateContacts;
 use App\Http\Requests\Orders\UpdateSendingAddressRequest;
@@ -62,17 +64,12 @@ class OrdersController extends Controller
         $orders->appends($request->all());
 
         $data = [
-            'title'       => "Замовлення :: " . assets('order_types')[$type]['many'],
-            'full'        => $full,
-            'type'        => $type,
-            'orders'      => $orders,
-            'couriers'    => User::get(),
-            'shops'       => Shop::all(),
-            'request'     => $request,
-            'breadcrumbs' => [
-                ['Замовлення', uri('orders/view', ['type' => 'delivery'])],
-                [assets('order_types')[$type]['many']]
-            ]
+            'title'    => "Замовлення :: " . assets('order_types')[$type]['many'],
+            'full'     => $full,
+            'type'     => $type,
+            'orders'   => $orders,
+            'couriers' => User::get(),
+            'shops'    => Shop::all(),
         ];
 
         return view('buy.view.index', $data);
@@ -152,10 +149,11 @@ class OrdersController extends Controller
             $builder->where('category_id', $search);
         } else {
             $builder->where(function (Builder $builder) use ($search) {
-                $builder->where('name', 'like', "%$search%")
+                $builder->where('name_uk', 'like', "%$search%")
+                    ->where('name_ru', 'like', "%$search%")
                     ->orWhere('service_code', 'like', "%$search%")
-                    ->orWhere('articul', 'like', "%$search%")
-                    ->orWhere('model', 'like', "%$search%")
+                    ->orWhere('article', 'like', "%$search%")
+                    ->orWhere('model_uk', 'like', "%$search%")
                     ->orWhere('name_ru', 'like', "%$search%");
             });
         }
@@ -354,12 +352,9 @@ class OrdersController extends Controller
         ]);
     }
 
-    public function actionCreateSelf(CreateSelfRequest $request, array $products)
+    public function actionCreateSelf(CreateSelfRequest $request, OrderService $orderService)
     {
-        dd($products);
-        dd($request->toArray());
-
-        $id = (new OrderCreate)->self($post, $products);
+        $id = $orderService->createSelf($request->validated());
 
         response(200, [
             'action'  => 'redirect',
@@ -369,15 +364,15 @@ class OrdersController extends Controller
     }
 
     // Оновлення контактної інформації
-    public function actionUpdateContacts(UpdateContactsRequest $request, Order $order)
+    public function actionUpdateContacts(UpdateContactsRequest $request, OrderService $orderService)
     {
-        $order->findOrFail($request->id)->update($request->all());
+        $orderService->update($request->id, $request->validated());
     }
 
     // Оновлення службової інформації
-    public function actionUpdateWorking(UpdateWorkingRequest $request)
+    public function actionUpdateWorking(UpdateWorkingRequest $request, OrderService $orderService)
     {
-        Order::findOrFail($request->id)->update($request->all());
+        $orderService->update($request->get('id'), $request->validated());
     }
 
     // Оновлення адреси
@@ -389,6 +384,11 @@ class OrdersController extends Controller
     public function actionUpdateSendingAddress(OrderUpdate $orderUpdate, UpdateSendingAddressRequest $request)
     {
         $orderUpdate->init($request->id)->sendingAddress($request);
+    }
+
+    public function actionUpdateSelfAddress(OrderService $orderService, UpdateSelfAddressRequest $request)
+    {
+        $orderService->updateSelfAddress($request->get('id'), $request->validated());
     }
 
     // Оновлення інформаціїї про оплату

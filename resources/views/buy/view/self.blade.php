@@ -88,7 +88,7 @@
                 <td>{{ $item->fio }}</td>
                 <td>{{ $item->phone }}</td>
                 <td>{{ $item->time }}</td>
-                <td>{{ $item->shop_name }}</td>
+                <td>{{ $item->shop->name ?? '' }}</td>
                 <td>
                     <select class="courier form-control input-sm">
                         <option @disabled(!$item->status) @selected($item->courier_id == 0) value="0">

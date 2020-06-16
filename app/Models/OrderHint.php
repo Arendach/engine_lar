@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Builder;
 class OrderHint extends Model
 {
     protected $table = 'order_hints';
-
     protected $guarded = [];
-
     public $timestamps = false;
+
+    public $titleAttribute = 'description';
 
     private $types = [
         'common'   => 'Загальний',

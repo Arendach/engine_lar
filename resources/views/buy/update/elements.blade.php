@@ -216,13 +216,13 @@
     </div>
 @endif
 
-@if($key == 'warehouse')
+@if($key == 'shop_id')
     <div class="form-group">
         <label class="col-md-4 control-label">Магазин</label>
         <div class="col-md-5">
-            <select name="warehouse" class="form-control">
+            <select name="shop_id" class="form-control">
                 @foreach ($shop->all() as $item)
-                    <option @selected($order->warehouse == $item->id) value="{{ $item->id }}">
+                    <option @selected($order->shop_id == $item->id) value="{{ $item->id }}">
                         {{ $item->name }}
                     </option>
                 @endforeach

@@ -33,11 +33,11 @@
     <form action="@uri('orders/update_contacts')" data-type="ajax">
         @include('buy.update.elements', ['key' => 'id'])
         @include('buy.update.elements', ['key' => 'client_id'])
+        @include('buy.update.elements', ['key' => 'fio'])
         @include('buy.update.elements', ['key' => 'phone'])
         @include('buy.update.elements', ['key' => 'phone2'])
         @include('buy.update.elements', ['key' => 'email'])
         @include('buy.update.elements', ['key' => 'button'])
-        @include('buy.update.elements', ['key' => 'fio'])
     </form>
 
     <hr>
@@ -49,14 +49,15 @@
         @include('buy.update.elements', ['key' => 'site'])
         @include('buy.update.elements', ['key' => 'time'])
         @include('buy.update.elements', ['key' => 'courier_id'])
+        @include('buy.update.elements', ['key' => 'comment'])
         @include('buy.update.elements', ['key' => 'button'])
     </form>
 
     <hr>
 
-    <form action="@uri('orders/update_address')" data-type="ajax">
+    <form action="@uri('orders/update_self_address')" data-type="ajax">
         @include('buy.update.elements', ['key' => 'id'])
-        @include('buy.update.elements', ['key' => 'warehouse'])
+        @include('buy.update.elements', ['key' => 'shop_id'])
         @include('buy.update.elements', ['key' => 'button'])
     </form>
 </div>

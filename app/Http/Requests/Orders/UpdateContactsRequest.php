@@ -8,9 +8,14 @@ class UpdateContactsRequest extends FormRequest
 {
     private $phoneRegex = '/[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}/';
 
-    public function messages(): array
+    public function attributes(): array
     {
-        return [];
+        return [
+            'fio'    => 'Імя',
+            'phone'  => 'Телефон',
+            'phone2' => 'Додатковий телефон',
+            'email'  => 'Електронна пошта'
+        ];
     }
 
     public function rules(): array
@@ -19,14 +24,14 @@ class UpdateContactsRequest extends FormRequest
 
         return [
             'fio'    => 'required',
-            'phone'  => "required|regex:$regex",
-            'phone2' => "nullable|regex:$regex",
+            'phone'  => "required|regex:{$regex}",
+            'phone2' => "nullable|regex:{$regex}",
             'email'  => 'nullable|email'
         ];
     }
 
     public function authorize(): bool
     {
-        return true;
+        return can('orders');
     }
 }

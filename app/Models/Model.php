@@ -10,4 +10,6 @@ class Model extends BasicModel
 {
     use Editable;
     use DateHuman;
+
+    public $titleAttribute = 'name';
 }

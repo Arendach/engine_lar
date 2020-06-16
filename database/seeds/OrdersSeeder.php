@@ -48,6 +48,7 @@ class OrdersSeeder extends Seeder
                 'order_professional_id' => $item->atype == 0 ? null : $item->atype,
                 'new_post_city_id'      => $this->getNewPostCityId($item),
                 'new_post_warehouse_id' => $this->getNewPostWarehouseId($item),
+                'shop_id'               => $this->getShopId($item),
 
                 'time_with'     => string_to_time($item->time_with),
                 'time_to'       => string_to_time($item->time_to),
@@ -161,5 +162,14 @@ class OrdersSeeder extends Seeder
         }
 
         return $warehouse->id;
+    }
+
+    private function getShopId(stdClass $order): ?int
+    {
+        if ($order->type == 'self' and is_numeric($order->warehouse)) {
+            return $order->warehouse;
+        }
+
+        return null;
     }
 }

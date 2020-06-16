@@ -146,11 +146,11 @@ $(document).on('change keyup', '#search_field, #search_category', function() {
 $(document).on('click', '.searched', function() {
   var id, type;
   id = $(this).data('id');
-  type = order.type;
+  type = window.type;
   $.post('/orders/get_product', {type, id}, function(response) {
     return $('#product-list tbody').prepend(response);
   });
-  return checkPrice;
+  return checkPrice();
 });
 
 $(document).on('change', '#city_select', function() {

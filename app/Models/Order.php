@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Services\OrderHistoryService;
 
 class Order extends Model
 {
@@ -123,6 +124,11 @@ class Order extends Model
     public function site(): BelongsTo
     {
         return $this->belongsTo(Site::class);
+    }
+
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class);
     }
 
 
@@ -248,5 +254,10 @@ class Order extends Model
     public function getPayDeliveryTitleAttribute(): string
     {
         return $this->pay_delivery == 'sender' ? 'Відпрвник' : 'Отримувач';
+    }
+
+    public function withHistory(): OrderHistoryService
+    {
+        return app(OrderHistoryService::class)->setModel($this);
     }
 }

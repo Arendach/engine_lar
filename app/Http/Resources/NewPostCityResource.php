@@ -10,7 +10,7 @@ class NewPostCityResource extends JsonResource
     {
         return [
             'id'     => $this->id,
-            'text'   => $this->name,
+            'name'   => $this->name,
             'ref'    => $this->ref,
             'prefix' => $this->prefix
         ];

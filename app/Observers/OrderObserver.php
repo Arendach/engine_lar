@@ -14,13 +14,7 @@ class OrderObserver
 
     public function updated(Order $order)
     {
-        $attributes = array_keys($order->getChanges());
 
-        OrderHistory::create([
-            'order_id' => $order->id,
-            'type'     => 'order',
-            'data'     => serialize($order)
-        ]);
     }
 
     public function deleted(Order $order)

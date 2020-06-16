@@ -4,6 +4,13 @@
 
 @extends('layout')
 
+@section('title', 'Замовлення :: ' . assets('order_types')[$type]['many'])
+
+@breadcrumbs(
+    ['Замовлення', uri('orders/view', ['type' => 'delivery'])],
+    [assets('order_types')[$type]['many']]
+)
+
 @section('content')
     <div class="content-section">
 
@@ -20,13 +27,16 @@
 
             <div class="pull-left">
                 <div class="btn-group" style="margin: 0 0 15px">
-                    <a href="@uri('orders/view', ['type' => 'delivery'])" class="btn btn-{{ $type == 'delivery' ? 'primary' : 'default' }}">
+                    <a href="@uri('orders/view', ['type' => 'delivery'])"
+                       class="btn btn-{{ $type == 'delivery' ? 'primary' : 'default' }}">
                         Доставки
                     </a>
-                    <a href="@uri('orders/view', ['type' => 'self'])" class="btn btn-{{ $type == 'self' ? 'primary' : 'default' }}">
+                    <a href="@uri('orders/view', ['type' => 'self'])"
+                       class="btn btn-{{ $type == 'self' ? 'primary' : 'default' }}">
                         Самовивози
                     </a>
-                    <a href="@uri('orders/view', ['type' => 'sending'])" class="btn btn-{{ $type == 'sending' ? 'primary' : 'default' }}">
+                    <a href="@uri('orders/view', ['type' => 'sending'])"
+                       class="btn btn-{{ $type == 'sending' ? 'primary' : 'default' }}">
                         Відправки
                     </a>
                 </div>
@@ -91,9 +101,9 @@
                             <select id="pay_id" class="search form-control">
                                 <option value=""></option>
                                 @foreach (\App\Models\Pay::all() as $item)
-                                <option @selected('pay_id', $item->id) value="{{ $item->id }}">
-                                    {{ $item->name }}
-                                </option>
+                                    <option @selected('pay_id', $item->id) value="{{ $item->id }}">
+                                        {{ $item->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>

@@ -51,6 +51,7 @@ class CreateOrdersTable extends Migration
             $table->integer('order_professional_id')->unsigned()->nullable();
             $table->integer('new_post_city_id')->unsigned()->nullable();
             $table->integer('new_post_warehouse_id')->unsigned()->nullable();
+            $table->integer('shop_id')->unsigned()->nullable();
 
             // dates
             $table->time('time_with', false)->nullable();

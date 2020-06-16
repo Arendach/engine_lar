@@ -34,10 +34,10 @@ $(document).on 'change keyup', '#search_field, #search_category', ->
 
 $(document).on 'click', '.searched', ->
     id = $(@).data('id')
-    type = order.type
+    type = window.type
     $.post '/orders/get_product', {type, id}, (response) ->
         $('#product-list tbody').prepend(response)
-    checkPrice
+    checkPrice()
 
 
 $(document).on 'change', '#city_select', ->

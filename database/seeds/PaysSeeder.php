@@ -9,6 +9,7 @@ class PaysSeeder extends Seeder
     {
         DB::connection('old')->table('pays')->get()->each(function (stdClass $item) {
             Pay::create([
+                'id'          => $item->id,
                 'name'        => $item->name,
                 'merchant_id' => $item->merchant_id,
                 'provider'    => $item->provider,
