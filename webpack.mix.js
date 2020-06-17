@@ -14,7 +14,7 @@ mix.webpackConfig({
 mix
     .js('resources/coffee/app.coffee', 'public/js/app.js')
     .js('resources/js/vue.js', 'public/js/vue.js')
-    .js('resources/coffee/login.coffee', 'public/j/login.js')
+    .js('resources/coffee/login.coffee', 'public/js/login.js')
     .js('resources/js/purchase.js', 'public/js/controllers/purchase.js')
     .js('resources/coffee/orders/orders.coffee', 'public/js/controllers/orders.js')
     .js('resources/coffee/product/product.coffee', 'public/js/controllers/product.js')
@@ -27,7 +27,7 @@ mix
     .js('resources/coffee/libs.coffee', 'public/js/libs.js')
     .js('resources/coffee/pjax.coffee', 'public/js/pjax.js')
     .js('resources/coffee/Reinitiable.coffee', 'public/js/Reinitiable.js')
-    .js('resources/scripts/orders/create.js', 'public/js/orderCreate.js')
+    .js('resources/scripts/orders.js', 'public/js/orders.js')
 
 
     .less('resources/less/login.less', 'public/css/login.css')

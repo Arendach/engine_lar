@@ -201,52 +201,41 @@ $(document).ready(function() {
       placeholder: "Виберіть клієнта"
     });
   }
-  $(document).on('change', '#client_id', function(event) {
+  return $(document).on('change', '#client_id', function(event) {
     var selected;
     selected = $(event.currentTarget).find(':selected');
     $('#fio').val(selected.data('fio'));
     $('#phone').val(selected.data('phone'));
     return $('#email').val(selected.data('email'));
   });
-  $('#street').typeahead({
-    source: function(query, result) {
-      return $.ajax({
-        type: 'post',
-        url: "/api/search_streets",
-        data: {
-          street: $('#street').val()
-        },
-        success: function(data) {
-          return result(data);
-        }
-      });
-    }
-  });
-  $('#sending_city').select2({
-    ajax: {
-      type: 'post',
-      url: '/orders/new_post_city',
-      data: function(params) {
-        return {
-          name: params.term
-        };
-      }
-    },
-    cache: true
-  });
-  return $('#sending_city').on('select2:select', function(event) {
-    return $.ajax({
-      type: 'post',
-      url: '/orders/new_post_warehouse',
-      data: {
-        city_id: $(event.currentTarget).val()
-      },
-      success: function(response) {
-        return $('#warehouse').attr('disabled', false).html(response.options);
-      }
-    });
-  });
 });
+
+/*    $('#street').typeahead
+    source: (query, result) ->
+        $.ajax
+            type: 'post'
+            url: "/api/search_streets",
+            data:
+                street: $('#street').val()
+            success: (data) ->
+                result data*/
+/*    $('#sending_city').select2
+    ajax:
+        type: 'post'
+        url: '/orders/new_post_city'
+        data: (params) -> {name: params.term}
+    cache: yes
+
+$('#sending_city').on 'select2:select', (event) ->
+    $.ajax
+        type: 'post'
+        url: '/orders/new_post_warehouse'
+        data:
+            city_id: $(event.currentTarget).val()
+        success: (response) ->
+            $ '#warehouse'
+                .attr 'disabled', off
+                .html response.options*/
 
 
 /***/ }),

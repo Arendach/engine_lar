@@ -69,3 +69,7 @@
         'closed_order'  => $closedOrder
     ])
 @stop
+
+@push('scripts')
+    <script src="{{ asset('js/orders.js') }}"></script>
+@endpush

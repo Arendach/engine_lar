@@ -11,7 +11,7 @@ class CreateCategoriesTable extends Migration
             $table->increments('id');
             $table->string('name', 256);
             $table->integer('parent_id');
-            $table->integer('sort');
+            $table->integer('priority')->default(0);
             $table->integer('service_code');
         });
     }

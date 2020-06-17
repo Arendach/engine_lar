@@ -2,7 +2,10 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
+use App\Models\Category;
+use App\Models\Manufacturer;
 use App\Models\Product;
+use App\Models\User;
 use Faker\Generator as Faker;
 
 $factory->define(Product::class, function (Faker $faker) {
@@ -31,8 +34,8 @@ $factory->define(Product::class, function (Faker $faker) {
         'meta_description_ru' => $faker->text,
         'meta_keywords_ru'    => $faker->text,
         'meta_title_ru'       => $faker->text,
-        'category_id'         => 1,
-        'manufacturer_id'     => 1,
-        'author_id'           => 1
+        'category_id'         => factory(Category::class),
+        'manufacturer_id'     => factory(Manufacturer::class),
+        'author_id'           => factory(User::class)
     ];
 });

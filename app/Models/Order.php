@@ -111,14 +111,14 @@ class Order extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function sending_city(): BelongsTo
+    public function newPostCity(): BelongsTo
     {
-        return $this->belongsTo(NewPostCity::class, 'city', 'id');
+        return $this->belongsTo(NewPostCity::class);
     }
 
-    public function sending_warehouse(): BelongsTo
+    public function newPostWarehouse(): BelongsTo
     {
-        return $this->belongsTo(NewPostWarehouse::class, 'warehouse', 'id');
+        return $this->belongsTo(NewPostWarehouse::class);
     }
 
     public function site(): BelongsTo

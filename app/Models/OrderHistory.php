@@ -12,11 +12,14 @@ class OrderHistory extends Model
     protected $guarded = [];
 
     public $types = [
-        'update_fields' => 'Оновлено дані',
+        'update_fields'  => 'Оновлено дані',
+        'update_address' => 'Оновлено адресу',
     ];
 
     public $fields = [
-        'shop_id' => 'Магазин',
+        'shop_id'               => 'Магазин',
+        'new_post_warehouse_id' => 'Відділення',
+        'new_post_city_id'      => 'Місто'
 
     ];
 

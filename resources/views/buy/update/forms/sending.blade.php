@@ -50,9 +50,9 @@
 
     <hr>
 
-    <form action="@uri('orders/update_sending_address')" data-type="ajax">
+    <form action="@uri('orders/update_address')" data-type="ajax">
         @include('buy.update.elements', ['key' =>'id'])
-        @include('buy.update.elements', ['key' => $order->logistic->name == 'НоваПошта' ? 'city_new_post': 'city_warehouse'])
+        @include('buy.update.elements', ['key' => 'sending_address'])
         @include('buy.update.elements', ['key' =>'address'])
         @include('buy.update.elements', ['key' =>'ttn'])
         @include('buy.update.elements', ['key' =>'button'])

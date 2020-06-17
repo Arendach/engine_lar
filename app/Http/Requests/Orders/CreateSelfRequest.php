@@ -6,8 +6,6 @@ use App\Http\Requests\FormRequest;
 
 class CreateSelfRequest extends FormRequest
 {
-    private $phoneRegex = '/[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}/';
-
     public function rules(): array
     {
         $phoneRegex = $this->phoneRegex;
@@ -36,7 +34,7 @@ class CreateSelfRequest extends FormRequest
         ];
     }
 
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'client_id'      => 'Клієнт',

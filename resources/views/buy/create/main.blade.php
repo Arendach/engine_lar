@@ -48,5 +48,5 @@
 @stop
 
 @push('scripts')
-    <script src="{{ asset('js/orderCreate.js') }}"></script>
+    <script src="{{ asset('js/orders.js') }}"></script>
 @endpush

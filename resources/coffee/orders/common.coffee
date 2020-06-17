@@ -78,7 +78,7 @@ $(document).ready ->
         $('#email').val(selected.data('email'))
 
 
-    $('#street').typeahead
+###    $('#street').typeahead
         source: (query, result) ->
             $.ajax
                 type: 'post'
@@ -86,9 +86,9 @@ $(document).ready ->
                 data:
                     street: $('#street').val()
                 success: (data) ->
-                    result data
+                    result data###
 
-    $('#sending_city').select2
+###    $('#sending_city').select2
         ajax:
             type: 'post'
             url: '/orders/new_post_city'
@@ -104,4 +104,4 @@ $(document).ready ->
             success: (response) ->
                 $ '#warehouse'
                     .attr 'disabled', off
-                    .html response.options
+                    .html response.options###

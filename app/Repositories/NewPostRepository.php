@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class NewPostRepository
 {
-    public function searchCities(string $name): Collection
+    public function searchCities(?string $name): Collection
     {
-        return NewPostCity::where('name', 'like', "%{$name}%")->get();
+        return NewPostCity::where('name', 'like', "%{$name}%")
+            ->orderBy('name')
+            ->limit(100)
+            ->get();
     }
 
     public function searchWarehouses($city): Collection

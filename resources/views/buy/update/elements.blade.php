@@ -1,3 +1,5 @@
+@php /** @var \App\Models\Order $order */ @endphp
+
 @inject('pay', App\Models\Pay)
 @inject('orderHint', App\Models\OrderHint)
 @inject('user', App\Models\User)
@@ -173,7 +175,7 @@
     </div>
 @endif
 
-@if($key == 'city_delivery')
+@if($key == 'city')
     <div class="form-group">
         <label class="col-md-4 control-label">Місто <i class="text-danger">*</i></label>
         <div class="col-md-5">
@@ -246,40 +248,48 @@
     </div>
 @endif
 
-@if($key == 'city_new_post')
-    <div class="form-group">
+@if($key == 'sending_address')
+    <div class="form-group" style="display: {{ $order->logistic_id == 1 ? 'block' : 'none' }}">
         <label class="col-md-4 control-label">Місто <span class="text-danger">*</span></label>
         <div class="col-md-5">
-            <select class="form-control" name="city" id="sending_city">
-                <option value="{{ $order->sending_city->id }}">{{ $order->sending_city->name }}</option>
+            <select class="form-control" name="new_post_city_id" id="new_post_city">
+                <option value="{{ $order->newPostCity->id ?? null }}">
+                    {{ $order->newPostCity->name ?? null }}
+                </option>
             </select>
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" style="display: {{ $order->logistic_id == 1 ? 'block' : 'none' }}">
         <label class="col-md-4 control-label">Відділення <span class="text-danger">*</span></label>
         <div class="col-md-5">
-            <select id="warehouse" name="warehouse" class="form-control">
-                @foreach($warehouses as $item)
-                    <option @selected($order->warehouse == $item->id)>{{ $item->name }}</option>
-                @endforeach
+            <select id="new_post_warehouse" name="new_post_warehouse_id" class="form-control">
+                @if($order->newPostCity && $order->newPostCity->warehouses)
+                    @foreach($order->newPostCity->warehouses as $item)
+                        <option @selected($order->new_post_warehouse_id == $item->id) value="{{ $item->id }}">
+                            {{ $item->name }}
+                        </option>
+                    @endforeach
+                @else
+                    <option value="{{ $order->newPostWarehouse->id ?? null }}">
+                        {{ $order->newPostWarehouse->name ?? null }}
+                    </option>
+                @endif
             </select>
         </div>
     </div>
-@endif
 
-@if($key == 'city_warehouse')
-    <div class="form-group">
+    <div class="form-group" style="display: {{ $order->logistic_id == 1 ? 'none' : 'block' }}">
         <label class="col-md-4 control-label">Місто <i class="text-danger">*</i></label>
         <div class="col-md-5">
-            <input class="form-control" name="city" value="{{ $order->city }}">
+            <input class="form-control" id="other_city" name="city" value="{{ $order->city }}">
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" style="display: {{ $order->logistic_id == 1 ? 'none' : 'block' }}">
         <label class="col-md-4 control-label">Відділення <i class="text-danger">*</i></label>
         <div class="col-md-5">
-            <input name="warehouse" class="form-control" value="{{ $order->warehouse }}">
+            <input name="warehouse" class="form-control" id="other_warehouse" value="{{ $order->warehouse }}">
         </div>
     </div>
 @endif

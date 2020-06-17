@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\NewPost;
+namespace App\Http\Requests\Api\Street;
 
 use App\Http\Requests\Api\ApiRequest;
 
-class SearchCitiesRequest extends ApiRequest
+class SearchRequest extends ApiRequest
 {
     public function rules()
     {

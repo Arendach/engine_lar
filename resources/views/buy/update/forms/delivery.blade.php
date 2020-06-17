@@ -46,20 +46,20 @@
 
     <form action="{{ uri('orders/update_working') }}" data-type="ajax">
         @include('buy.update.elements', ['key' => 'id'])
-        @include('buy.update.elements', ['key' => 'hint'])
+        @include('buy.update.elements', ['key' => 'hint_id'])
         @include('buy.update.elements', ['key' => 'date_delivery'])
-        @include('buy.update.elements', ['key' => 'site'])
+        @include('buy.update.elements', ['key' => 'site_id'])
         @include('buy.update.elements', ['key' => 'time'])
-        @include('buy.update.elements', ['key' => 'courier'])
+        @include('buy.update.elements', ['key' => 'courier_id'])
         @include('buy.update.elements', ['key' => 'comment'])
         @include('buy.update.elements', ['key' => 'button'])
     </form>
 
     <hr>
 
-    <form action="{{ uri('orders/update_delivery_address') }}" data-type="ajax">
+    <form action="{{ uri('orders/update_address') }}" data-type="ajax">
         @include('buy.update.elements', ['key' => 'id'])
-        @include('buy.update.elements', ['key' => 'city_delivery'])
+        @include('buy.update.elements', ['key' => 'city'])
         @include('buy.update.elements', ['key' => 'street'])
         @include('buy.update.elements', ['key' => 'address'])
         @include('buy.update.elements', ['key' => 'comment_address'])

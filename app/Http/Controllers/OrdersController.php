@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Orders\CreateSendingRequest;
+use App\Http\Requests\Orders\UpdateAddressRequest;
 use App\Http\Requests\Orders\UpdateSelfAddressRequest;
 use App\Services\OrderService;
 use Exception;
-use App\Events\Order\UpdateContacts;
 use App\Http\Requests\Orders\UpdateSendingAddressRequest;
 use App\Models\BlackDate;
-use App\Models\NewPostCity;
-use App\Models\NewPostWarehouse;
 use App\Orders\OrderUpdate;
 use App\Services\CategoryTree;
 use Illuminate\Database\Eloquent\Builder;
@@ -309,53 +308,27 @@ class OrdersController extends Controller
         $this->view->display('orders.print.sales_invoice', $data);
     }
 
-    public function action_create_sending($post)
+    public function actionCreateDelivery(CreateDeliveryRequest $request, OrderService $orderService): JsonResponse
     {
-        if (empty($post->fio))
-            response(400, 'Заповніть імя!');
+        $id = $orderService->createDelivery($request->validated());
 
-        if (empty($post->phone))
-            response(400, 'Заповніть телефон!');
-
-        if (empty($post->city))
-            response(400, 'Заповніть місто!');
-
-        if (empty($post->warehouse))
-            response(400, 'Заповніть відділення!');
-
-        if (!isset($post->products))
-            response(400, 'Виберіть хоча-б один товар!');
-
-        $return_shipping = $this->return_shipping_parse($post);
-        $products = $post->products;
-        unset($post->products);
-
-        Orders::createSending($post, $products, $return_shipping);
-
-        $id = (new OrderCreate)->sending($post, $products, $return_shipping);
-
-        response(200, [
-            'action'  => 'redirect',
-            'uri'     => uri('orders', ['section' => 'update', 'id' => $id]),
-            'message' => 'Всі дані успішно збережено!'
-        ]);
-    }
-
-    public function actionCreateDelivery(CreateDeliveryRequest $request, OrderCreate $order)
-    {
-        $data = new Collection($request->except(['products']));
-        $products = (new Collection($request->only(['products'])))->collect();
-
-        $id = $order->delivery($data, $products);
-
-        response()->json([
-            'location' => uri('orders/update', ['id' => $id])
+        return response()->json([
+            'url' => uri('orders/update', ['id' => $id])
         ]);
     }
 
     public function actionCreateSelf(CreateSelfRequest $request, OrderService $orderService): JsonResponse
     {
         $id = $orderService->createSelf($request->validated());
+
+        return response()->json([
+            'url' => uri('orders/update', ['id' => $id])
+        ]);
+    }
+
+    public function actionCreateSending(CreateSendingRequest $request, OrderService $orderService): JsonResponse
+    {
+        $id = $orderService->createSending($request->validated());
 
         return response()->json([
             'url' => uri('orders/update', ['id' => $id])
@@ -369,44 +342,21 @@ class OrdersController extends Controller
     }
 
     // Оновлення службової інформації
-    public function actionUpdateWorking(UpdateWorkingRequest $request, OrderService $orderService)
+    public function actionUpdateWorking(UpdateWorkingRequest $request, OrderService $orderService): void
     {
         $orderService->update($request->get('id'), $request->validated());
     }
 
     // Оновлення адреси
-    public function actionUpdateDeliveryAddress(UpdateDeliveryAddressRequest $request, OrderUpdate $orderUpdate)
+    public function actionUpdateAddress(UpdateAddressRequest $request, OrderService $orderService): void
     {
-        Order::findOrFail($request->id)->update($request->all());
-    }
-
-    public function actionUpdateSendingAddress(OrderUpdate $orderUpdate, UpdateSendingAddressRequest $request)
-    {
-        $orderUpdate->init($request->id)->sendingAddress($request);
-    }
-
-    public function actionUpdateSelfAddress(OrderService $orderService, UpdateSelfAddressRequest $request)
-    {
-        $orderService->updateSelfAddress($request->get('id'), $request->validated());
+        $orderService->updateAddress($request->get('id'), $request->validated());
     }
 
     // Оновлення інформаціїї про оплату
     public function action_update_pay($post)
     {
-        if ($post->type == 'delivery' || $post->type == 'self') {
-            if (!isset($post->prepayment) || !is_numeric($post->prepayment))
-                response(400, 'Введіть коректну суму предоплати!');
-        }
 
-        if ($post->type == 'sending')
-            if (empty($post->pay_delivery))
-                response(400, 'Заповніть платника доставки!');
-
-        $post->prepayment = (integer)$post->prepayment;
-
-        Orders::update_pay($post);
-
-        response(200, ['action' => 'reload', 'message' => DATA_SUCCESS_UPDATED]);
     }
 
     // Оновлення товарів
@@ -613,38 +563,4 @@ class OrdersController extends Controller
 
         response()->json($response);
     }
-
-    public function actionNewPostCity(string $name = '')
-    {
-        $response = NewPostCity::select(['id', 'name'])
-            ->where('name', 'like', "$name%")
-            ->limit(100)
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'text' => $item->name,
-                    'id'   => $item->id
-                ];
-            })
-            ->toArray();
-
-        return response()->json(['results' => $response]);
-    }
-
-    public function actionNewPostWarehouse(int $city_id)
-    {
-        $city = NewPostCity::findOrFail($city_id);
-
-        $warehouses = NewPostWarehouse::select(['name', 'id'])
-            ->where('city_ref', $city->ref)
-            ->get();
-
-        $response = '';
-        foreach ($warehouses as $item) {
-            $response .= "<option value='$item->id'>$item->name</option>";
-        }
-
-        return response()->json(['options' => $response]);
-    }
-
 }

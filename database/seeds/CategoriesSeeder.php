@@ -12,7 +12,7 @@ class CategoriesSeeder extends Seeder
                 'id'           => $category->id,
                 'name'         => htmlspecialchars_decode($category->name),
                 'parent_id'    => $category->parent,
-                'sort'         => $category->sort,
+                'priority'     => $category->sort,
                 'service_code' => $category->service_code,
             ]);
         });

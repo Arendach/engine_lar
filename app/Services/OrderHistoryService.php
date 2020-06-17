@@ -19,17 +19,21 @@ class OrderHistoryService
     ];
 
     private $relations = [
-        'shop_id'     => 'App\Models\Shop',
-        'site_id'     => 'App\Models\Site',
-        'hint_id'     => 'App\Models\OrderHint',
-        'logistic_id' => 'App\Models\Logistic',
-        'courier_id'  => 'App\Models\User',
+        'shop_id'               => 'App\Models\Shop',
+        'site_id'               => 'App\Models\Site',
+        'hint_id'               => 'App\Models\OrderHint',
+        'logistic_id'           => 'App\Models\Logistic',
+        'courier_id'            => 'App\Models\User',
+        'new_post_city_id'      => 'App\Models\NewPostCity',
+        'new_post_warehouse_id' => 'App\Models\NewPostWarehouse'
     ];
 
     private $customMethodsEqual = [
         'time_with' => 'timeEqual',
         'time_to'   => 'timeEqual'
     ];
+
+    private $type = 'update_fields';
 
     public function __construct()
     {
@@ -43,12 +47,19 @@ class OrderHistoryService
         return $this;
     }
 
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
     public function update(): Order
     {
         $changes = $this->getUniversalFields();
 
         if (count($changes) && $this->order->save()) {
-            $this->save($changes);
+            $this->save($changes, $this->type);
         }
 
         return $this->order;

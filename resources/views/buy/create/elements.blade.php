@@ -123,7 +123,7 @@
     </div>
 @endif
 
-@if($key == 'delivery_city')
+@if($key == 'city')
     <div class="form-group">
         <label class="col-md-4 control-label">Місто <span class="text-danger">*</span></label>
         <div class="col-md-5">
@@ -176,9 +176,9 @@
 
 @if($key == 'logistic_id')
     <div class="form-group">
-        <label class="col-md-4 control-label">Транспортна компанія</label>
+        <label class="col-md-4 control-label">Транспортна компанія <i class="text-danger">*</i></label>
         <div class="col-md-5">
-            <select name="logistic_id" class="form-control">
+            <select name="logistic_id" class="form-control" id="logistic">
                 @foreach($logisticModel->all() as $item)
                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach
@@ -187,20 +187,34 @@
     </div>
 @endif
 
-@if($key == 'sending_city')
+@if($key == 'sending_address')
     <div class="form-group">
         <label class="col-md-4 control-label">Місто <span class="text-danger">*</span></label>
         <div class="col-md-5">
-            <select class="form-control" name="new_post_city_id" id="sending_city"></select>
+            <select class="form-control" name="new_post_city_id" id="new_post_city"></select>
         </div>
     </div>
 
     <div class="form-group">
         <label class="col-md-4 control-label">Відділення <span class="text-danger">*</span></label>
         <div class="col-md-5">
-            <select disabled id="warehouse" name="new_post_warehouse_id" class="form-control">
+            <select disabled id="new_post_warehouse" name="new_post_warehouse_id" class="form-control">
                 <option>Виберіть відділення</option>
             </select>
+        </div>
+    </div>
+
+    <div class="form-group" style="display: none">
+        <label class="col-md-4 control-label">Місто <span class="text-danger">*</span></label>
+        <div class="col-md-5">
+            <input class="form-control" name="city" id="other_city">
+        </div>
+    </div>
+
+    <div class="form-group" style="display: none">
+        <label class="col-md-4 control-label">Відділення <span class="text-danger">*</span></label>
+        <div class="col-md-5">
+            <input id="other_warehouse" name="warehouse" class="form-control">
         </div>
     </div>
 @endif
@@ -257,11 +271,11 @@
     </div>
 @endif
 
-@if($key == 'sending_variant')
+@if($key == 'sending')
     <div class="form-group">
         <label class="col-md-4 control-label">Варіант відправки <i class="text-danger">*</i></label>
         <div class="col-md-5">
-            <select name="sending_variant" class="form-control">
+            <select name="sending" class="form-control">
                 @foreach(assets('sending_variants') as $id => $item)
                     <option value="{{ $id }}">{{ $item['name'] }}</option>
                 @endforeach
