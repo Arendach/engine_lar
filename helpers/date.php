@@ -68,14 +68,13 @@ function month($date = null): int
     return $date->month;
 }
 
-/**
- * Поточний день
- *
- * @return int
- */
-function day(): int
+function day(?string $date = null): int
 {
-    return date('d');
+    if (!$date) {
+        return date('d');
+    }
+
+    return date_parse($date)['day'];
 }
 
 /**
@@ -131,15 +130,25 @@ function days_in_month(int $month, int $year): int
  */
 function date_for_humans($string = false): string
 {
-    if ($string == false) {
-        return date('d') . ' ' . int_to_month(date('m'), 1) . ' ' . date('Y');
-    } else {
-        $date = date_parse($string);
-        if (date('Y') != $date['year'])
-            return $date['day'] . ' ' . int_to_month($date['month'], 1) . ' ' . $date['year'];
-        else
-            return $date['day'] . ' ' . int_to_month($date['month'], 1);
+    $year = $string ? year($string) : date('Y');
+    $month = $string ? month_valid(month($string)) : date('m');
+    $day = $string ? day($string) : date('d');
+    $monthHuman = int_to_month($month, 1);
+
+    if ("{$year}-{$month}-{$day}" == date('Y-m-d')) {
+        return 'Сьогодні';
     }
+
+    $date = Carbon::parse("{$year}-{$month}-{$day}");
+    if ($date->isYesterday()) {
+        return 'Вчора';
+    }
+
+    if (date('Y') == $year) {
+        return "{$day} {$monthHuman}";
+    }
+
+    return "{$day} {$monthHuman} $year";
 }
 
 /**

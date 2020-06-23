@@ -17,7 +17,7 @@ class BonusService
         );
 
         if ($schedule) {
-            $schedule->increment($bonus->type, $bonus->sum);
+            $schedule->increment($bonus->is_profit ? 'bonus' : 'fine', $bonus->sum);
         }
     }
 }

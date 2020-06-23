@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Orders\CreateBonusRequest;
 use App\Http\Requests\Orders\CreateSendingRequest;
 use App\Http\Requests\Orders\UpdateAddressRequest;
+use App\Http\Requests\Orders\UpdateOrderProfessionalRequest;
+use App\Http\Requests\Orders\UpdateProductsRequest;
 use App\Http\Requests\Orders\UpdateSelfAddressRequest;
+use App\Http\Requests\Orders\UploadFileRequest;
+use App\Models\OrderFile;
 use App\Services\OrderService;
 use Exception;
 use App\Http\Requests\Orders\UpdateSendingAddressRequest;
@@ -53,7 +58,7 @@ class OrdersController extends Controller
 
     public function sectionView(OrdersListFilter $filter, Request $request, string $type = 'delivery')
     {
-        $orders = Order::with(['pay', 'courier', 'liable', 'bonuses', 'bonuses', 'hint', 'professional'])
+        $orders = Order::with(['pay', 'courier', 'liable', 'bonuses', 'bonuses.user', 'hint', 'professional'])
             ->filter($filter)
             ->paginate(config('app.items'));
 
@@ -188,31 +193,9 @@ class OrdersController extends Controller
         return view('orders.preview', ['order' => Order::findOrFail($id)]);
     }
 
-    public function action_create_user_bonus($post)
+    public function actionCreateBonus(CreateBonusRequest $request, OrderService $orderService): void
     {
-        if ($post->sum <= 0)
-            response('Сума не може бути меншою від нуля!');
-
-        $post->date = date('Y-m-d H:i:s');
-
-        Orders::create_user_bonus($post);
-
-        response(200, DATA_SUCCESS_CREATED);
-    }
-
-    public function action_update_bonus_form($post)
-    {
-        $this->view->display('buy.update.parts.bonus_update_form',
-            ['bonus' => Orders::getOne($post->id, 'bonuses')]);
-    }
-
-    public function action_update_bonus_sum($post)
-    {
-        $post->sum = $post->sum < 0 ? 0 : $post->sum;
-
-        Orders::update_bonus_sum($post);
-
-        response(200, DATA_SUCCESS_UPDATED);
+        $orderService->createBonus($request->validated());
     }
 
     public function action_delete_bonus($post)
@@ -222,20 +205,9 @@ class OrdersController extends Controller
         response(200, DATA_SUCCESS_DELETED);
     }
 
-    public function action_update_order_type($post)
+    public function actionUpdateOrderProfessional(UpdateOrderProfessionalRequest $request, OrderService $orderService): void
     {
-        if ($post->atype != '' && $post->liable == '') response(400, 'Виберіть менеджера!');
-
-        if (!isset($post->liable)) $post->liable = 0;
-
-        if ($post->atype == '') {
-            $post->atype = 0;
-            $post->liable = 0;
-        }
-
-        Orders::update($post, $post->id);
-
-        response(200, ['action' => 'close', 'message' => DATA_SUCCESS_UPDATED]);
+        $orderService->update($request->get('id'), $request->validated());
     }
 
     ///////////////////////////////////////////////
@@ -308,32 +280,31 @@ class OrdersController extends Controller
         $this->view->display('orders.print.sales_invoice', $data);
     }
 
+
     public function actionCreateDelivery(CreateDeliveryRequest $request, OrderService $orderService): JsonResponse
     {
-        $id = $orderService->createDelivery($request->validated());
-
-        return response()->json([
-            'url' => uri('orders/update', ['id' => $id])
-        ]);
+        return $this->createOrder($request, $orderService);
     }
 
     public function actionCreateSelf(CreateSelfRequest $request, OrderService $orderService): JsonResponse
     {
-        $id = $orderService->createSelf($request->validated());
-
-        return response()->json([
-            'url' => uri('orders/update', ['id' => $id])
-        ]);
+        return $this->createOrder($request, $orderService);
     }
 
     public function actionCreateSending(CreateSendingRequest $request, OrderService $orderService): JsonResponse
     {
-        $id = $orderService->createSending($request->validated());
+        return $this->createOrder($request, $orderService);
+    }
+
+    private function createOrder($request, $orderService): JsonResponse
+    {
+        $id = $orderService->create($request->validated());
 
         return response()->json([
             'url' => uri('orders/update', ['id' => $id])
         ]);
     }
+
 
     // Оновлення контактної інформації
     public function actionUpdateContacts(UpdateContactsRequest $request, OrderService $orderService)
@@ -360,11 +331,9 @@ class OrdersController extends Controller
     }
 
     // Оновлення товарів
-    public function actionUpdateProducts(OrderUpdate $order, Collection $products, Collection $data)
+    public function actionUpdateProducts(UpdateProductsRequest $request, OrderService $service)
     {
-        $order->products($products->collect(), $data);
-
-        response(200, DATA_SUCCESS_UPDATED);
+        $service->updateProducts($request->get('id'), $request->validated());
     }
 
     public function actionCloseForm(int $id)
@@ -446,26 +415,24 @@ class OrdersController extends Controller
         $this->view->display('orders.new_post_logs', $data);
     }
 
-    public function actionUploadFile(Request $request)
+    public function actionUploadFile(UploadFileRequest $request)
     {
-        dd($request->toCollection());
-        $file = $_FILES['0'];
+        foreach ($request->file as $file) {
+            $newName = rand32() . '.' . mb_strtolower($file->getClientOriginalExtension());
+            $path = storage_path("app/public/orders/{$request->id}/");
 
-        create_folder('/server/uploads/orders/');
+            if (!is_dir($path)) {
+                mkdir($path);
+            }
 
-        $pi = pathinfo($file['name']);
+            $file->move($path, $newName);
 
-        $new_name = '/server/uploads/orders/' . $post->id . rand32() . '.' . $pi['extension'];
-
-        if (move_uploaded_file($file['tmp_name'], ROOT . $new_name)) {
-            Orders::insert([
-                'path'     => $new_name,
-                'order_id' => $post->id
-            ], 'order_images');
-
-            response(200, DATA_SUCCESS_CREATED);
-        } else {
-            response(500, 'Фото не завантажено!');
+            OrderFile::create([
+                'path'     => "/storage/orders/{$request->id}/{$newName}",
+                'name'     => $file->getClientOriginalName(),
+                'user_id'  => user()->id,
+                'order_id' => $request->id
+            ]);
         }
     }
 

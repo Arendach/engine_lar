@@ -1,4 +1,4 @@
-<form action="@uri('sms/send_message')" data-type="ajax" id="form-sms-send">
+<form action="@uri('sms/send_message')" data-type="ajax" id="form-sms-send" data-after="reload">
     <input type="hidden" name="order_id" value="{{ $order->id }}">
 
     <div class="form-group">
@@ -36,12 +36,13 @@
             <th>Дата</th>
             <th>Статус</th>
         </tr>
-        @foreach($order->sms_messages as $item)
+        @foreach($order->sms_messages as $message)
+            @php /** @var \App\Models\SmsMessage $message */ @endphp
             <tr>
-                <td>{{ $item->text }}</td>
-                <td>{{ $item->phone }}</td>
-                <td>{{ $item->date }}</td>
-                <td>{{ $item->status_name }}</td>
+                <td>{{ $message->text }}</td>
+                <td>{{ $message->phone }}</td>
+                <td>{{ $message->human('created_at', true)}}</td>
+                <td>{{ $message->status_name }}</td>
             </tr>
         @endforeach
     </table>

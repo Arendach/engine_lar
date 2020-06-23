@@ -61,10 +61,11 @@ class SmsController extends Controller
         ];
 
         $result = $template->text;
-        foreach ($patterns as $pattern)
+        foreach ($patterns as $pattern) {
             $result = preg_replace("/{$pattern[0]}/", $pattern[1], $result);
+        }
 
-        response()->json([
+        return response()->json([
             'text' => $result
         ]);
     }
@@ -77,18 +78,13 @@ class SmsController extends Controller
             SmsMessage::create([
                 'order_id'   => $request->order_id,
                 'phone'      => get_number_world_format($request->phone),
-                'message_id' => $message->getData('messageId'),
+                'message_id' => $message->messageId,
                 'text'       => $request->text
             ]);
 
-            return response()->json([
-                'message' => 'SMS повідомлення надіслано!'
-            ], 200);
-
+            return response()->json(['message' => 'SMS повідомлення надіслано!']);
         } else {
-            return response()->json([
-                'message' => 'SMS повідомлення не надіслано! <br> ' . $message->getMessage()
-            ], 500);
+            return response()->json(['message' => 'SMS повідомлення не надіслано! <br> ' . $message->getMessage()], 500);
         }
     }
 }

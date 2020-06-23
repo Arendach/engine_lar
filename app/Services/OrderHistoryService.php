@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Models\OrderHistory as Model;
+use App\Models\OrderHistory;
 use App\Models\Order;
 
 class OrderHistoryService
 {
-    /** @var Model $model */
+    /** @var OrderHistory $model */
     private $model;
 
     /** @var Order $order */
@@ -25,7 +25,9 @@ class OrderHistoryService
         'logistic_id'           => 'App\Models\Logistic',
         'courier_id'            => 'App\Models\User',
         'new_post_city_id'      => 'App\Models\NewPostCity',
-        'new_post_warehouse_id' => 'App\Models\NewPostWarehouse'
+        'new_post_warehouse_id' => 'App\Models\NewPostWarehouse',
+        'order_professional_id' => 'App\Models\OrderProfessional',
+        'liable_id'             => 'App\Models\User'
     ];
 
     private $customMethodsEqual = [
@@ -37,7 +39,7 @@ class OrderHistoryService
 
     public function __construct()
     {
-        $this->model = app(Model::class);
+        $this->model = app(OrderHistory::class);
     }
 
     public function setModel(Order $order): self

@@ -1,15 +1,15 @@
 @inject('orderProfessionalModel', App\Models\OrderProfessional)
 @inject('userModel', App\Models\User)
 
-<form action="@uri('orders/update_order_type')" data-type="ajax">
+<form action="@uri('orders/update_order_professional')" data-type="ajax" data-after="reload">
     <input type="hidden" name="id" value="{{ $order->id }}">
 
     <div class="form-group">
-        <label for="atype">Тип замовлення</label>
-        <select class="form-control" id="atype" name="atype">
+        <label>Тип замовлення</label>
+        <select class="form-control" id="order_professional_id" name="order_professional_id">
             <option value=""></option>
             @foreach ($orderProfessionalModel->all() as $item)
-                <option @selected($order->atype == $item->id) value="{{ $item->id }}">
+                <option @selected($order->order_professional_id == $item->id) value="{{ $item->id }}">
                     {{ $item->name }}
                 </option>
             @endforeach
@@ -18,7 +18,7 @@
 
     <div class="form-group">
         <label>Відповідальний менеджер</label>
-        <select @disabled($order->atype == 0) class="form-control" name="liable">
+        <select @disabled(!$order->order_professional_id) class="form-control" id="liable_id" name="liable_id">
             <option value=""></option>
             @foreach ($userModel->all() as $item)
                 <option @selected($order->liable_id == $item->id) value="{{ $item->id }}">
@@ -29,6 +29,6 @@
     </div>
 
     <div class="form-group">
-        <button class="btn btn-primary" @disabled($order->liable_id != 0 && cannot())>Зберегти</button>
+        <button class="btn btn-primary" @disabled($order->liable_id && cannot())>Зберегти</button>
     </div>
 </form>

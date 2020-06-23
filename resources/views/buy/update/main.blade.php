@@ -51,7 +51,7 @@
         @endif
 
         <div id="transactions" class="fade tab-pane">
-{{--            @include('buy.update.parts.transactions')--}}
+            {{--            @include('buy.update.parts.transactions')--}}
         </div>
 
         <div id="files" class="fade tab-pane">
@@ -60,16 +60,13 @@
     </div>
 @stop
 
-
-@section('scripts')
+@push('scripts')
     @share('order', [
         'id'            => $id,
         'type'          => $order->type,
         'delivery_cost' => $order->delivery_cost,
         'closed_order'  => $closedOrder
     ])
-@stop
 
-@push('scripts')
     <script src="{{ asset('js/orders.js') }}"></script>
 @endpush

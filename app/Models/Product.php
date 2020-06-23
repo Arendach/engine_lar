@@ -6,9 +6,11 @@ use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use App\Casts\ProductAttributesCast;
 use App\Casts\ProductName;
 use App\Casts\Translatable;
+use App\Services\ProductHistoryService;
 use App\Traits\Editable;
 use App\Traits\Filterable;
 use App\Traits\NumberFormat;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -38,7 +40,7 @@ class Product extends Model
 
     public $timestamps = false;
 
-    public function storage($storage_id)
+    public function storage($storage_id): ?Storage
     {
         return $this->storages->where('id', $storage_id)->first();
     }
@@ -52,7 +54,7 @@ class Product extends Model
 
     public function storages()
     {
-        return $this->belongsToMany(Storage::class, 'product_storage')->withPivot('count');
+        return $this->belongsToMany(Storage::class, 'product_storage')->withPivot('id', 'count');
     }
 
     public function images(): HasMany
@@ -79,7 +81,7 @@ class Product extends Model
     public function linked(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, ProductLinked::class, 'product_id', 'linked_id')
-            ->withPivot('combine_price', 'combine_minus');
+            ->withPivot('price', 'minus');
     }
 
     public function getVolumeArrayAttribute(): array
@@ -107,5 +109,10 @@ class Product extends Model
         [, $level2] = explode('-', $this->id_storage);
 
         return trim($level2);
+    }
+
+    public function withHistory(): ProductHistoryService
+    {
+        return app(ProductHistoryService::class)->setProduct($this);
     }
 }

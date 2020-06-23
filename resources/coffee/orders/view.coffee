@@ -81,17 +81,6 @@ $(document).on 'click', '#route_list', ->
 
 $(document).on 'click', '#more_filters', -> $('.filter_more').toggleClass 'none'
 
-$(document).on 'change', '#sms-template', (event) ->
-    order_id = JData.id
-    template_id = $(event.currentTarget).val()
-
-    $.ajax
-        type: 'post'
-        url: '/sms/prepare_template'
-        data: {order_id, template_id}
-        success: (answer) -> $('#sms-text').val(answer.text)
-
-
 $(document).ready ->
     Inputmask '999-999-99-99'
         .mask '#phone'

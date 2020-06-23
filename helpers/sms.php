@@ -2,9 +2,9 @@
 
 use Mobizon\MobizonApi;
 
-function sms_send($phone, $message)
+function sms_send(string $phone, string $message)
 {
-    $api = new MobizonApi(SMS_API_KEY);
+    $api = new MobizonApi(config('api.mobizon'), 'api.mobizon.ua');
 
     $parameters = [
         'recipient' => get_number_world_format($phone),
@@ -12,5 +12,5 @@ function sms_send($phone, $message)
         'from'      => 'SkyFire'
     ];
 
-    return $api->call('message', 'sendSMSMessage', $parameters);
+    return $api->call('message', 'sendSMSMessage', $parameters, [], true);
 }

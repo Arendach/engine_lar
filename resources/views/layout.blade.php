@@ -166,25 +166,27 @@
 
             @yield('content')
 
-            <div class="scripts-hidden">
-                @if (isset($controller) && is_file(public_path("js/controllers/$controller.js")))
+            @if(env('APP_ENV') != 'testing')
+                <div class="scripts-hidden">
+                    @if (isset($controller) && is_file(public_path("js/controllers/$controller.js")))
+                        <script>
+                            {!! file_get_contents(public_path("js/controllers/$controller.js")) !!}
+                        </script>
+                    @endisset
+
+                    @stack('scripts')
+
                     <script>
-                        {!! file_get_contents(public_path("js/controllers/$controller.js")) !!}
+                        @if(is_file(public_path('js/Reinitiable.js')))
+                        {!! file_get_contents(public_path('js/Reinitiable.js')) !!}
+                        @else
+                        alert('Reinitiable failed')
+                        @endif
                     </script>
-                @endisset
 
-                @stack('scripts')
-
-                <script>
-                    @if(is_file(public_path('js/Reinitiable.js')))
-                    {!! file_get_contents(public_path('js/Reinitiable.js')) !!}
-                    @else
-                    alert('Reinitiable failed')
-                    @endif
-                </script>
-
-                @yield('scripts')
-            </div>
+                    @yield('scripts')
+                </div>
+            @endif
         </div>
     </div>
 </div>

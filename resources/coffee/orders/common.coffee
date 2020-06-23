@@ -31,13 +31,6 @@ $(document).on 'change keyup', '#search_field, #search_category', ->
         type: $this.data 'search'
     $.post '/orders/search_products', data, (res) -> $('.products').html(res)
 
-$(document).on 'click', '.searched', ->
-    id = $(@).data('id')
-    type = window.type
-    $.post '/orders/get_product', {type, id}, (response) ->
-        $('#product-list tbody').prepend(response)
-        checkPrice()
-
 
 $(document).on 'change', '#city_select', ->
     $selected = $(@)
@@ -76,32 +69,3 @@ $(document).ready ->
         $('#fio').val(selected.data('fio'))
         $('#phone').val(selected.data('phone'))
         $('#email').val(selected.data('email'))
-
-
-###    $('#street').typeahead
-        source: (query, result) ->
-            $.ajax
-                type: 'post'
-                url: "/api/search_streets",
-                data:
-                    street: $('#street').val()
-                success: (data) ->
-                    result data###
-
-###    $('#sending_city').select2
-        ajax:
-            type: 'post'
-            url: '/orders/new_post_city'
-            data: (params) -> {name: params.term}
-        cache: yes
-
-    $('#sending_city').on 'select2:select', (event) ->
-        $.ajax
-            type: 'post'
-            url: '/orders/new_post_warehouse'
-            data:
-                city_id: $(event.currentTarget).val()
-            success: (response) ->
-                $ '#warehouse'
-                    .attr 'disabled', off
-                    .html response.options###

@@ -143,16 +143,6 @@ $(document).on('change keyup', '#search_field, #search_category', function() {
   });
 });
 
-$(document).on('click', '.searched', function() {
-  var id, type;
-  id = $(this).data('id');
-  type = window.type;
-  return $.post('/orders/get_product', {type, id}, function(response) {
-    $('#product-list tbody').prepend(response);
-    return checkPrice();
-  });
-});
-
 $(document).on('change', '#city_select', function() {
   var $selected, text, value;
   $selected = $(this);
@@ -209,33 +199,6 @@ $(document).ready(function() {
     return $('#email').val(selected.data('email'));
   });
 });
-
-/*    $('#street').typeahead
-    source: (query, result) ->
-        $.ajax
-            type: 'post'
-            url: "/api/search_streets",
-            data:
-                street: $('#street').val()
-            success: (data) ->
-                result data*/
-/*    $('#sending_city').select2
-    ajax:
-        type: 'post'
-        url: '/orders/new_post_city'
-        data: (params) -> {name: params.term}
-    cache: yes
-
-$('#sending_city').on 'select2:select', (event) ->
-    $.ajax
-        type: 'post'
-        url: '/orders/new_post_warehouse'
-        data:
-            city_id: $(event.currentTarget).val()
-        success: (response) ->
-            $ '#warehouse'
-                .attr 'disabled', off
-                .html response.options*/
 
 
 /***/ }),
@@ -300,7 +263,7 @@ $(document).on('submit', '#upload_file', function(event) {
     // отключаем установку заголовка типа запроса. Так jQuery скажет серверу что это строковой запрос
     contentType: false,
     success: function(answer, status, jqXHR) {
-      return new SuccessHandler(answer, jqXHR).apply();
+      return new SuccessHandler(answer, jqXHR).setAfter('reload').apply();
     },
     error: function(answer) {
       return new ErrorHandler(answer).apply();
@@ -438,20 +401,6 @@ $(document).on('click', '#route_list', function() {
 
 $(document).on('click', '#more_filters', function() {
   return $('.filter_more').toggleClass('none');
-});
-
-$(document).on('change', '#sms-template', function(event) {
-  var order_id, template_id;
-  order_id = JData.id;
-  template_id = $(event.currentTarget).val();
-  return $.ajax({
-    type: 'post',
-    url: '/sms/prepare_template',
-    data: {order_id, template_id},
-    success: function(answer) {
-      return $('#sms-text').val(answer.text);
-    }
-  });
 });
 
 $(document).ready(function() {

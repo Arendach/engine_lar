@@ -41,15 +41,15 @@
         <tbody>
         @if($order->products->count())
             @foreach($order->products as $product)
-                <?php $rand = rand32() ?>
+                <?php $rand = mb_substr(rand32(), 0, 8, 'UTF-8') ?>
                 <tr class="product">
                     <td class="product_name">
                         <a target="_blank" href="@uri('product/update', ['id' => $product->id])">
                             {{ $product->name }}
                         </a>
 
-                        <input type="hidden" name="products[{{ $rand }}][id]" value="{{ $product->id }}">
-                        <input type="hidden" name="products[{{ $rand }}][pto]" value="{{ $product->pivot->id }}">
+                        <input type="hidden" name="products[{{ $rand }}][product_id]" value="{{ $product->id }}">
+                        <input type="hidden" name="products[{{ $rand }}][pivot_id]" value="{{ $product->pivot->id }}">
                     </td>
 
                     <td>
@@ -139,8 +139,8 @@
             <label class="col-md-4 control-label">Вартість доставки</label>
             <div class="col-md-5">
                 <input id="delivery_cost"
-                       name="data[delivery_cost]"
-                       class="form-control" value="{{ $order->delivery_cost }}"
+                       name="delivery_price"
+                       class="form-control" value="{{ $order->delivery_price }}"
                        data-inspect="decimal">
             </div>
         </div>
@@ -149,7 +149,7 @@
             <label for="discount" class="col-md-4 control-label">Знижка</label>
             <div class="col-md-5">
                 <input id="discount"
-                       name="data[discount]"
+                       name="discount"
                        class="form-control"
                        value="{{ $order->discount }}"
                        data-inspect="decimal"
@@ -161,7 +161,7 @@
             <label for="sum" class="col-md-4 control-label">Вартість товарів</label>
             <div class="col-md-5">
                 <input disabled id="sum" class="form-control"
-                       value="{{ $order->full_sum - $order->delivery_cost + $order->discount }}">
+                       value="{{ $order->full_sum - $order->delivery_price + $order->discount }}">
             </div>
         </div>
 

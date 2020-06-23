@@ -35,7 +35,9 @@ $(document).on('submit', 'form#createOrder', function (event) {
         processData: false,
         contentType: false,
         success(response) {
-            window.location.href = response.url
+            if (response.url.length) {
+                window.location.href = response.url
+            }
         },
         error(response) {
             (new ErrorHandler(response))
@@ -106,3 +108,32 @@ $(document).ready(function () {
     })
 })
 
+$(document).on('click', '.searched', function () {
+    let id = $(this).data('id')
+    let type = window.order.type
+    $.post('/orders/get_product', {type, id}, function (response) {
+        $('#product-list tbody').prepend(response)
+        checkPrice()
+    })
+})
+
+
+$(document).on('change', '#sms-template', function () {
+    let order_id = window.order.id
+    let template_id = $(this).val()
+
+    $.post('/sms/prepare_template', {order_id, template_id}).then(function (response) {
+        $('#sms-text').val(response.text)
+    })
+})
+
+
+$(document).on('change', '#order_professional_id', function () {
+    if ($(this).val() === '') {
+        $('#liable_id').attr('disabled', true)
+        $('#liable_id option:selected').attr('selected', false)
+        $('#liable_id option[value=""]').attr('selected', true)
+    } else {
+        $('#liable_id').attr('disabled', false)
+    }
+})

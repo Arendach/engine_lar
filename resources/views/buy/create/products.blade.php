@@ -42,7 +42,7 @@
     <div class="form-group">
         <label class="col-md-4 control-label">Вартість доставки</label>
         <div class="col-md-5">
-            <input id="delivery_cost" name="delivery_cost" class="form-control count">
+            <input id="delivery_cost" name="delivery_price" class="form-control count">
         </div>
     </div>
 

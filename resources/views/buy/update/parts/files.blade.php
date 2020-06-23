@@ -17,9 +17,9 @@
         @if($order->files->count())
             @foreach ($order->files as $file)
                 <a class="order-file" href="{{ $file->path }}">
-                    <img src="{{ $file->icon }}">
+                    <img style="max-width: 100%" src="{{ $file->icon }}">
                     <div>
-                        {{ $file->base_name }} <br>
+                        {{ $file->name }} <br>
                         {{ $file->create_date }}<br>
                         {{ $file->size }}
                     </div>

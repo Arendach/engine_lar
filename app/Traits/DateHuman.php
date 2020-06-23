@@ -17,12 +17,14 @@ trait DateHuman
         return date_for_humans($this->updated_at->format('Y-m-d'));
     }
 
-    public function human(string $field = 'created_at'): ?string
+    public function human(string $field = 'created_at', bool $withTime = false): ?string
     {
         if (!($this->$field instanceof Carbon)) {
             throw new Exception("Field $field is not date field");
         }
 
-        return date_for_humans($this->{$field}->format('Y-m-d'));
+        return $withTime
+            ? date_for_humans($this->{$field}->format('Y-m-d')) . ' в ' . $this->$field->format('H:i')
+            : date_for_humans($this->{$field}->format('Y-m-d'));
     }
 }

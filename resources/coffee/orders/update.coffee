@@ -34,6 +34,7 @@ $(document).on 'submit', '#upload_file', (event) ->
         contentType: off
         success: (answer, status, jqXHR)->
             new SuccessHandler answer, jqXHR
+                .setAfter('reload')
                 .apply()
         error: (answer) ->
             new ErrorHandler answer

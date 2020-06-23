@@ -3,15 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Bonus extends Model
 {
-    protected $table = 'bonuses';
-
-    public $timestamps = true;
-
     protected $guarded = [];
 
     public function user(): BelongsTo
@@ -28,12 +23,12 @@ class Bonus extends Model
 
     public function getColorAttribute(): string
     {
-        return $this->type == 'bonus' ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)';
+        return $this->is_profit ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)';
     }
 
     public function getTypeTextAttribute(): string
     {
-        return $this->type == 'bonus' ? 'Бонус' : 'Штраф';
+        return $this->is_profit ? 'Бонус' : 'Штраф';
     }
 
     public function getSourceTextAttribute(): ?string

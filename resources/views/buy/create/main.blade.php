@@ -42,11 +42,9 @@
             </div>
         </form>
     </div>
-
-    <script>window.type = '<?= $type ?>'</script>
-
 @stop
 
 @push('scripts')
+    <script>window.type = '{{ $type }}'</script>
     <script src="{{ asset('js/orders.js') }}"></script>
 @endpush

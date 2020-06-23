@@ -75,7 +75,7 @@
 
                 <td>{!! $item->editable('phone') !!}</td>
 
-                <td style="width: 88px;">{{ $item->time }}</td>
+                <td style="width: 88px;">{!! $item->time !!}</td>
 
                 <td>{{ $item->street . ' ' . $item->address }}</td>
 
