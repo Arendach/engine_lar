@@ -76,6 +76,11 @@ class OrderHistoryService
         $this->save($data, 'created');
     }
 
+    public function deleteProduct(array $data): void
+    {
+        $this->save($data, 'delete_product');
+    }
+
     private function save(array $data, string $type = 'update_fields'): void
     {
         $this->model->create([

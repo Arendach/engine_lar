@@ -34,7 +34,7 @@ class PurchaseController extends Controller
         $data = [
             'manufacturers' => Manufacturer::all(),
             'categories'    => $categoryTree->option(),
-            'warehouses'    => Storage::accounted(true)->get()
+            'warehouses'    => Storage::where('is_accounted', true)->get()
         ];
 
         if ($request->has('storage_id')) {

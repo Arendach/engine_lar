@@ -13,11 +13,11 @@
 
     <td>
         <input class="form-control price" name="products[{{ $product->id }}][price]"
-               value="{{ $product->procurement_costs }}" data-inspect="decimal">
+               value="{{ $product->procurement_price }}" data-inspect="decimal">
     </td>
 
     <td>
-        <input disabled class="form-control sum" value="{{ $product->procurement_costs }}">
+        <input disabled class="form-control sum" value="{{ $product->procurement_price }}">
     </td>
 
     <td class="action-1">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Orders\CreateBonusRequest;
 use App\Http\Requests\Orders\CreateSendingRequest;
+use App\Http\Requests\Orders\DeleteProductRequest;
 use App\Http\Requests\Orders\UpdateAddressRequest;
 use App\Http\Requests\Orders\UpdateOrderProfessionalRequest;
 use App\Http\Requests\Orders\UpdateProductsRequest;
@@ -17,6 +18,7 @@ use App\Models\BlackDate;
 use App\Orders\OrderUpdate;
 use App\Services\CategoryTree;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\JsonResponse;
 use SergeyNezbritskiy\PrivatBank\AuthorizedClient;
 use SergeyNezbritskiy\PrivatBank\Merchant as MerchantApi;
@@ -97,7 +99,9 @@ class OrdersController extends Controller
 
     public function sectionUpdate(CategoryTree $categoryTree, int $id)
     {
-        $order = Order::findOrFail($id);
+        $order = Order::with(['products' => function (BelongsToMany $builder) {
+            $builder->orderBy('pivot_id', 'desc');
+        }])->findOrFail($id);
 
         $data = [
             'title'         => 'Замовлення :: Редагування',
@@ -138,11 +142,9 @@ class OrdersController extends Controller
         $this->view->display('buy.changes.main', $data);
     }
 
-    public function actionDropProduct(OrderUpdate $order, int $pto)
+    public function actionDeleteProduct(DeleteProductRequest $request, OrderService $orderService): void
     {
-        $order->dropProduct($pto);
-
-        response()->json(['action' => 'close', 'message' => 'Товар вдало видалений!']);
+        $orderService->deleteProduct($request->get('order_id'), $request->get('pivot_id'));
     }
 
     // Пошук товарів

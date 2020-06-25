@@ -13,12 +13,14 @@ class VodafoneController extends Controller
 {
     private $nameFile = 'cover_maps';
     private $extensionFile = 'kml';
-    private $lineColor = '641400FF';
+    private $lineColor = '461400FF';
     private $lineWidth = 1;
     private $polygonWidth = 1;
     private $polygonFill = 1;
     private $polygonOutline = 1;
-    private $polygonColor = '641400FF';
+    //private $polygonColor = '32143CFF'; // 900
+    private $polygonColor = '461400FF'; // 1800
+    // private $polygonColor = '501400BE'; // 2600
     private $prettyPrint = false;
 
     private $output;

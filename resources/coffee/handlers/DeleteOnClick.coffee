@@ -29,3 +29,5 @@ DeleteOnClick = (handler) ->
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Так, я хочу видалити!",
   }).then (value) -> if (value) then  handler()
+
+module.exports = DeleteOnClick

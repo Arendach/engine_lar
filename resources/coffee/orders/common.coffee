@@ -1,11 +1,3 @@
-checkPrice = ->
-    sum = 0
-    discount = +$('#discount').val()
-    delivery_cost = +$('#delivery_cost').val()
-    $('.product').each -> sum += +$(this).find('.sum').val()
-    $('#sum').val(sum)
-    $('#full_sum').val(sum - discount + delivery_cost)
-
 search_warehouses = (city_id) ->
     $.ajax
         type: 'post'
@@ -21,8 +13,6 @@ $(document).on 'keyup', '.amount, .price', ->
     price = $product.find('.price').val()
     $product.find('.sum').val(amount * price)
     checkPrice()
-
-$(document).on('keyup', '#delivery_cost, #discount', checkPrice)
 
 $(document).on 'change keyup', '#search_field, #search_category', ->
     $this = $(@)

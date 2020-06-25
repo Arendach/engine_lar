@@ -49,6 +49,11 @@ class ProductHistoryService
         return $this->product;
     }
 
+    public function deleteFromOrder(array $data): Product
+    {
+        return $this->product;
+    }
+
     public function save(array $data, string $type)
     {
         $this->model->create([

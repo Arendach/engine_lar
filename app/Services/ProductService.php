@@ -18,7 +18,9 @@ class ProductService
             $storage = $product->storage($storageId);
 
             if ($storage) {
-                $storage->pivot->decrement('count', $amount);
+                $count = $storage->pivot->count;
+                $storage->pivot->count = $count - $amount;
+                $storage->pivot->save();
             }
         }
 

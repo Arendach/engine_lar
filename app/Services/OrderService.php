@@ -109,7 +109,7 @@ class OrderService
         if ($oldStorage == $newStorage) {
             app(ProductService::class)->writeOff($product, $oldStorage, $newAmount - $oldAmount);
 
-            app(ProductHistoryService::class)->syncWithOrder([
+            $product->withHistory()->syncWithOrder([
                 'amount'     => ['old' => $oldAmount, 'new' => $newAmount],
                 'storage_id' => ['old' => $oldStorage, 'new' => $newStorage],
                 'price'      => ['old' => $oldPivot->price, 'new' => $newPivot->price]
@@ -118,12 +118,38 @@ class OrderService
             app(ProductService::class)->writeOff($product, $oldStorage, -1 * abs($oldAmount));
             app(ProductService::class)->writeOff($product, $newStorage, $newAmount);
 
-            app(ProductHistoryService::class)->syncWithOrder([
+            $product->withHistory()->syncWithOrder([
                 'amount'     => ['old' => $oldAmount, 'new' => $newAmount],
                 'storage_id' => ['old' => $oldStorage, 'new' => $newStorage],
                 'price'      => ['old' => $oldPivot->price, 'new' => $newPivot->price]
             ]);
         }
+    }
+
+    public function deleteProduct(int $orderId, int $pivotId): void
+    {
+        $order = Order::findOrFail($orderId);
+
+        /** @var Product $product */
+        $product = $order->products->where('pivot.id', $pivotId)->first();
+
+        $pivot = clone $product->pivot;
+
+        $product->pivot->delete();
+
+        app(ProductService::class)->writeOff($product, $pivot->storage_id, -$pivot->amount);
+
+        $product->withHistory()->deleteFromOrder([
+            'order_id'   => $order->id,
+            'storage_id' => $pivot->storage_id,
+            'amount'     => $pivot->amount
+        ]);
+
+        $order->withHistory()->deleteProduct([
+            'product_id' => $pivot->product_id,
+            'amount'     => $pivot->amount,
+            'storage'    => $pivot->storage_id
+        ]);
     }
 
     public function createBonus(array $data): void

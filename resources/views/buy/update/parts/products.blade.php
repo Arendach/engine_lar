@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<form data-type="ajax" action="@uri('orders/update_products')" class="order_search_products">
+<form action="@uri('orders/update_products')" id="updateProducts" class="order_search_products">
     <input type="hidden" name="id" value="{{ $order->id }}">
 
     <table id="product-list" class="table table-bordered">
@@ -53,7 +53,7 @@
                     </td>
 
                     <td>
-                        <select name="products[{{ $rand }}][storage_id]" class="form-control">
+                        <select name="products[{{ $rand }}][storage_id]" class="form-control storageId">
                             @foreach($product->storage_list as $storage)
                                 <option @selected($storage->storage_id == $product->pivot->storage_id) value="{{ $storage->storage_id }}">
                                     {{ $storage->count }}: {{ $storage->storage->name }}
@@ -63,13 +63,11 @@
                     </td>
 
                     <td>
-                        <div class="input-group">
-                            <input name="products[{{ $rand }}][amount]"
-                                   class="form-control amount"
-                                   value="{{ $product->pivot->amount }}"
-                                   data-inspect="integer"
-                            >
-                        </div>
+                        <input name="products[{{ $rand }}][amount]"
+                               class="form-control amount"
+                               value="{{ $product->pivot->amount }}"
+                               data-inspect="integer"
+                        >
                     </td>
 
                     <td>
@@ -122,10 +120,10 @@
                     @endif
 
                     <td>
-                        <button type="button" class="btn btn-danger btn-xs drop_product delete"
+                        <button type="button" class="btn btn-danger btn-xs deleteProduct"
                                 data-order-id="{{ $order->id }}"
-                                data-pto="{{ $product->id }}">
-                            <span class="glyphicon glyphicon-remove"></span>
+                                data-pivot-id="{{ $product->pivot->id }}">
+                            <span class="fa fa-remove"></span>
                         </button>
                     </td>
                 </tr>

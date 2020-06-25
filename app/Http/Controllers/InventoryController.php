@@ -18,7 +18,7 @@ class InventoryController extends Controller
 
     public function sectionMain()
     {
-        $inventory = Inventory::with( 'user', 'manufacturer', 'storage')
+        $inventory = Inventory::with('user', 'manufacturer', 'storage')
             ->withCount('products')
             ->latest()
             ->paginate(config('app.items'));
@@ -44,7 +44,7 @@ class InventoryController extends Controller
 
     public function actionForm(int $manufacturer_id, int $storage_id, int $category_id = null)
     {
-        $builder = Product::with('storage', 'storage_list')
+        $builder = Product::with('storages', 'storage_list')
             ->where('manufacturer_id', $manufacturer_id)
             ->whereHas('storage_list', function (Builder $builder) use ($storage_id) {
                 $builder->where('storage_id', $storage_id);
@@ -84,10 +84,10 @@ class InventoryController extends Controller
             $pts->save();
 
             InventoryProduct::create([
-                'inventory_id' => $inventory->id,
-                'product_id'   => $id,
-                'amount'       => $amount,
-                'old_count'    => $oldCount
+                'inventory_id'    => $inventory->id,
+                'product_id'      => $id,
+                'amount'          => $amount,
+                'previous_amount' => $oldCount
             ]);
         }
     }

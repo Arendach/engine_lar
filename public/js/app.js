@@ -616,6 +616,8 @@ DeleteOnClick = function(handler) {
   });
 };
 
+module.exports = DeleteOnClick;
+
 
 /***/ }),
 

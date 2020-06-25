@@ -93,19 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-var checkPrice, search_warehouses;
-
-checkPrice = function() {
-  var delivery_cost, discount, sum;
-  sum = 0;
-  discount = +$('#discount').val();
-  delivery_cost = +$('#delivery_cost').val();
-  $('.product').each(function() {
-    return sum += +$(this).find('.sum').val();
-  });
-  $('#sum').val(sum);
-  return $('#full_sum').val(sum - discount + delivery_cost);
-};
+var search_warehouses;
 
 search_warehouses = function(city_id) {
   return $.ajax({
@@ -128,8 +116,6 @@ $(document).on('keyup', '.amount, .price', function() {
   $product.find('.sum').val(amount * price);
   return checkPrice();
 });
-
-$(document).on('keyup', '#delivery_cost, #discount', checkPrice);
 
 $(document).on('change keyup', '#search_field, #search_category', function() {
   var $this, data;

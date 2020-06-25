@@ -55,8 +55,8 @@
         @endif
 
         <td style="width: 39px">
-            <button class="btn btn-danger btn-xs drop_product" data-id="remove">
-                <span class="glyphicon glyphicon-remove"></span>
+            <button class="btn btn-danger btn-xs deleteProduct">
+                <span class="fa fa-remove"></span>
             </button>
         </td>
     </tr>

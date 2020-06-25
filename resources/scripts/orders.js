@@ -1,4 +1,6 @@
 const ErrorHandler = require('../coffee/handlers/ErrorHandler.coffee')
+const DeleteOnClick = require('../coffee/handlers/DeleteOnClick.coffee')
+const SuccessHandler = require('../coffee/handlers/SuccessHandler.coffee')
 
 FormData.prototype.toObject = function () {
     let temp = {}
@@ -7,6 +9,22 @@ FormData.prototype.toObject = function () {
     })
     return temp
 }
+
+window.checkPrice = function () {
+    let sum = 0
+    let discount = +$('#discount').val()
+    let delivery_cost = +$('#delivery_cost').val()
+
+    $('.product').each(function () {
+        sum += +$(this).find('.sum').val()
+    })
+
+    $('#sum').val(sum)
+    $('#full_sum').val(sum - discount + delivery_cost)
+}
+
+$(document).on('keyup', '#delivery_cost, #discount', checkPrice)
+
 
 $(document).on('submit', 'form#createOrder', function (event) {
     event.preventDefault()
@@ -136,4 +154,59 @@ $(document).on('change', '#order_professional_id', function () {
     } else {
         $('#liable_id').attr('disabled', false)
     }
+})
+
+$(document).on('click', '.deleteProduct', function (event) {
+    event.preventDefault()
+
+    const $row = $(this).parents('tr.product')
+    let order_id = $(this).data('order-id')
+    let pivot_id = $(this).data('pivot-id')
+
+    if (!order_id) {
+        return $row.remove()
+    }
+
+    DeleteOnClick(() => {
+        $.post('/orders/delete_product', {order_id, pivot_id}, (response, code, jQueryXHR) => {
+            $row.remove()
+            new SuccessHandler(response, jQueryXHR).apply()
+            checkPrice()
+        })
+    })
+})
+
+$(document).on('submit', '#updateProducts', function (event) {
+    event.preventDefault()
+
+    let storageValid = true
+    $(this).find('.storageId').each(function () {
+        if (!$(this).val()) {
+            storageValid = false
+        }
+    })
+
+    if (!storageValid) {
+        return toastr.error('Виберіть склад для всіх товарів')
+    }
+
+    if (!$('tr.product').length) {
+        return toastr.error('Виберіть хоча б один товар')
+    }
+
+    let data = new FormData(this)
+
+    $.ajax({
+        method: 'post',
+        url: $(this).attr('action'),
+        data: data,
+        processData: false,
+        contentType: false,
+        success(response, status, xhr) {
+            new SuccessHandler(response, xhr).setAfter('reload').apply()
+        },
+        error(response) {
+            new ErrorHandler(response).setFormElement(event.currentTarget).apply()
+        }
+    })
 })

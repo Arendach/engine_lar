@@ -53,8 +53,7 @@ class ProductController extends Controller
         $data = [
             'manufacturers' => Manufacturer::all(),
             'categories'    => $categoryTree->option(),
-
-            'ids' => Storage::getIds()
+            'ids'           => Storage::getIds()
         ];
 
         $this->view->display('product.create', $data);
@@ -72,7 +71,7 @@ class ProductController extends Controller
             'product'       => $product,
             'manufacturers' => Manufacturer::all(),
             'categories'    => $categoryTree->option(),
-            'storage'       => Storage::accounted()->get(),
+            'storage'       => Storage::where('is_accounted', true)->get(),
             'ids'           => StorageId::tree()
         ];
 
@@ -298,7 +297,7 @@ class ProductController extends Controller
 
     public function sectionAssets()
     {
-        $assets = ProductAsset::whereIsArchive(request()->has('archive'))
+        $assets = ProductAsset::with('storage')
             ->latest()
             ->paginate(config('app.items'));
 
