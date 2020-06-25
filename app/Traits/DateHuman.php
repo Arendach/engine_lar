@@ -19,6 +19,10 @@ trait DateHuman
 
     public function human(string $field = 'created_at', bool $withTime = false): ?string
     {
+        if (is_null($this->$field)) {
+            return null;
+        }
+
         if (!($this->$field instanceof Carbon)) {
             throw new Exception("Field $field is not date field");
         }

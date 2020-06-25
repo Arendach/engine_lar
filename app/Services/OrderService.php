@@ -158,4 +158,13 @@ class OrderService
 
         app(BonusService::class)->addToSchedule($bonus);
     }
+
+    public function deleteBonus(int $id): void
+    {
+        $bonus = Bonus::findOrFail($id);
+
+        app(BonusService::class)->deleteFromSchedule($bonus);
+
+        $bonus->delete();
+    }
 }

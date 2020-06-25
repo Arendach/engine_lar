@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderHistory extends Model
 {
     protected $table = 'order_history';
-    public $timestamps = false;
+    public $timestamps = true;
     protected $guarded = [];
+    protected $casts = [
+        'data' => 'array'
+    ];
 
     public $types = [
         'update_fields'  => 'Оновлено дані',
@@ -19,11 +21,11 @@ class OrderHistory extends Model
     public $fields = [
         'shop_id'               => 'Магазин',
         'new_post_warehouse_id' => 'Відділення',
-        'new_post_city_id'      => 'Місто'
-
+        'new_post_city_id'      => 'Місто',
+        'order_professional_id' => 'Тип професійного замовлення'
     ];
 
-    public function author(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -37,5 +39,20 @@ class OrderHistory extends Model
             'files',
             'shop'
         ]);
+    }
+
+    public function getTitle(): string
+    {
+        return $this->types[$this->type] ?? 'Замовлення оновлено';
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function getFieldName(string $field): string
+    {
+        return $this->fields[$field] ?? $field;
     }
 }

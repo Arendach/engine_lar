@@ -46,7 +46,9 @@ class OrderFilesSeeder extends Seeder
             $path = "/storage/orders/$file";
 
             if (!OrderFile::where('path', $path)->count()) {
-                unlink(public_path($path));
+                if (is_file(public_path($path))) {
+                    unlink(public_path($path));
+                }
             }
         }
     }

@@ -79,7 +79,7 @@ class ScheduleMonth extends Model
         }
 
         if (!is_null($month)) {
-            $query->where('month', $month);
+            $query->where('month', month_valid($month));
         }
 
         if (!is_null($user)) {

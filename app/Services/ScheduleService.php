@@ -24,10 +24,10 @@ class ScheduleService
         $this->create($year, $month, $user_id);
     }
 
-    public function create(int $year, int $month, int $user_id): ?ScheduleMonth
+    public function create(int $year, int $month, int $user_id): ScheduleMonth
     {
         if (ScheduleMonth::concrete($year, $month, $user_id)->count()) {
-            return null;
+            return ScheduleMonth::concrete($year, $month, $user_id)->first();
         }
 
         $priceMonth = user($user_id)->rate ?? 0;

@@ -5,12 +5,9 @@ namespace App\Models;
 use AjCastro\EagerLoadPivotRelations\EagerLoadPivotTrait;
 use App\Casts\CollectionCast;
 use App\Casts\Phone;
-use App\Traits\DateHuman;
-use App\Traits\Editable;
 use App\Traits\Filterable;
 use App\Traits\NumberFormat;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,9 +17,7 @@ class Order extends Model
 {
     use EagerLoadPivotTrait;
     use Filterable;
-    use DateHuman;
     use NumberFormat;
-    use Editable;
 
     protected $table = 'orders';
 
@@ -102,8 +97,7 @@ class Order extends Model
 
     public function history(): HasMany
     {
-        return $this->hasMany(OrderHistory::class, 'id_order', 'id')
-            ->orderByDesc('id');
+        return $this->hasMany(OrderHistory::class)->orderByDesc('id');
     }
 
     public function client(): BelongsTo

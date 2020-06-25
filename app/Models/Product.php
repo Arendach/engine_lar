@@ -115,4 +115,14 @@ class Product extends Model
     {
         return app(ProductHistoryService::class)->setProduct($this);
     }
+
+    public function scopeSearch(Builder $builder, string $query): void
+    {
+        $builder->where('name_uk', 'like', "%$query%")
+            ->where('name_ru', 'like', "%$query%")
+            ->orWhere('service_code', 'like', "%$query%")
+            ->orWhere('article', 'like', "%$query%")
+            ->orWhere('model_uk', 'like', "%$query%")
+            ->orWhere('name_ru', 'like', "%$query%");
+    }
 }

@@ -4,25 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Orders\CreateBonusRequest;
 use App\Http\Requests\Orders\CreateSendingRequest;
+use App\Http\Requests\Orders\DeleteBonusRequest;
 use App\Http\Requests\Orders\DeleteProductRequest;
 use App\Http\Requests\Orders\UpdateAddressRequest;
 use App\Http\Requests\Orders\UpdateOrderProfessionalRequest;
 use App\Http\Requests\Orders\UpdateProductsRequest;
-use App\Http\Requests\Orders\UpdateSelfAddressRequest;
 use App\Http\Requests\Orders\UploadFileRequest;
 use App\Models\OrderFile;
+use App\Repositories\ProductRepository;
 use App\Services\OrderService;
 use Exception;
-use App\Http\Requests\Orders\UpdateSendingAddressRequest;
 use App\Models\BlackDate;
-use App\Orders\OrderUpdate;
 use App\Services\CategoryTree;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
 use SergeyNezbritskiy\PrivatBank\AuthorizedClient;
 use SergeyNezbritskiy\PrivatBank\Merchant as MerchantApi;
-use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Logistic;
@@ -39,7 +37,6 @@ use App\Filters\OrdersListFilter;
 use App\Http\Requests\Orders\CreateDeliveryRequest;
 use App\Http\Requests\Orders\CreateSelfRequest;
 use App\Http\Requests\Orders\UpdateCourierRequest;
-use App\Http\Requests\Orders\UpdateDeliveryAddressRequest;
 use App\Http\Requests\Orders\UpdateContactsRequest;
 use App\Http\Requests\Orders\UpdateStatusRequest;
 use App\Http\Requests\Orders\UpdateWorkingRequest;
@@ -115,31 +112,14 @@ class OrdersController extends Controller
             'closedOrder'   => Report::type('order')->where('data', $id)->count(),
         ];
 
-        if ($order->type == 'sending' && $order->logistic->name == 'НоваПошта') {
-            //$data['warehouses'] = NewPostWarehouse::where('city_ref', $order->sending_city->ref)->get();
-            $data['warehouses'] = [];
-        }
-
         return view('buy.update.main', $data);
     }
 
     public function sectionChanges(int $id)
     {
-        $order = Order::findOrFail($id);
+        $order = Order::with('history')->findOrFail($id);
 
-        $data = [
-            'order'       => $order,
-            'title'       => 'Історія замовлення',
-            'id'          => $id,
-            'breadcrumbs' => [
-                ['Замовлення', uri('orders/view', ['type' => 'delivery'])],
-                [$order->type_name, uri('orders/view', ['type' => $order->type])],
-                ['Замовлення #' . $order->id, uri('orders/update', ['id' => $order->id])],
-                ['Історія']
-            ]
-        ];
-
-        $this->view->display('buy.changes.main', $data);
+        return view('buy.changes.main', compact('order'));
     }
 
     public function actionDeleteProduct(DeleteProductRequest $request, OrderService $orderService): void
@@ -148,49 +128,32 @@ class OrdersController extends Controller
     }
 
     // Пошук товарів
-    public function actionSearchProducts(string $type, $search)
+    public function actionSearchProducts(string $type, $search): string
     {
-        $builder = Product::limit(50);
-
-        if ($type == 'category') {
-            $builder->where('category_id', $search);
-        } else {
-            $builder->where(function (Builder $builder) use ($search) {
-                $builder->where('name_uk', 'like', "%$search%")
-                    ->where('name_ru', 'like', "%$search%")
-                    ->orWhere('service_code', 'like', "%$search%")
-                    ->orWhere('article', 'like', "%$search%")
-                    ->orWhere('model_uk', 'like', "%$search%")
-                    ->orWhere('name_ru', 'like', "%$search%");
-            });
-        }
-
-        $result = '';
-        foreach ($builder->get() as $product) {
-            $result .= "<div data-id='{$product->id}' class='item searched'> ";
-            $result .= $product->name;
-            $result .= "</div>\n";
-        }
-
-        echo $result;
+        return app(ProductRepository::class)
+            ->search($search, $type, 50)
+            ->map(function (Product $product) {
+                return ['text' => "<div data-id='{$product->id}' class='item searched'> {$product->name}</div>"];
+            })
+            ->implode('text', "\n");
     }
 
     // Вивод вибраних товарів при пошуку
-    public function actionGetProduct(string $type, int $id)
+    public function actionGetProduct(string $type, int $id): View
     {
         $result[] = Product::find($id);
 
         return view('buy.show_found_products', ['products' => $result, 'type' => $type]);
     }
 
-    public function action_change_type($post)
+    public function actionChangeType($post)
     {
         (new OrderUpdate($post->id))->changeType($post->type);
 
         response(200, 'Тип замовлення вдало змінений!');
     }
 
-    public function actionPreview(int $id)
+    public function actionPreview(int $id): View
     {
         return view('orders.preview', ['order' => Order::findOrFail($id)]);
     }
@@ -200,11 +163,9 @@ class OrdersController extends Controller
         $orderService->createBonus($request->validated());
     }
 
-    public function action_delete_bonus($post)
+    public function actionDeleteBonus(DeleteBonusRequest $request, OrderService $orderService): void
     {
-        Orders::delete_bonus($post);
-
-        response(200, DATA_SUCCESS_DELETED);
+        $orderService->deleteBonus($request->get('id'));
     }
 
     public function actionUpdateOrderProfessional(UpdateOrderProfessionalRequest $request, OrderService $orderService): void

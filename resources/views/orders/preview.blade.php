@@ -29,9 +29,10 @@
         <td>Сума</td>
     </tr>
     @foreach($order->products as $item)
+        @php /** @var \App\Models\Product $item */ @endphp
         <tr>
             <td>{{ $item->name }}</td>
-            <td>{{ $item->storage->name ?? '' }}</td>
+            <td>{{ $item->pivot->storage->name ?? '' }}</td>
             <td>{{ $item->pivot->amount }}</td>
             <td>{{ $item->pivot->numberFormat('price') }}</td>
             <td>{{ $item->numberFormat($item->pivot->amount * $item->pivot->price) }}</td>
@@ -45,7 +46,7 @@
     <tr>
         <td colspan="3"></td>
         <td class="right"> Доставка:</td>
-        <td>{{ $order->numberFormat('delivery_cost') }}</td>
+        <td>{{ $order->numberFormat('delivery_price') }}</td>
     </tr>
     <tr>
         <td colspan="3"></td>
