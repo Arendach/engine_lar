@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="<?= asset('css/components/bootstrap/bootstrap.css') ?>">
+    <link rel="stylesheet" href="{{ asset('css/print.css') }}">
     <style>
         * {
             font-size: 0.25cm;
@@ -56,27 +56,24 @@
             <td>Картка</td>
             <td>Отримав</td>
         </tr>
-        <?php foreach ($orders as $item) { ?>
+        @foreach ($orders as $order)
+            @php /** @var \App\Models\Order $order */ @endphp
             <tr>
                 <td></td>
-                <td><?= $item->id ?></td>
-                <td><?= $item->fio ?></td>
-                <td><?= get_number($item->phone) ?></td>
-                <td><?= $item->street . ' ' . $item->address ?></td>
+                <td>{{ $order->id }}</td>
+                <td>{{ $order->fio }}</td>
+                <td>{{ $order->phone }}</td>
+                <td>{{ "{$order->street} {$order->address}" }}</td>
                 <td style="width: 100px">
-                    <?= date_for_humans($item->date_delivery) ?> <br>
-                    <?php if (string_to_time($item->time_with) == '00:00' && string_to_time($item->time_to) == '00:00') { ?>
-                        цілодобово
-                    <?php } else { ?>
-                        <b><?= string_to_time($item->time_with) . '-' . string_to_time($item->time_to) ?></b>
-                    <?php } ?>
+                    {{ $order->human('date_delivery') }} <br>
+                    {!! $order->time !!}
                 </td>
-                <td><?= preg_replace('/\n/', '<br>', $item->comment) ?></td>
-                <td><?= $item->sum ?></td>
+                <td>{!! $order->comment !!}</td>
+                <td>{{ $order->numberFormat($order->sum + $order->delivery_price - $order->discount) }}</td>
                 <td></td>
                 <td></td>
             </tr>
-        <?php } ?>
+        @endforeach
         <tr>
             <td colspan="9" class="right">Сума</td>
             <td></td>
@@ -91,13 +88,13 @@
             <td style="width: 15%">Сума</td>
             <td>Коментар</td>
         </tr>
-        <?php for ($i = 0; $i < 7; $i++): ?>
+        @for ($i = 0; $i < 7; $i++)
             <tr>
                 <td style="padding: 20px"></td>
                 <td style="padding: 20px"></td>
                 <td style="padding: 20px"></td>
             </tr>
-        <?php endfor ?>
+        @endfor
 
         <tr>
             <td>Всього</td>

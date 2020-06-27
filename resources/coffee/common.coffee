@@ -18,6 +18,10 @@ window.inputCache = ''
 
 window.str_to_int = (str) -> str.replace(/\D+/g, "")
 
+window.pin_code = (sendFunc) ->
+    sendFunc()
+
+
 window.getParameters = ->
     Pattern = /[\?][\w\W]+/
     params = document.location.href.match(Pattern)

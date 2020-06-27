@@ -1,33 +1,28 @@
+@php /** @var \App\Models\Order $order */ @endphp
 <div class="right" style="margin-bottom: 15px;">
-    <?php if ($add_transaction) { ?>
+    @if($order->pay->merchant)
         <button class="btn btn-primary"
                 data-type="get_form"
-                data-uri="<?= uri('orders') ?>"
-                data-post="<?= params(['id' => $order->id]) ?>"
-                data-action="search_transaction">
+                data-uri="@uri('orders/search_transactions')"
+                data-post="@params(['id' => $order->id])"
+        >
             Привязати транзакцію
         </button>
-    <?php } else { ?>
+    @else
         <button class="btn btn-danger">Виберіть спосіб оплати з мерчантом</button>
-    <?php } ?>
+    @endif
 </div>
 
+<form action="@uri('orders/update_pay')" data-type="ajax" data-pin_code="" class="form-horizontal" data-after="reload">
+    <input type="hidden" name="id" value="{{ $order->id }}">
 
-<form action="<?= uri('orders') ?>" data-type="ajax" data-pin_code="" class="form-horizontal">
-    <input type="hidden" name="id" value="<?= $order->id ?>">
-    <input type="hidden" name="action" value="update_pay">
-    <input type="hidden" name="type" value="<?= $order->type ?>">
-    <input type="hidden" name="pay_delivery" value="<?= $order->pay_delivery ?>">
-
-    <?php element('pay_method', ['pay_method' => $order->pay_method]) ?>
-
-    <?php element('prepayment', ['prepayment' => $order->prepayment]) ?>
-
-    <?php element('button') ?>
+    @include('buy.update.elements', ['key' => 'pay_id'])
+    @include('buy.update.elements', ['key' => 'prepayment'])
+    @include('buy.update.elements', ['key' => 'button'])
 </form>
 
 
-<?php if (isset($transactions) && my_count($transactions) > 0) { ?>
+@if($order->transactions->count())
 
     <table class="table table-bordered">
         <tr>
@@ -38,24 +33,22 @@
             <td>Опис</td>
             <td class="action-1">Дії</td>
         </tr>
-        <?php foreach ($transactions as $transaction) { ?>
+        @foreach($order->transactions as $transaction)
             <tr>
-                <td><?= $transaction->transaction_id ?></td>
-                <td><?= $transaction->sum ?></td>
-                <td><?= $transaction->date ?></td>
-                <td><?= $transaction->card ?></td>
-                <td><?= $transaction->description ?></td>
+                <td>{{ $transaction->transaction_id }}</td>
+                <td>{{ $transaction->sum }}</td>
+                <td>{{ $transaction->date }}</td>
+                <td>{{ $transaction->card }}</td>
+                <td>{{ $transaction->description }}</td>
                 <td class="action-1">
                     <button data-type="delete"
-                            data-id="<?= $transaction->id ?>"
-                            data-action="delete_transaction"
-                            data-uri="<?= uri('orders') ?>"
+                            data-id="{{ $transaction->id }}"
+                            data-uri="@uri('orders/delete_transaction')"
                             class="btn btn-danger btn-xs">
                         <i class="fa fa-remove"></i>
                     </button>
                 </td>
             </tr>
-        <?php } ?>
+        @endforeach
     </table>
-
-<?php } ?>
+@endif

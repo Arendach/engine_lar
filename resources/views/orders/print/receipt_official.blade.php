@@ -1,9 +1,3 @@
-<?php
-
-if (!isset($payer)) throw new Exception('Виберіть коректний спосіб оплати');
-
-?>
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -82,7 +76,7 @@ if (!isset($payer)) throw new Exception('Виберіть коректний с�
             text-align: center;
         }
 
-        .count{
+        .count {
             margin-top: 40px;
         }
 
@@ -91,15 +85,17 @@ if (!isset($payer)) throw new Exception('Виберіть коректний с�
 </head>
 <body>
 <div class="table-container">
+
     <div class="provider">
-        <?= isset($payer->provider) && !is_null($payer->provider)
-            ? $payer->provider
+        <?= isset($pay->provider) && !is_null($pay->provider)
+            ? $pay->provider
             : 'ФОП Нечипоренко Роман Олександрович' ?>
     </div>
 
     <div class="centered">
-        <b>Товарний чек № <?= $order->id ?> від <?= date_for_humans($order->date_delivery) ?></b>
+        <b>Товарний чек № {{ $order->id }} від {{ $order->human('date_delivery') }}</b>
     </div>
+
 </div>
 
 <div class="table-container">
@@ -114,30 +110,39 @@ if (!isset($payer)) throw new Exception('Виберіть коректний с�
             <th>Сума</th>
         </tr>
 
-        <?php foreach ($products as $i => $product) { ?>
+        @foreach($order->products as $product)
             <tr>
-                <td><?= $i + 1 ?></td>
-                <td><?= $product->articul ?></td>
-                <td><?= $product->name ?></td>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $product->article }}</td>
+                <td>{{ $product->name }}</td>
                 <td>шт.</td>
-                <td><?= number_format($product->price, 2) ?></td>
-                <td><?= $product->amount ?></td>
-                <td><?= number_format($product->sum, 2) ?></td>
+                <td>{{ number_format($product->pivot->price, 2)  }}</td>
+                <td>{{ $product->pivot->amount }}</td>
+                <td>{{ number_format($product->pivot->amount * $product->pivot->price, 2) }}</td>
             </tr>
-        <?php } ?>
+        @endforeach
     </table>
 
     <div class="sum">
-        <b>Сума: </b><?= number_format($sum, 2) ?><br>
-        <?php if (isset($payer->is_pdv) && $payer->is_pdv == 1) { ?>
-            <b>В т.ч. ПДВ: </b><?= number_format($sum / 6, 2) ?>
-        <?php } ?>
+        <b>Сума: </b>{{ number_format($order->sum, 2) }}<br>
+        @if(isset($pay->is_pdv) && $pay->is_pdv == 1)
+            <b>В т.ч. ПДВ: </b>{{ number_format($order->sum / 6, 2) }}
+        @endif
+    </div>
+
+    <div class="sum">
+        <b>Доставка: </b>{{ number_format($order->delivery_price, 2) }}<br>
+    </div>
+
+
+    <div class="sum">
+        <b>Знижка: </b>{{ number_format($order->discount, 2) }}<br>
     </div>
 
     <div class="count">
-        Всього найменувань <?= count((array)$products) ?> на суму <?= number_format($sum, 2) ?>
+        Всього найменувань {{ $order->products->count() }} на суму {{ number_format($order->sum - $order->discount + $order->delivery_price, 2) }}
         <br>
-        <b><?= num2str($sum) ?></b>
+        <b>{{ num2str($order->sum - $order->discount + $order->delivery_price) }}</b>
     </div>
 </div>
 
@@ -147,8 +152,8 @@ if (!isset($payer)) throw new Exception('Виберіть коректний с�
         <tr>
             <td>Відпустив</td>
             <td></td>
-            <td><?= isset($payer->director) && !is_null($payer->director)
-                    ? $payer->director
+            <td><?= isset($pay->director) && !is_null($pay->director)
+                    ? $pay->director
                     : 'Нечипоренко Р.О.' ?>
             </td>
         </tr>

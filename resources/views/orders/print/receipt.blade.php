@@ -159,7 +159,7 @@
         @foreach($order->products as $product)
             <tr>
                 <td>{{ $product->name }}</td>
-                <td>{{ $product->storage->name ?? '' }} - {{ $product->identefire_storage }}</td>
+                <td>{{ $product->pivot->storage->name ?? '' }} - {{ $product->identefire_storage }}</td>
                 <td>
                     @foreach($product->pivot->attributes as $k => $v)
                         <span class="text-primary">{{ $k }}:</span> {{ $v }}
@@ -243,10 +243,12 @@
                 <td><span>Менеджер </span><b>{{ $order->author->login }}</b></td>
                 <td><span>Менеджер </span><b>{{ $order->author->login }}</b></td>
             </tr>
-            <tr>
-                <td><b>{{ $order->hint->description }}</b></td>
-                <td><b>{{ $order->hint->description }}</b></td>
-            </tr>
+            @if($order->hint)
+                <tr>
+                    <td><b>{{ $order->hint->description ?? ''}}</b></td>
+                    <td><b>{{ $order->hint->description ?? ''}}</b></td>
+                </tr>
+            @endif
         </table>
     </div>
 @endif

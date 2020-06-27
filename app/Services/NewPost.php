@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Order;
+use DiDom\Document;
 use LisDev\Delivery\NovaPoshtaApi2;
 
 class NewPost
@@ -222,11 +224,40 @@ class NewPost
             ->model('AddressGeneral')
             ->method('getWarehouses')
             ->params([
-                'Page' => $page,
+                'Page'  => $page,
                 'Limit' => 500
             ])
             ->execute();
 
         return count($result['data']) == 0 ? false : $result['data'];
+    }
+
+    public function getMarker(Order $order): ?string
+    {
+        if ($order->type == 'sending' && $order->street) {
+            return null;
+        }
+
+        $address = "https://my.novaposhta.ua/orders/printMarkings/orders[]/{$order->street}/type/html/apiKey/" . config('api.new_post');
+
+        $dom = new Document($address, true);
+
+        $body = $dom->first('body');
+
+        $imgs = $body->findInDocument('img');
+
+        foreach ($imgs as $k => $img) {
+            $attr = $img->attr('src');
+            $body->findInDocument('img')[$k]->attr('src', "http://my.novaposhta.ua{$attr}");
+        }
+
+        $markers = $body->findInDocument('.page-100-100');
+
+        $result = '';
+        foreach ($markers as $marker) {
+            $result .= $marker->html();
+        }
+
+        return $result;
     }
 }

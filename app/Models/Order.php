@@ -169,9 +169,9 @@ class Order extends Model
         return date_for_humans($this->date_delivery->format('Y-m-d'));
     }
 
-    public function getSumAttribute()
+    public function getSumAttribute(): float
     {
-        $this->products->sum(function ($item) {
+        return $this->products->sum(function ($item) {
             return $item->pivot->amount * $item->pivot->price;
         });
     }

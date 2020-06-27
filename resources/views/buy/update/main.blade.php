@@ -51,7 +51,7 @@
         @endif
 
         <div id="transactions" class="fade tab-pane">
-            {{--            @include('buy.update.parts.transactions')--}}
+            @include('buy.update.parts.transactions')
         </div>
 
         <div id="files" class="fade tab-pane">

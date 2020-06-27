@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Bonus;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\OrderTransaction;
 use App\Models\Product;
 
 class OrderService
@@ -166,5 +167,15 @@ class OrderService
         app(BonusService::class)->deleteFromSchedule($bonus);
 
         $bonus->delete();
+    }
+
+    public function attachTransactions(int $id, array $data): void
+    {
+        $order = Order::findOrFail($id);
+
+        foreach ($data['transactions'] as $item) {
+            $transaction = new OrderTransaction($item);
+            $order->transactions()->save($transaction);
+        }
     }
 }

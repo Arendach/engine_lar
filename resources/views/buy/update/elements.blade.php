@@ -55,7 +55,7 @@
             <select name="pay_id" class="form-control">
                 @displayIf(isset($empty), '<option value="0"></option>')
                 @foreach($pay->all() as $item) { ?>
-                <option @selected($item->id == $order->pay_method) value="{{ $item->id }}">
+                <option @selected($item->id == $order->pay_id) value="{{ $item->id }}">
                     {{ $item->name }}
                 </option>
                 @endforeach

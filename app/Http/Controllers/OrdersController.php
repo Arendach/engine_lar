@@ -4,15 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Orders\CreateBonusRequest;
 use App\Http\Requests\Orders\CreateSendingRequest;
+use App\Http\Requests\Orders\CreateTransactionRequest;
 use App\Http\Requests\Orders\DeleteBonusRequest;
 use App\Http\Requests\Orders\DeleteProductRequest;
 use App\Http\Requests\Orders\UpdateAddressRequest;
 use App\Http\Requests\Orders\UpdateOrderProfessionalRequest;
+use App\Http\Requests\Orders\UpdatePayRequest;
 use App\Http\Requests\Orders\UpdateProductsRequest;
 use App\Http\Requests\Orders\UploadFileRequest;
 use App\Models\OrderFile;
+use App\Models\OrderTransaction;
 use App\Repositories\ProductRepository;
+use App\Services\NewPost;
 use App\Services\OrderService;
+use App\Services\PrivateBankService;
 use Exception;
 use App\Models\BlackDate;
 use App\Services\CategoryTree;
@@ -173,76 +178,47 @@ class OrdersController extends Controller
         $orderService->update($request->get('id'), $request->validated());
     }
 
-    ///////////////////////////////////////////////
-    // Роздруковка                               //
-    ///////////////////////////////////////////////
-    public function section_route_list()
+    // Роздруковка маршрутного листа
+    public function sectionRouteList(string $ids): View
     {
-        $ids = explode(':', get('ids'));
-        $orders = Orders::findByIDS($ids, 'orders');
+        $ids = explode(':', $ids);
 
-        foreach ($orders as $key => $item) {
-            $id = $item->id;
-            $orders[$id]->sum = Orders::getSum($item);
-        }
+        $orders = Order::with('products')->find($ids);
 
-        $this->view->display('orders.print.route_list', ['orders' => $orders]);
+        return view('orders.print.route_list', compact('orders'));
     }
 
     // Товарний чек
     public function sectionReceipt(int $id, bool $official = false)
     {
-        $order = Order::with([
-            'products',
-            'pay',
-            'hint'
-        ])->findOrFail($id);
-
-        $data = ['order' => $order];
-
-        /* if ($order->type == 'sending' && $order->street != '') {
-             $data['marker'] = app(NewPostService::class)->getMarker($order);
-         }*/
+        /** @var Order $order */
+        $order = Order::with(['products', 'pay', 'hint'])->findOrFail($id);
+        $marker = app(NewPost::class)->getMarker($order);
 
         $view = $official ? 'receipt_official' : 'receipt';
 
-        return view("orders.print.$view", $data);
+        return view("orders.print.$view", compact('marker', 'order'));
     }
 
     // Рахунок фактура
     public function sectionInvoice(int $id)
     {
-        $order = Orders::getOne(get('id'));
+        $order = Order::with('pay', 'products')->findOrFail($id);
 
-        $pay = Orders::getOne($order->pay_method, 'pays');
+        $pay = $order->pay;
 
-        $data = [
-            'id'       => get('id'),
-            'products' => Orders::getProducts(get('id'))->products,
-            'order'    => $order,
-            'pay'      => $pay
-        ];
-
-        $this->view->display('orders.print.invoice', $data);
+        return view('orders.print.invoice', compact('order', 'pay'));
     }
 
     // Роздруковка видаткової накладної
     public function sectionSalesInvoice(int $id)
     {
-        $order = Orders::getOne(get('id'));
+        $order = Order::with('pay', 'products')->findOrFail($id);
 
-        $pay = Orders::getOne($order->pay_method, 'pays');
+        $pay = $order->pay;
 
-        $data = [
-            'id'       => get('id'),
-            'products' => Orders::getProducts(get('id'))->products,
-            'order'    => $order,
-            'pay'      => $pay
-        ];
-
-        $this->view->display('orders.print.sales_invoice', $data);
+        return view('orders.print.sales_invoice', compact('order', 'pay'));
     }
-
 
     public function actionCreateDelivery(CreateDeliveryRequest $request, OrderService $orderService): JsonResponse
     {
@@ -288,9 +264,9 @@ class OrdersController extends Controller
     }
 
     // Оновлення інформаціїї про оплату
-    public function action_update_pay($post)
+    public function actionUpdatePay(UpdatePayRequest $request, OrderService $orderService): void
     {
-
+        $orderService->update($request->get('id'), $request->validated());
     }
 
     // Оновлення товарів
@@ -421,76 +397,22 @@ class OrdersController extends Controller
         echo $str;
     }
 
-    public function action_search_transaction($post)
+    public function actionSearchTransactions(int $id): View
     {
-        $start = date('d.m.Y', time() - 60 * 60 * 24 * 30);
-        $finish = date('d.m.Y');
+        $order = Order::findOrFail($id)->load('pay', 'pay.merchant', 'pay.merchant.cards');
 
-        $order = Orders::getOne($post->id);
-        $pay_method = Orders::getOne($order->pay_method, 'pays');
-        $merchant_db = Orders::getOne($pay_method->merchant_id, 'merchant');
-        $merchant_cards = Orders::findAll('merchant_card', 'merchant_id = ?', [$merchant_db->id]);
+        $transactions = app(PrivateBankService::class)->searchTransactions($order);
 
-        // Авторизація клієнта
-        $client = new AuthorizedClient();
-
-        // Авторизація мерчанта
-        $merchant = new MerchantApi($merchant_db->merchant_id, $merchant_db->password);
-
-        $client->setMerchant($merchant);
-
-        $temp = [];
-        foreach ($merchant_cards as $card) {
-            // запит на виписку по карті
-            $result = $client->statements($card->number, $start, $finish);
-
-            foreach ($result as $item) {
-                // залишаємо тільки прибутки
-                if ($item['cardamount'] > 0) {
-                    if (!Orders::count('order_transaction', 'transaction_id = ?', [$item['appcode']]))
-                        $temp[] = $item;
-                }
-            }
-        }
-
-        $data = [
-            'title'        => 'Додати транзакцію',
-            'transactions' => $temp,
-            'order_id'     => $post->id,
-            'modal_size'   => 'lg'
-        ];
-
-        $this->view->display('buy.update.parts.transaction_add', $data);
+        return view('buy.update.parts.transaction_add', compact('transactions', 'order'));
     }
 
-    public function action_add_transaction($post)
+    public function actionAddTransactions(CreateTransactionRequest $request, OrderService $orderService): void
     {
-        $temp = [];
-        foreach ($post->transactions as $k => $item) {
-            parse_str($item, $temp[$k]);
-
-            Orders::insert($temp[$k], 'order_transaction');
-        }
-
-        response(200, 'Транзакції вдало привязані!');
+        $orderService->attachTransactions($request->get('id'), $request->validated());
     }
 
-    public function action_delete_transaction($post)
+    public function actionDeleteTransaction(int $id): void
     {
-        Orders::delete($post->id, 'order_transaction');
-
-        response(200, 'Транзакція вдало видалена!');
-    }
-
-    public function actionViewAutoComplete(string $search, string $field, string $type)
-    {
-        $response = Order::where($field, 'like', "%$search%")
-            ->where('type', $type)
-            ->limit(5)
-            ->get()
-            ->pluck('fio')
-            ->toArray();
-
-        response()->json($response);
+        OrderTransaction::findOrFail($id)->delete();
     }
 }

@@ -1,3 +1,5 @@
+@php /** @var \App\Models\Order $order */ @endphp
+@php /** @var \App\Models\Pay $pay */ @endphp
 <!doctype html>
 <html lang="en">
 <head>
@@ -5,7 +7,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="<?= asset('css/components/bootstrap/bootstrap.css') ?>">
+    <link rel="stylesheet" href="{{ asset('css/print.css') }}">
     <style>
         * {
             margin: 0;
@@ -80,15 +82,15 @@
         </tr>
         <tr>
             <td><b>Одержувач</b></td>
-            <td><?= $order->fio ?></td>
+            <td>{{ $order->fio }}</td>
         </tr>
         <tr>
             <td><b>Платник</b></td>
-            <td><?= $order->fio ?></td>
+            <td>{{ $order->fio }}</td>
         </tr>
         <tr>
             <td><b>Замовлення</b></td>
-            <td>№ <?= $id ?></td>
+            <td>№ {{ $order->id }}</td>
         </tr>
         <tr>
             <td><b>Умова продажу</b></td>
@@ -97,11 +99,11 @@
     </table>
 
     <h4 class="centered">
-        <b>Видаткова накладна № <?= $id ?>
+        <b>Видаткова накладна № {{ $order->id }}
             <br>
             від <!--<span style="border-bottom: 1px solid; display: inline-block; height: 25px; width: 300px">-->
-            <?= $order->date_delivery ?>
-            <!--</span>-->
+        {{ $order->date_delivery->format('Y-m-d') }}
+        <!--</span>-->
         </b>
     </h4>
 
@@ -114,29 +116,27 @@
             <td><b>Ціна без ПДВ</b></td>
             <td><b>Сума без ПДВ</b></td>
         </tr>
-        <?php
-        $sum = 0;
-        foreach ($products as $i => $product) { ?>
+        @foreach ($order->products as $product)
+            @php /** @var \App\Models\Product $product */ @endphp
             <tr>
-                <td><b><?= $i + 1 ?></b></td>
-                <td><b><?= $product->name ?></b></td>
+                <td><b>{{ $loop->iteration }}</b></td>
+                <td><b>{{ $product->name }}</b></td>
                 <td><b>шт</b></td>
-                <td><b><?= $product->amount ?></b></td>
-                <td><b><?= number_format($product->price, 2) ?></b></td>
-                <td><b><?= number_format($product->sum, 2) ?></b></td>
+                <td><b>{{ $product->pivot->amount  }}</b></td>
+                <td><b>{{ number_format($product->pivot->price, 2) }}</b></td>
+                <td><b>{{ number_format($product->pivot->amount * $product->pivot->price, 2) }}</b></td>
             </tr>
-            <?php $sum += $product->sum;
-        } ?>
+        @endforeach
 
         <tr>
             <td style="border: none" colspan="4"></td>
             <td><b>Знижка:</b></td>
-            <td><b><?= number_format($order->discount, 2) ?></b></td>
+            <td><b>{{ number_format($order->discount, 2) }}</b></td>
         </tr>
         <tr>
             <td style="border: none" colspan="4"></td>
             <td><b>Разом без ПДВ:</b></td>
-            <td><b><?= number_format($sum, 2) ?></b></td>
+            <td><b>{{ number_format($order->sum, 2) }}</b></td>
         </tr>
         <tr>
             <td style="border: none" colspan="4"></td>
@@ -146,7 +146,7 @@
         <tr>
             <td style="border: none" colspan="4"></td>
             <td><b>Всього БЕЗ ПДВ:</b></td>
-            <td><b><?= number_format($sum, 2) ?></b></td>
+            <td><b>{{ number_format($order->sum, 2) }}</b></td>
         </tr>
     </table>
 
@@ -154,7 +154,7 @@
         <tr>
             <td>
                 <div> Всього на суму: <br>
-                    <b><?= num2str($sum) ?></b><br>
+                    <b>{{ num2str($order->sum) }}</b><br>
                     ПДВ: 0,00 грн.
                 </div>
             </td>
@@ -167,7 +167,7 @@
             <td style="width: 25%; border: none;" class="right">Від постачальника:</td>
             <td style="width: 25%; border: none;">
                 <span class="centered">
-                    <?= isset($pay->director) && !is_null($pay->director) ? $pay->director : 'Нечипоренко Р.О.' ?>
+                    {{ isset($pay->director) && !is_null($pay->director) ? $pay->director : 'Нечипоренко Р.О.' }}
                 </span>
             </td>
             <td style="width: 25%; border: none;" class="right">Отримав(ла):</td>

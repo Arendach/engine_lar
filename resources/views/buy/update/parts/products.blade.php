@@ -56,7 +56,7 @@
                         <select name="products[{{ $rand }}][storage_id]" class="form-control storageId">
                             @foreach($product->storage_list as $storage)
                                 <option @selected($storage->storage_id == $product->pivot->storage_id) value="{{ $storage->storage_id }}">
-                                    {{ $storage->count }}: {{ $storage->storage->name }}
+                                    {{ $storage->count }}: {{ $storage->storage->name ?? '' }}
                                 </option>
                             @endforeach
                         </select>

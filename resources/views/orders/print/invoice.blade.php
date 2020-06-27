@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="<?= asset('css/components/bootstrap/bootstrap.css') ?>">
+    <link rel="stylesheet" href="{{ asset('css/print.css') }}">
     <style>
         * {
             font-size: 12px;
@@ -48,7 +48,7 @@
             border-top: none;
         }
 
-        h1{
+        h1 {
             font-size: 25px;
             font-weight: bold;
         }
@@ -66,9 +66,9 @@
                         <td class="right" style="border-left: 1px solid #ddd;"><b>Постачальник</b></td>
                         <td style="border-right: 1px solid #ddd;">
                             <span>
-                                <?= isset($pay->provider) && !is_null($pay->provider)
+                                {{ isset($pay->provider) && !is_null($pay->provider)
                                     ? $pay->provider
-                                    : 'ФОП Нечипоренко Роман Олександрович' ?>
+                                    : 'ФОП Нечипоренко Роман Олександрович' }}
                             </span>
                         </td>
                     </tr>
@@ -144,13 +144,13 @@
                 </h1>
 
                 <div class="num centered">
-                    <b>№</b> <span><b><?= $id ?></b></span>
+                    <b>№</b> <span><b>{{ $order->id }}</b></span>
                 </div>
 
                 <br>
 
                 <div class="centered">
-                    <b>від "<?= $order->date_delivery ?>"</b>
+                    <b>від "{{ $order->date_delivery }}"</b>
                 </div>
 
             </td>
@@ -160,7 +160,7 @@
     <table class="table table-bordered">
         <tr>
             <td class="right" style="width: 20%;"><b>Платник:</b></td>
-            <td style="width: 80%;"><b><?= $order->fio ?></b></td>
+            <td style="width: 80%;"><b>{{ $order->fio }}</b></td>
         </tr>
     </table>
     <table class="table table-bordered">
@@ -188,32 +188,21 @@
             </td>
         </tr>
 
-        <?php $sum = 0;
-        foreach ($products as $product) {
-            $sum += $product->sum; ?>
+        @foreach ($order->products as $product)
+            @php /** @var \App\Models\Product $product*/ @endphp
             <tr>
-                <td colspan="1">
-                    <?= $product->name ?>
-                </td>
-                <td colspan="1">
-                    шт
-                </td>
-                <td colspan="1">
-                    <?= $product->amount ?>
-                </td>
-                <td colspan="1">
-                    <?= number_format($product->price, 2) ?>
-                </td>
-                <td colspan="1">
-                    <?= number_format($product->sum, 2) ?>
-                </td>
+                <td>{{ $product->name }}</td>
+                <td>шт</td>
+                <td>{{ $product->pivot->amount  }}</td>
+                <td>{{ number_format($product->pivot->price, 2) }}</td>
+                <td>{{ number_format($product->pivot->amount * $product->pivot->price, 2) }}</td>
             </tr>
-        <?php } ?>
+        @endforeach
 
         <tr>
             <td colspan="3"></td>
             <td colspan="1"><b>Сума</b></td>
-            <td colspan="1"><?= number_format($sum, 2); ?></td>
+            <td colspan="1">{{ number_format($order->sum) }}</td>
         </tr>
         <tr>
             <td colspan="3"></td>
@@ -223,14 +212,14 @@
         <tr>
             <td colspan="3"></td>
             <td colspan="1"><b>Загальна сума БЕЗ ПДВ</b></td>
-            <td colspan="1"><?= number_format($sum, 2); ?></td>
+            <td colspan="1">{{ number_format($order->sum) }}</td>
         </tr>
     </table>
 
     <table class="table table-top-null">
         <tr>
             <td class="right" style="width: 25%;"><b>Загальна сума, що підлягає оплаті:</b></td>
-            <td colspan="3"><span><?= num2str($sum) ?></span></td>
+            <td colspan="3"><span>{{ number_format($order->sum)  }}</span></td>
         </tr>
         <tr>
             <td colspan="4"></td>
@@ -240,8 +229,7 @@
             <td style="width: 20%">
                 <?= isset($pay->director) && !is_null($pay->director)
                     ? $pay->director
-                    : 'Нечипоренко Р.О.' ?>
-            </td>
+                    : 'Нечипоренко Р.О.' ?></td>
 
             <td class="right" style="width: 20%"><b>Підпис:</b></td>
             <td><span></span></td>
