@@ -10,4 +10,5 @@ class Setting extends Model
     use Editable;
 
     protected $guarded = [];
+    public $timestamps = false;
 }

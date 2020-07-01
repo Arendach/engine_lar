@@ -95,17 +95,7 @@ return [
                 'name'   => 'Відпустки',
                 'url'    => uri('vacation'),
                 'access' => 'vacation'
-            ],
-            [
-                'name'   => 'Транзакції',
-                'url'    => uri('pb'),
-                'access' => 'transactions'
-            ],
-            [
-                'name'   => 'Логи',
-                'url'    => uri('log'),
-                'access' => 'logs'
-            ],
+            ]
         ]
     ],
     [
@@ -145,11 +135,6 @@ return [
             [
                 'name'   => 'Файл менеджер',
                 'url'    => uri('explorer/index.php'),
-                'access' => 'ROOT'
-            ],
-            [
-                'name'   => 'Команди',
-                'url'    => uri('commands'),
                 'access' => 'ROOT'
             ]
         ]

@@ -1,6 +1,8 @@
-$(document).pjax 'a', '#pjax-container', {fragment: '#pjax-container', timeout: false}
+if (window.isUsePjax)
+    $(document).pjax 'a', '#pjax-container', {fragment: '#pjax-container', timeout: false}
 
-$(document).on 'pjax:beforeSend', () -> resetEventStorage()
+    $(document).on 'pjax:beforeSend', () -> resetEventStorage()
+
 
 window.PjaxReload = ->
     new Modal().close()

@@ -9,6 +9,6 @@ class NotificationController extends Controller
 {
     public function actionCloseNotification(Request $request)
     {
-        Notification::findOrFail($request->id)->update(['see' => 1]);
+        Notification::findOrFail($request->id)->update(['is_see' => 1]);
     }
 }

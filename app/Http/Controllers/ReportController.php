@@ -2,19 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Report\CloseMovingRequest;
+use App\Http\Requests\Report\CreateExpendituresRequest;
+use App\Http\Requests\Report\CreateMovingRequest;
 use App\Http\Requests\Report\UpdateReserveFundsRequest;
 use App\Models\Report;
 use App\Models\ReportItem;
 use App\Repositories\ReportRepository;
 use App\Services\ReportService;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ReportController extends Controller
 {
     private $repository;
+    private $reportService;
 
-    public function __construct(ReportRepository $reportRepository)
+    public function __construct(ReportRepository $reportRepository, ReportService $reportService)
     {
         $this->repository = $reportRepository;
+        $this->reportService = $reportService;
     }
 
     // За конкретний місяць
@@ -98,74 +105,28 @@ class ReportController extends Controller
 
     }
 
-    // Форма підтвердження передачі коштів
-    public function action_close_moving_form($post)
+    public function actionCloseMovingForm(Request $request): View
     {
-        $data = [
-            'title'  => 'Отримання коштів',
-            'report' => Reports::getOne($post->id)
-        ];
+        $report = Report::findOrFail($request->get('id'));
 
-        $this->view->display('reports.forms.close_moving_form', $data);
+        return view('report.forms.close_moving_form', compact('report'));
     }
 
-    // Підтвердження передачі коштів
-    public function action_success_moving($post)
+    public function actionCloseMoving(CloseMovingRequest $request): void
     {
-        if (!isset($post->name_operation) || empty($post->name_operation))
-            response(400, 'Введіть назву операції!');
-
-        Reports::successMoving($post);
-
-        response(200, 'Кошти вдало переміщені!');
+        $this->reportService->closeMoving($request->get('id'), $request->validated());
     }
 
     // Створення передачі коштів
-    public function action_create_moving($post)
+    public function actionCreateMoving(CreateMovingRequest $request): void
     {
-        if (!isset($post->user) || empty($post->user))
-            response(400, 'Виберіть менеджера!');
-
-        $this->check($post);
-
-        Reports::createMoving($post);
-
-        $login = user($post->user)->login;
-
-        $response = [
-            'message' => "Кошти буде передано, як тільки $login підтвердить передачу!",
-            'action'  => 'redirect',
-            'uri'     => uri('reports', ['section' => 'my'])
-        ];
-
-        response(200, $response);
+        $this->reportService->createMoving($request->validated());
     }
 
     // Видатки
-    public function action_create_expenditures($post)
+    public function actionCreateExpenditures(CreateExpendituresRequest $request): void
     {
-        $this->check($post);
-
-        $array = ['taxes', 'investment', 'mobile', 'rent', 'social', 'other', 'advert'];
-        $data = [];
-
-        foreach ($array as $item) {
-            if (!isset($post->$item) || empty($post->$item)) {
-                $data[$item] = 0;
-            } else {
-                $data[$item] = $post->$item;
-            }
-        }
-
-        Reports::createExpenditures($post, $data);
-
-        $response = [
-            'message' => 'Видатки вдало збережені!',
-            'action'  => 'redirect',
-            'uri'     => uri('reports', ['section' => 'my'])
-        ];
-
-        response(200, $response);
+        $this->reportService->createExpenditures($request->validated());
     }
 
     // Витрати на доставку

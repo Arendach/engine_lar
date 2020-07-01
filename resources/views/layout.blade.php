@@ -15,6 +15,7 @@
 
             window.pin = '{{ user()->pin }}';
         window.my_url = '{{ '' }}';
+        window.isUsePjax = {{ setting('Використовувати PJAX', 0) ? 'true' : 'false' }}
     </script>
 
     <script src="{{ asset('js/libs.js') }}"></script>

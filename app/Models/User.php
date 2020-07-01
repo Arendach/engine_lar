@@ -6,6 +6,7 @@ use App\Traits\Editable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class User extends Model
 {
@@ -53,9 +54,9 @@ class User extends Model
         return Report::my()->type('moving')->where('data', 'like', '%:0')->get();
     }
 
-    public function getMovingMoney()
+    public function getMovingMoney(): Collection
     {
-        return Report::where('data', 'like', user()->id . ':0');
+        return Report::where('data', 'like', user()->id . ':0')->get();
     }
 
     public function getCountLiableDelivery()

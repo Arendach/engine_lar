@@ -4,25 +4,26 @@
 
 @section('content')
 
-    @if ($notifications->count() /*or $productMoving->count()*/)
+    @if ($notifications->count() or $notMovingMoney->count() /*or $productMoving->count()*/)
 
         <h2><i style="color: red" class="fa fa-bell"></i> Сповіщення</h2>
 
         @if($notifications->count())
-            @foreach($notification as $item) { */?>
-            <div class="alert alert-{{ $item->type }} alert-dismissable">
-                <div class="row">
-                    <div class="col-md-9">
-                        {{ $item->content }}
-                    </div>
-                    <div class="col-md-3 right">
-                        {{ $item->date->format('d.m.Y') }}
-                        <button data-id="{{ $item->id }}" type="button" class="close close_notification"
-                                data-dismiss="alert">&times;
-                        </button>
+            @foreach($notifications as $notification)
+                @php /** @var \App\Models\Notification $notification */ @endphp
+                <div class="alert alert-{{ $notification->type }} alert-dismissable">
+                    <div class="row">
+                        <div class="col-md-9">
+                            {!! $notification->content !!}
+                        </div>
+                        <div class="col-md-3 right">
+                            {{ $notification->human('created_at', true) }}
+                            <button data-id="{{ $notification->id }}" type="button" class="close closeNotification"
+                                    data-dismiss="alert">&times;
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
             @endforeach
         @endif
 
@@ -31,7 +32,7 @@
                 @foreach($notMovingMoney as $item)
                     Менеджер
                     <a href="{{ uri('manager/' . $item->moving_user_id) }}>">
-                        <b class="text-success">{{ user($user_id)->login }}</b>
+                        <b class="text-success">{{ user()->login }}</b>
                     </a>
                     ще не підтвердив отримання коштів в сумі
                     <b class="text-success">{{ $item->sum }}</b> грн <br>
@@ -151,18 +152,18 @@
         <h2><i class="fa fa-automobile text-danger"></i> Задачі</h2>
 
         @if($movingMoney->count() > 0)
-            @foreach ($movingMoney as $item)
+            @foreach ($movingMoney as $report)
+                @php /** @var \App\Models\Report $report */ @endphp
                 <div class="alert alert-info">
                     <div class="row">
                         <div class="col-md-9">
-                            Менеджер {{ user($item->user)->login }} хоче передати вам {{ $item->sum }} грн
+                            Менеджер <b>{{ $report->user->name }}</b> хоче передати вам <b>{{ $report->sum }}</b> грн
                         </div>
                         <div class="col-md-3 right">
-                            {{ $item->date->format('Y-m-d') }} <br>
+                            {{ $report->human('created_at', true) }} <br>
                             <button data-type="get_form"
-                                    data-uri="<?/*= uri('reports') */?>"
-                                    data-action="close_moving_form"
-                                    data-post="<?/*= params(['id' => $item->id]) */?>" class="btn btn-xs btn-success">
+                                    data-uri="@uri('report/close_moving_form')"
+                                    data-post="@params(['id' => $item->id])" class="btn btn-xs btn-success">
                                 Підтвердити
                             </button>
                         </div>
@@ -170,7 +171,6 @@
                 </div>
             @endforeach
         @endif
-
 
 
         @if ($tasks->count())
@@ -220,3 +220,7 @@
     @endif
 
 @stop
+
+@push('scripts')
+    <script src="{{ asset('js/index.js') }}"></script>
+@endpush

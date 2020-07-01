@@ -39,7 +39,8 @@ class SuccessHandler
 
     reload: ->
         $.cookie('success', yes)
-        PjaxReload()
+        if (isUsePjax) then PjaxReload() else window.location.reload()
+
 
     reset: ->
         $ ':input', @form

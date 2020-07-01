@@ -11,7 +11,7 @@
 )
 
 @section('content')
-    <form data-type="ajax" action="@uri('ReportController@actionCreateMoving')">
+    <form data-type="ajax" action="@uri('report/create_moving')" data-after="redirect" data-redirect-to="@uri('report/view')">
         <div class="form-group">
             <label><i class="text-danger">*</i> Менеджер</label>
             <select name="user_id" class="form-control">

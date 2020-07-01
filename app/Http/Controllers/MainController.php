@@ -9,17 +9,17 @@ class MainController extends Controller
     public function index()
     {
         $data = [
-            'schedules' => user()->getSchedulesNotWrite(),
+            'schedules'         => user()->getSchedulesNotWrite(),
             'schedulesPrevious' => user()->getPreviousSchedulesNotWrite(),
-            'notifications' => user()->notifications,
-            'attachDelivery' => user()->getCountAttachDelivery(),
-            'attachSelf' => user()->getCountAttachSelf(),
-            'attachSending' => user()->getCountAttachSending(),
-            'tasks' => user()->tasks,
-            'liableDelivery' => user()->getCountLiableDelivery(),
-            'liableSelf' => user()->getCountLiableSelf(),
-            'movingMoney' => user()->getMovingMoney(),
-            'notMovingMoney' => user()->getMovingMoney(),
+            'notifications'     => user()->notifications,
+            'attachDelivery'    => user()->getCountAttachDelivery(),
+            'attachSelf'        => user()->getCountAttachSelf(),
+            'attachSending'     => user()->getCountAttachSending(),
+            'tasks'             => user()->tasks,
+            'liableDelivery'    => user()->getCountLiableDelivery(),
+            'liableSelf'        => user()->getCountLiableSelf(),
+            'movingMoney'       => user()->getMovingMoney(),
+            'notMovingMoney'    => user()->getMovingMoney(),
         ];
 
         /*

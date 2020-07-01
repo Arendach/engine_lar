@@ -14,37 +14,37 @@
     <form data-type="ajax" data-after="reset" action="@uri('ReportController@actionCreateExpenditures')">
         <div class="form-group">
             <label>Податки</label>
-            <input class="form-control count" name="taxes" data-inspect="decimal">
+            <input class="form-control count" name="data[taxes]" data-inspect="decimal">
         </div>
 
         <div class="form-group">
             <label>Інвестиції</label>
-            <input class="form-control count" name="investment" data-inspect="decimal">
+            <input class="form-control count" name="data[investment]" data-inspect="decimal">
         </div>
 
         <div class="form-group">
             <label>Мобільний звязок</label>
-            <input class="form-control count" name="mobile" data-inspect="decimal">
+            <input class="form-control count" name="data[mobile]" data-inspect="decimal">
         </div>
 
         <div class="form-group">
             <label>Оренда</label>
-            <input class="form-control count" name="rent" data-inspect="decimal">
+            <input class="form-control count" name="data[rent]" data-inspect="decimal">
         </div>
 
         <div class="form-group">
             <label>Соціальні програми</label>
-            <input class="form-control count" name="social" data-inspect="decimal">
+            <input class="form-control count" name="data[social]" data-inspect="decimal">
         </div>
 
         <div class="form-group">
             <label>Витратні матеріали</label>
-            <input class="form-control count" name="other" data-inspect="decimal">
+            <input class="form-control count" name="data[other]" data-inspect="decimal">
         </div>
 
         <div class="form-group">
             <label>Реклама</label>
-            <input class="form-control count" name="advert" data-inspect="decimal">
+            <input class="form-control count" name="data[advert]" data-inspect="decimal">
         </div>
 
         <div class="form-group">

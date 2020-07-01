@@ -177,6 +177,8 @@ $(document).on 'click', '[data-type="get_form"]', (event) ->
 eventRegister 'click', '[data-type="ajax_request"]', (event) ->
     event.preventDefault()
 
+    alert(1)
+
     url = $(@).data 'uri'
     data = $(@).data 'post'
     after = $(@).data('after')

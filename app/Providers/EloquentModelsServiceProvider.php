@@ -9,6 +9,7 @@ use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\Payout;
+use App\Models\Report;
 use App\Models\User;
 use App\Models\UserAccess;
 use App\Observers\ArticleObserver;
@@ -18,6 +19,7 @@ use App\Observers\InventoryObserver;
 use App\Observers\OrderHistoryObserver;
 use App\Observers\OrderObserver;
 use App\Observers\PayoutObserver;
+use App\Observers\ReportObserver;
 use App\Observers\UserAccessObserver;
 use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
@@ -39,5 +41,6 @@ class EloquentModelsServiceProvider extends ServiceProvider
         Order::observe(OrderObserver::class);
         OrderHistory::observe(OrderHistoryObserver::class);
         Article::observe(ArticleObserver::class);
+        Report::observe(ReportObserver::class);
     }
 }

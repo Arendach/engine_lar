@@ -23,10 +23,10 @@ window.checkPrice = function () {
     $('#full_sum').val(sum - discount + delivery_cost)
 }
 
-$(document).on('keyup', '#delivery_cost, #discount', checkPrice)
+eventRegister('keyup', '#delivery_cost, #discount', checkPrice)
 
 
-$(document).on('submit', 'form#createOrder', function (event) {
+eventRegister('submit', 'form#createOrder', function (event) {
     event.preventDefault()
 
     let data = new FormData(this)
@@ -126,7 +126,7 @@ $(document).ready(function () {
     })
 })
 
-$(document).on('click', '.searched', function () {
+eventRegister('click', '.searched', function () {
     let id = $(this).data('id')
     let type = window.order.type
     $.post('/orders/get_product', {type, id}, function (response) {
@@ -136,7 +136,7 @@ $(document).on('click', '.searched', function () {
 })
 
 
-$(document).on('change', '#sms-template', function () {
+eventRegister('change', '#sms-template', function () {
     let order_id = window.order.id
     let template_id = $(this).val()
 
@@ -146,7 +146,7 @@ $(document).on('change', '#sms-template', function () {
 })
 
 
-$(document).on('change', '#order_professional_id', function () {
+eventRegister('change', '#order_professional_id', function () {
     if ($(this).val() === '') {
         $('#liable_id').attr('disabled', true)
         $('#liable_id option:selected').attr('selected', false)
@@ -156,7 +156,7 @@ $(document).on('change', '#order_professional_id', function () {
     }
 })
 
-$(document).on('click', '.deleteProduct', function (event) {
+eventRegister('click', '.deleteProduct', function (event) {
     event.preventDefault()
 
     const $row = $(this).parents('tr.product')
@@ -176,7 +176,7 @@ $(document).on('click', '.deleteProduct', function (event) {
     })
 })
 
-$(document).on('submit', '#updateProducts', function (event) {
+eventRegister('submit', '#updateProducts', function (event) {
     event.preventDefault()
 
     let storageValid = true

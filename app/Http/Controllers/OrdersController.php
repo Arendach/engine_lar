@@ -24,8 +24,6 @@ use App\Services\CategoryTree;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
-use SergeyNezbritskiy\PrivatBank\AuthorizedClient;
-use SergeyNezbritskiy\PrivatBank\Merchant as MerchantApi;
 use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Logistic;
@@ -336,24 +334,6 @@ class OrdersController extends Controller
         response(200, $response);
     }
 
-    public function section_new_post_logs()
-    {
-        $content = file_get_contents(ROOT . '/server/logs/new_post.txt');
-
-        $arr = explode(PHP_EOL, $content);
-
-        foreach ($arr as $i => $item) {
-            $arr[$i] = json_decode($item);
-        }
-
-        $data = [
-            'title' => 'Логи помилок Нової пошти',
-            'logs'  => $arr
-        ];
-
-        $this->view->display('orders.new_post_logs', $data);
-    }
-
     public function actionUploadFile(UploadFileRequest $request)
     {
         foreach ($request->file as $file) {
@@ -384,17 +364,6 @@ class OrdersController extends Controller
         R::trash($bean);
 
         response(200, DATA_SUCCESS_DELETED);
-    }
-
-    public function action_search_clients($post)
-    {
-        $str = '';
-
-        $result = Orders::search_clients($post);
-        foreach ($result as $item) {
-            $str .= '<div data-phone="' . $item->phone . '" data-value="' . $item->id . '" class="client">' . $item->name . '</div>';
-        }
-        echo $str;
     }
 
     public function actionSearchTransactions(int $id): View

@@ -28,6 +28,7 @@ mix
     .js('resources/coffee/pjax.coffee', 'public/js/pjax.js')
     .js('resources/coffee/Reinitiable.coffee', 'public/js/Reinitiable.js')
     .js('resources/scripts/orders.js', 'public/js/orders.js')
+    .js('resources/scripts/index.js', 'public/js/index.js')
 
 
     .less('resources/less/login.less', 'public/css/login.css')

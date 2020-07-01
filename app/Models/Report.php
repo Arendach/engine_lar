@@ -3,30 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class Report extends Model
 {
-    protected $table = 'reports';
-
-    /*    protected $fillable = [
-            'type',
-            'name_operation',
-            'created_at',
-            'updated_at',
-            'data',
-            'sum',
-            'comment',
-            'user_id',
-            'type',
-            'report_item_id'
-        ];*/
-
     protected $guarded = [];
-
     public $timestamps = true;
-
-    protected $dates = ['created_at', 'updated_at'];
 
     public $types = [
         'purchases'            => 'Закупка',
@@ -58,6 +39,25 @@ class Report extends Model
         'order'                => 'rgba(0, 255, 0, 0.1)',
         'order_prepayment'     => 'rgba(0, 255, 0, 0.1)',
         'un_reserve'           => 'rgba(0, 255, 0, 0.1)',
+    ];
+
+    private $profit = [
+        'moving_to',
+        'profits',
+        'order',
+        'order_prepayment',
+        'un_reserve',
+    ];
+
+    private $expenditures = [
+        'purchases',
+        'moving',
+        'shipping_costs',
+        'expenditures',
+        'purchases_prepayment',
+        'payout',
+        'to_reserve',
+        'purchase_payment',
     ];
 
     public function user()
@@ -109,5 +109,15 @@ class Report extends Model
     public function scopeMy(Builder $query): void
     {
         $query->where('user_id', user()->id);
+    }
+
+    public function isProfit(): bool
+    {
+        return in_array($this->type, $this->profit);
+    }
+
+    public function isExpenditures(): bool
+    {
+        return in_array($this->type, $this->expenditures);
     }
 }
