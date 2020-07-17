@@ -14,7 +14,7 @@ class CreatePurchasesTable extends Migration
             $table->tinyInteger('status')->default(0);
             $table->tinyInteger('type')->default(0);
             $table->decimal('sum', 10, 2)->default(0);
-            $table->text('comment');
+            $table->text('comment')->nullable();
             $table->integer('storage_id')->unsigned();
 
             $table->timestamps();

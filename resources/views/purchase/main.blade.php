@@ -74,15 +74,9 @@
                 <td>{{ $item->status_name }}</td>
                 <td>{{ $item->type_name }}</td>
                 <td class="action-2 centered">
-                    @if($item->is_closed)
-                        <button class="btn btn-danger btn-xs">
-                            <span class="fa fa-user-secret"></span>
-                        </button>
-                    @else
-                        <a href="@uri('purchase/update', ['id' => $item->id])" class="btn btn-primary btn-xs">
-                            <span class="fa fa-pencil"></span>
-                        </a>
-                    @endif
+                    <a href="@uri('purchase/update', ['id' => $item->id])" class="btn {{ $item->is_closed ? 'btn-success' : 'btn-primary' }} btn-xs">
+                        <span class="fa fa-pencil"></span>
+                    </a>
                     <a href="@uri('purchase/print', ['id' => $item->id])" class="btn btn-primary btn-xs"
                        target="_blank">
                         <i class="fa fa-print"></i>

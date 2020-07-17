@@ -76,11 +76,6 @@ class Report extends Model
         return $this->typeColor[$this->type] ?? '';
     }
 
-    public function getSumAttribute($sum): string
-    {
-        return number_format($sum);
-    }
-
     public function getMovingUserAttribute(): int
     {
         [$userId] = explode(':', $this->data);

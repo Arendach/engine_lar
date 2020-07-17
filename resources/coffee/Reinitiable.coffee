@@ -16,5 +16,5 @@ $(document).ready ->
         window.location.hash = event.target.hash
 
     if $.cookie('success') is 'true'
-        SuccessToastr('Виконано', 'Дані успішно збережені')
+        toastr.success('Дані успішно збережені', 'Виконано')
         $.cookie('success', null)

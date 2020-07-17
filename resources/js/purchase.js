@@ -8,11 +8,9 @@ function checkSum() {
 
         $(this).find('.sum').val(sum)
         allSum += +sum
-        console.log(allSum)
     })
 
-    console.log(allSum)
-    $('[name="sum"]').val(allSum)
+    $('#sum').val(allSum)
 }
 
 eventRegister('input', '.purchase-search-products', function () {

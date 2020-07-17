@@ -9,6 +9,7 @@ use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\Payout;
+use App\Models\PurchasePayment;
 use App\Models\Report;
 use App\Models\User;
 use App\Models\UserAccess;
@@ -19,6 +20,7 @@ use App\Observers\InventoryObserver;
 use App\Observers\OrderHistoryObserver;
 use App\Observers\OrderObserver;
 use App\Observers\PayoutObserver;
+use App\Observers\PurchasePaymentObserver;
 use App\Observers\ReportObserver;
 use App\Observers\UserAccessObserver;
 use App\Observers\UserObserver;
@@ -32,15 +34,16 @@ class EloquentModelsServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        Article::observe(ArticleObserver::class);
+        ClientGroup::observe(ClientGroupObserver::class);
+        Client::observe(ClientObserver::class);
+        Inventory::observe(InventoryObserver::class);
+        OrderHistory::observe(OrderHistoryObserver::class);
+        Order::observe(OrderObserver::class);
         Payout::observe(PayoutObserver::class);
+        PurchasePayment::observe(PurchasePaymentObserver::class);
+        Report::observe(ReportObserver::class);
         UserAccess::observe(UserAccessObserver::class);
         User::observe(UserObserver::class);
-        Client::observe(ClientObserver::class);
-        ClientGroup::observe(ClientGroupObserver::class);
-        Inventory::observe(InventoryObserver::class);
-        Order::observe(OrderObserver::class);
-        OrderHistory::observe(OrderHistoryObserver::class);
-        Article::observe(ArticleObserver::class);
-        Report::observe(ReportObserver::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Setting;
 use Cache;
+use Artisan;
 
 class SettingService
 {
@@ -56,5 +57,7 @@ class SettingService
             'key'   => $key,
             'value' => $value
         ]);
+
+        Artisan::call('cache:clear');
     }
 }

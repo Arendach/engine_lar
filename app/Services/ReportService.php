@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Purchase;
+use App\Models\PurchasePayment;
 use App\Models\Report;
 use App\Models\ReportItem;
 
@@ -89,6 +91,25 @@ class ReportService
             'data' => $dataString,
             'type' => 'expenditures'
         ]));
+
+        $this->reset($report->id);
+    }
+
+    public function createPurchasePayment(PurchasePayment $purchasePayment): void
+    {
+        $manufacturer = $purchasePayment->purchase->manufacturer->name ?? '';
+        $storage = $purchasePayment->purchase->storage->name ?? '';
+
+        $nameOperation = "Проплата закупки «<b>{$manufacturer}</b>» на склад  «<b>{$storage}</b>»";
+
+        $report = Report::create([
+            'name_operation' => $nameOperation,
+            'data'           => $purchasePayment->purchase->id ?? null,
+            'sum'            => $purchasePayment->sum * $purchasePayment->course,
+            'user_id'        => user()->id,
+            'type'           => 'purchase_payment',
+            'comment'        => null,
+        ]);
 
         $this->reset($report->id);
     }

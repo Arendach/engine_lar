@@ -41,6 +41,10 @@ class SuccessHandler
         $.cookie('success', yes)
         if (isUsePjax) then PjaxReload() else window.location.reload()
 
+    redirect: ->
+        $.cookie('success', 'true')
+        window.location.href = @redirectTo
+
 
     reset: ->
         $ ':input', @form
@@ -63,9 +67,9 @@ class SuccessHandler
             @reset()
 
         if (@after is 'redirect')
-            window.location.href = @redirectTo
+            @redirect()
 
-        SuccessToastr(@title, @message)
+        toastr.success(@message, @title)
 
     applySweetalert: () ->
         swal.fire

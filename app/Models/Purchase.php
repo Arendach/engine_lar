@@ -59,7 +59,7 @@ class Purchase extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'purchase_product')->withPivot(['amount', 'price']);
+        return $this->belongsToMany(Product::class, 'purchase_product')->withPivot(['id', 'amount', 'price']);
     }
 
     public function payments()
@@ -80,5 +80,22 @@ class Purchase extends Model
     public function getIsClosedAttribute(): bool
     {
         return $this->status == 2 && $this->type == 1;
+    }
+
+    public function getUrlAttribute(): string
+    {
+        return uri('purchase/update', ['id' => $this->id]);
+    }
+
+    public function getPayedAttribute(): float
+    {
+        return $this->payments->sum('sum');
+    }
+
+    public function getSum(): float
+    {
+        return $this->products->sum(function (Product $product) {
+            return $product->pivot->amount * $product->pivot->price;
+        });
     }
 }

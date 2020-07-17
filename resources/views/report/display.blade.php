@@ -58,10 +58,10 @@
                 <td><b>Коментар</b></td>
                 <td class="action-2"><b>Дії</b></td>
             </tr>
-            @foreach($report->items as $report)
+            @foreach($report->items->sortByDesc('id') as $report)
                 <tr style="background-color: {{ $report->type_color }}" data-id="{{ $report->id }}">
                     <td>{{ $report->day }}</td>
-                    <td>{{ $report->name_operation }}</td>
+                    <td>{!! $report->name_operation !!}</td>
                     <td>{{ $report->type_name }}</td>
                     <td>{{ $report->sum }} грн</td>
                     <td>{{ $report->comment }}</td>

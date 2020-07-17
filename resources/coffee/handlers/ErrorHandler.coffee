@@ -67,8 +67,11 @@ class ErrorHandler
         for name, error of @errors
             if Array.isArray error then error = error.join '<br>'
 
+            name = @getValidName(name)
+            nameWithBrackets = @getNameWithBrackets(name)
+
             $ @form
-                .find "[name='#{name}']"
+                .find "[name='#{nameWithBrackets}']"
                 .parents '.form-group'
                 .addClass 'has-error'
 
@@ -81,10 +84,12 @@ class ErrorHandler
     eventListeners: ->
         $ @form
             .find '[name]'
-            .on 'keyup change', (event) ->
+            .on 'keyup change', (event) =>
                 return if event.key is 'Enter'
 
-                name = $(@).attr 'name'
+                name = $(event.currentTarget).attr('name')
+                name = @getNameWithBrackets(name)
+
                 $ "##{name}-error-block"
                     .remove()
                 $ @
@@ -127,5 +132,19 @@ class ErrorHandler
             title: @title
             text: @message
             icon: 'success'
+
+    getValidName: (name) ->
+        if name.match(/\./)
+            components = name.split('.')
+            result = components[0] + '['
+            components.shift()
+            result += components.join('][')
+            result += ']'
+        else
+            name
+
+    getNameWithBrackets: (name) ->
+        name = name.replaceAll(/\[/, '\\[')
+        name = name.replaceAll(/\]/, '\\]')
 
 module.exports = ErrorHandler

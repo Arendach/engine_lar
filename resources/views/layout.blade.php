@@ -29,6 +29,7 @@
 
     <script src="{{ asset('js/pjax.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/forms.js') }}"></script>
 
 </head>
 <body>

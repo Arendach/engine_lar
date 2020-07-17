@@ -4,17 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Filters\ProductSearchFilter;
 use App\Filters\PurchaseFilter;
+use App\Http\Requests\Purchase\CreatePaymentRequest;
+use App\Http\Requests\Purchase\CreatePurchaseRequest;
+use App\Http\Requests\Purchase\UpdatePurchaseRequest;
+use App\Http\Requests\Purchase\UpdatePurchaseTypeRequest;
 use App\Models\Manufacturer;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Storage;
 use App\Services\CategoryTree;
-use Illuminate\Database\Eloquent\Builder;
+use App\Services\PurchaseService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class PurchaseController extends Controller
 {
     public $access = 'purchase';
+
+    private $service;
+
+    public function __construct()
+    {
+        $this->service = app(PurchaseService::class);
+    }
 
     public function sectionMain(PurchaseFilter $filter)
     {
@@ -64,47 +77,30 @@ class PurchaseController extends Controller
     }
 
 
-    public function actionCreate(Request $request)
+    public function actionCreate(CreatePurchaseRequest $request): JsonResponse
     {
-//        if (!isset($post->products) || my_count($post->products) == 0)
-//            response(400, 'Виберіть хоча-б один товар!');
-//
-//        if (!isset($post->manufacturer_id))
-//            response(400, 'Виберіть виробника!');
-//
-//        if (!isset($post->storage_id))
-//            response(400, 'Виберіть склад!');
+        $purchase = $this->service->create($request->validated());
 
-        Purchase::create($request->except('products'))
-            ->products()
-            ->attach($request->products);
+        return response()->json([
+            'url' => $purchase->url
+        ]);
     }
 
-    public function actionSearchProducts(Request $request, ProductSearchFilter $filter)
+    public function actionSearchProducts(ProductSearchFilter $filter)
     {
         $products = Product::with('storages')->filter($filter)->get();
 
         return view('purchase.products', compact('products'));
     }
 
-    public function action_update($post)
+    public function actionUpdate(UpdatePurchaseRequest $request): void
     {
-        if (empty($post->products)) response(400, 'Виберіть хоча-б один товар!');
-
-        $comment = isset($post->comment) ? $post->comment : '';
-
-        Purchases::updateProducts($post->id, $post->products, $post->sum, $comment);
-
-        response(200, DATA_SUCCESS_UPDATED);
+        $this->service->update($request->get('id'), $request->validated());
     }
 
-    public function action_update_type($post)
+    public function actionUpdateType(UpdatePurchaseTypeRequest $request): void
     {
-        if ($post->type == 0) response(200, DATA_SUCCESS_UPDATED);
-
-        Purchases::close($post->id);
-
-        response(200, ['action' => 'redirect', 'uri' => uri('purchases'), 'message' => DATA_SUCCESS_UPDATED]);
+        $this->service->updateType($request->get('id'));
     }
 
     public function actionGetProduct(Request $request)
@@ -115,45 +111,15 @@ class PurchaseController extends Controller
         return view('purchase.get_product', compact('product', 'storageId'));
     }
 
-    public function action_payment_create_form($post)
+    public function actionCreatePaymentForm(Request $request): View
     {
-        $payments = Purchases::getPayments($post->id);
+        $purchase = Purchase::findOrFail($request->get('id'));
 
-        $payed = 0;
-        foreach ($payments as $item) $payed += $item->sum;
-
-
-        $sum = Purchases::getOne($post->id);
-
-        $sum = $sum->sum;
-
-        $data = [
-            'title' => 'Нова проплата',
-            'sum'   => $sum,
-            'payed' => $payed,
-            'id'    => $post->id
-        ];
-
-        $this->view->display('purchases.forms.create_payment', $data);
+        return view('purchase.create_payment_form', compact('purchase'));
     }
 
-    public function action_payment_create($post)
+    public function actionCreatePayment(CreatePaymentRequest $request)
     {
-        $payments = Purchases::getPayments($post->id);
-
-        $payed = 0;
-        foreach ($payments as $item) $payed += $item->sum;
-
-        $sum = Purchases::getOne($post->id);
-
-        $sum = $sum->sum;
-
-        if (($sum - $payed) - $post->sum < 0) response(400, 'Сума проплати перевищує суму всієї закупки!');
-
-        Purchases::createPayment($post, ($sum - $payed) - $post->sum);
-
-        Reports::createPurchasePayment($post);
-
-        response(200, DATA_SUCCESS_CREATED);
+        $this->service->createPayment($request->get('purchase_id'), $request->validated());
     }
 }

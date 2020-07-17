@@ -35,4 +35,9 @@ class ProductService
     {
         $product->withHistory()->addToOrder($item);
     }
+
+    public function purchased(Product $product, int $storageId): void
+    {
+        $product->storage($storageId)->pivot->increment('count', $product->pivot->amount);
+    }
 }

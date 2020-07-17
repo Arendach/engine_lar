@@ -68,4 +68,16 @@ class ProductHistoryService
     {
         return Storage::find($id)->name ?? '';
     }
+
+    public function purchased(int $storageId): void
+    {
+        $data = [
+            'storage_id'   => $this->product->pivot->storage_id,
+            'storage_name' => $this->product->storage($storageId)->name,
+            'amount'       => $this->product->pivot->amount,
+            'price'        => $this->product->pivot->price
+        ];
+
+        $this->save($data, 'purchases');
+    }
 }
