@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Categories\UniversalRequest;
+use App\Http\Requests\Categories\CreateCategoryRequest;
+use App\Http\Requests\Categories\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Services\CategoryTree;
 use Illuminate\Http\Request;
@@ -37,16 +38,16 @@ class CategoryController extends Controller
         return view('category.update_form', $data);
     }
 
-    public function actionCreate(UniversalRequest $request, CategoryTree $categoryTree)
+    public function actionCreate(CreateCategoryRequest $request, CategoryTree $categoryTree)
     {
-        Category::create($request->all());
+        Category::create($request->validated());
 
         $categoryTree->forgetCache();
     }
 
-    public function actionUpdate(UniversalRequest $request, CategoryTree $categoryTree)
+    public function actionUpdate(UpdateCategoryRequest $request, CategoryTree $categoryTree)
     {
-        Category::findOrFail($request->id)->update($request->all());
+        Category::findOrFail($request->get('id'))->update($request->validated());
 
         $categoryTree->forgetCache();
     }

@@ -20,7 +20,7 @@
         <div class="form-group">
             <label>Категорія</label>
             <select name="parent_id" class="form-control input-sm">
-                <option value="0">Коренева</option>
+                <option value="">Коренева</option>
                 {!! $categories !!}
             </select>
         </div>
