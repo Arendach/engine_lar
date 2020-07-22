@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Inventory\CreateInventoryRequest;
 use App\Models\Inventory;
-use App\Models\InventoryProduct;
 use App\Models\Manufacturer;
 use App\Models\Product;
-use App\Models\ProductStorage;
 use App\Models\Storage;
 use App\Services\CategoryTree;
+use App\Services\InventoryService;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 
 class InventoryController extends Controller
 {
     public $access = 'inventory';
+
+    private $inventoryService;
+
+    public function __construct(InventoryService $inventoryService)
+    {
+        $this->inventoryService = $inventoryService;
+    }
 
     public function sectionMain()
     {
@@ -44,51 +50,27 @@ class InventoryController extends Controller
 
     public function actionForm(int $manufacturer_id, int $storage_id, int $category_id = null)
     {
-        $builder = Product::with('storages', 'storage_list')
+        $products = Product::with('storages', 'storage_list')
             ->where('manufacturer_id', $manufacturer_id)
             ->whereHas('storage_list', function (Builder $builder) use ($storage_id) {
                 $builder->where('storage_id', $storage_id);
-            });
-
-        if (!is_null($category_id) && $category_id != 0) {
-            $builder->where('category_id', $category_id);
-        }
-
-        $products = $builder->get();
+            })
+            ->when(!is_null($category_id) && $category_id != 0, function (Builder $builder) use ($category_id) {
+                $builder->where('category_id', $category_id);
+            })
+            ->get();
 
         return view('inventory.form', compact('products'));
     }
 
-    public function actionCreate(Request $request)
+    public function actionCreate(CreateInventoryRequest $request)
     {
-        $inventory = Inventory::create($request->only('comment', 'manufacturer_id', 'storage_id'));
+        $data = $request->validated();
 
-        foreach ($request->products as $id => $amount) {
-            if (is_null($amount) || $amount == 0) {
-                continue;
-            }
+        $products = $data['products'];
 
-            $pts = ProductStorage::filter($request->storage_id, $id);
-            if (!$pts->count()) {
-                ProductStorage::create([
-                    'storage_id' => $request->storage_id,
-                    'product_id' => $id,
-                    'count'      => 0
-                ]);
-            }
-            $pts = $pts->first();
+        unset($data['products']);
 
-            $oldCount = $pts->count;
-
-            $pts->count += $amount;
-            $pts->save();
-
-            InventoryProduct::create([
-                'inventory_id'    => $inventory->id,
-                'product_id'      => $id,
-                'amount'          => $amount,
-                'previous_amount' => $oldCount
-            ]);
-        }
+        $this->inventoryService->createInventory($data, $products);
     }
 }

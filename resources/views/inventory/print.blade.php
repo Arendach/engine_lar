@@ -47,7 +47,7 @@
         <th>Коментар</th>
     </tr>
     <tr>
-        <td>{{ $inventory->created_date_human  }}</td>
+        <td>{{ $inventory->human('created_at', true)  }}</td>
         <td>{{ $inventory->manufacturer->name }}</td>
         <td>{{ $inventory->storage->name }}</td>
         <td>{{ $inventory->user->login }}</td>
@@ -67,10 +67,10 @@
     </tr>
     @foreach($inventory->products as $product)
         <tr>
-            <td><a href="@uri('product/update', ['id' => $product->id])">{{ $product->name }}</a></td>
-            <td>{{ $product->pivot->old_count }}</td>
+            <td><a href="{{ $product->url }}">{{ $product->name }}</a></td>
+            <td>{{ $product->pivot->previous_amount }}</td>
             <td>{{ $product->pivot->amount > 0 ? '+' : '-' }}{{ $product->pivot->amount }}</td>
-            <td>{{ $product->pivot->amount + $product->pivot->old_count }}</td>
+            <td>{{ $product->pivot->amount + $product->pivot->previous_amount }}</td>
         </tr>
     @endforeach
 </table>

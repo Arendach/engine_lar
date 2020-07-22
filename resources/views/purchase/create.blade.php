@@ -44,7 +44,7 @@
 
             <div class="form-group">
                 <label>Сума</label>
-                <input class="form-control" name="sum" data-inspect="decimal">
+                <input class="form-control" id="sum" data-inspect="decimal">
             </div>
 
             <div class="form-group">

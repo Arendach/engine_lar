@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class InventoryProduct extends Pivot
 {
     protected $table = 'inventory_product';
-
     protected $guarded = [];
-
     public $timestamps = false;
 }

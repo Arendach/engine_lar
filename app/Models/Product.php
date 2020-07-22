@@ -111,6 +111,11 @@ class Product extends Model
         return trim($level2);
     }
 
+    public function getUrlAttribute(): string
+    {
+        return uri('product/update', ['id' => $this->id]);
+    }
+
     public function withHistory(): ProductHistoryService
     {
         return app(ProductHistoryService::class)->setProduct($this);

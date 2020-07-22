@@ -7,14 +7,18 @@
         <td><b>На складі</b></td>
         <td style="width: 250px"><b>+/-</b></td>
     </tr>
-    @foreach($products as $item)
+    @foreach($products as $product)
+        @php /** @var \App\Models\Product $product */ @endphp
         <tr>
-            <td>{{ $item->id }}</td>
-            <td><a href="@uri('ProductController@sectionUpdate', ['id' => $item->id])">{{ $item->name }}</a></td>
-            <td>{{ $item->articul }}</td>
-            <td>{{ $item->model }}</td>
-            <td>{{ $item->storage_list->first()->count }}</td>
-            <td><input style="width: 100%" name="products[{{ $item->id }}]" data-inspect="integer"></td>
+            <td>{{ $product->id }}</td>
+            <td><a href="{{ $product->url }}">{{ $product->name }}</a></td>
+            <td>{{ $product->article }}</td>
+            <td>{{ $product->model }}</td>
+            <td>{{ $product->storage(request('storage_id'))->pivot->count }}</td>
+            <td>
+                <input type="hidden" name="products[{{ $product->id }}][product_id]" value="{{ $product->id }}">
+                <input style="width: 100%" name="products[{{ $product->id }}][amount]" data-inspect="integer">
+            </td>
         </tr>
     @endforeach
 </table>
