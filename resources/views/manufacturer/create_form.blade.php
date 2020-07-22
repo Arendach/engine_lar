@@ -3,10 +3,19 @@
 @section('title', 'Додати виробника')
 
 @section('content')
-    <form data-type="ajax" action="@uri('ManufacturerController@actionCreate')">
+    <form data-type="ajax" action="@uri('manufacturer/create')" data-after="reload">
         <div class="form-group">
-            <label>Назва</label>
-            <input name="name" class="form-control input-sm">
+            <label>
+                <img src="{{ asset('icons/uk.ico') }}" alt=""> Назва
+            </label>
+            <input name="name_uk" class="form-control input-sm">
+        </div>
+
+        <div class="form-group">
+            <label>
+                <img src="{{ asset('icons/ru.ico') }}" alt=""> Назва
+            </label>
+            <input name="name_ru" class="form-control input-sm">
         </div>
 
         <div class="form-group">
@@ -16,7 +25,7 @@
 
         <div class="form-group">
             <label>Телефон</label>
-            <input name="phone" class="form-control input-sm">
+            <input name="phone" class="form-control input-sm" data-type="phone">
         </div>
 
         <div class="form-group">
@@ -25,25 +34,14 @@
         </div>
 
         <div class="form-group">
-            <label>Пріоритет</label>
-            <input name="sort" class="form-control input-sm">
-        </div>
-
-        <div class="form-group">
             <label>Фото</label>
-            @include('tools.manager', ['multiple' => true, 'name' => 'image_id', 'return' => 'id'])
+            @include('tools.manager', ['multiple' => false, 'name' => 'image', 'return' => 'id'])
         </div>
 
         <div class="form-group">
             <label>Додаткова інформація</label>
-            <textarea name="info"></textarea>
+            <textarea name="info" data-type="ckeditor"></textarea>
         </div>
-
-        <script>
-            CKEDITOR.replace('info');
-
-            $('#phone').inputmask('999-999-99-99');
-        </script>
 
         <div class="form-group">
             <button class="btn btn-primary btn-sm">Зберегти</button>

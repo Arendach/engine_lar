@@ -18,3 +18,5 @@ $(document).ready ->
     if $.cookie('success') is 'true'
         toastr.success('Дані успішно збережені', 'Виконано')
         $.cookie('success', null)
+
+    Inputmask('999-999-99-99').mask('[data-type="phone"]')

@@ -15,6 +15,7 @@ class CreateManufacturersTable extends Migration
             $table->string('phone', 256)->nullable();
             $table->string('address', 256)->nullable();
             $table->text('info')->nullable();
+            $table->string('image', 256)->nullable();
         });
     }
 

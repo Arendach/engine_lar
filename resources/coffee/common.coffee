@@ -176,5 +176,7 @@ $(document).on 'formLoaded', ->
     $('[data-type="ckeditor"]').each ->
         CKEDITOR.replace($(@).attr('name'))
 
+    Inputmask('999-999-99-99').mask('[data-type="phone"]')
+
 
 require('./editable.coffee')
