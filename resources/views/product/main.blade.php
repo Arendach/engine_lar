@@ -161,3 +161,7 @@
         <h4 class="centered">Тут пусто :(</h4>
     @endif
 @stop
+
+@push('scripts')
+    <script src="{{ asset('js/controllers/product.js') }}"></script>
+@endpush

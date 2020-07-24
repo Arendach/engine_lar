@@ -64,14 +64,14 @@ $(document).on 'click', '.get_product_to_combine', (event) ->
             $('.combine_products_list').prepend answer
             $(@).remove()
             change_sum()
-    
+
     
 filter_products = ->
     data = {}
     $('[data-action=search]').each ->
         data[$(@).data 'column'] = $(@).val()
     
-    GET.setObject(data).unset('page').unsetEmpty().go()
+    new UrlGenerator().appends(data).unset('page').unsetEmpty().go()
 
     
 $(document).on 'click', '#search',  filter_products

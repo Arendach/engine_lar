@@ -19,10 +19,12 @@ class InventoryService
 
             $pts = $this->getPts($data['storage_id'], $product['product_id']);
 
+            $old = $pts->count;
+
             $pts->increment('count', $product['amount']);
 
             $inventory->products()->attach($product['product_id'], array_merge($product, [
-                'previous_amount' => $pts->getOriginal('count')
+                'previous_amount' => $old
             ]));
         }
 

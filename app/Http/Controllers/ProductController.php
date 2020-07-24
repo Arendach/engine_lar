@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ProductFilter;
 use App\Http\Requests\Product\UniversalAssetsRequest;
 use App\Http\Requests\Products\UpdateInfoRequest;
 use App\Http\Requests\Products\UpdateStorageRequest;
@@ -9,29 +10,24 @@ use App\Models\Manufacturer;
 use App\Models\Product;
 use App\Models\ProductAsset;
 use App\Models\ProductImage;
-use App\Models\ProductStorage;
 use App\Models\Storage;
 use App\Models\StorageId;
 use App\Services\CategoryTree;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public $access = 'products';
 
-    public function sectionMain(CategoryTree $categoryTree, bool $archive = false)
+    public function sectionMain(ProductFilter $filter, CategoryTree $categoryTree, bool $archive = false)
     {
-        $products = Product::with([
-            'category',
-            'manufacturer',
-            'storage_list'
-        ]);
-
-        if ($archive) {
-            $products = $products->onlyTrashed()->paginate(25);
-        } else {
-            $products = $products->paginate(25);
-        }
+        $products = Product::with(['category', 'manufacturer', 'storage_list'])
+            ->when($archive, function (Builder $builder) {
+                $builder->onlyTrashed();
+            })
+            ->filter($filter)
+            ->paginate(25);
 
         $productsSum = $products->sum(function (Product $item) {
             return $item->procurement_costs * $item->storage_list->sum('count');
