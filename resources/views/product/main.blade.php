@@ -1,3 +1,5 @@
+@php /** @var \App\Models\Product $product */ @endphp
+
 @extends('layout')
 
 @section('title', 'Каталог :: Товари')
@@ -34,134 +36,142 @@
         </div>
     </div>
 
-    @if($products->count() > 0)
-        <div style="margin-bottom: 15px; border: 1px solid #ccc;padding: 10px">
-            Сума товарів: <span class="text-primary">{{ number_format($productsSum) }}$</span>
-        </div>
+    <div style="margin-bottom: 15px; border: 1px solid #ccc;padding: 10px">
+        Сума товарів: <span class="text-primary">{{ number_format($productsSum) }}$</span>
+    </div>
 
-        <table class="table table-bordered products-table" cellspacing="0" width="100%">
-            <tr>
-                <th>Назва</th>
-                <th>Облік</th>
-                <th>Тип</th>
-                <th>Категорія</th>
-                <th>Виробник</th>
-                <th>Артикул</th>
-                <th>Ід.складу</th>
-                <th>Ціна</th>
-                <th>На доставці</th>
-                <th>На складі</th>
-                <th>Дія</th>
-            </tr>
-            <tr>
-                <td>
-                    <input class="form-control input-sm" data-action="search" data-column="name"
-                           value="@request('name')">
-                </td>
-                <td>
-                    <select class="form-control input-sm" data-action="search" data-column="is_accounted">
-                        <option value=""></option>
-                        <option @selected('is_accounted', 1) value="1">Так</option>
-                        <option @selected('is_accounted', 0) value="0">Ні</option>
-                    </select>
-                </td>
-                <td>
-                    <select class="form-control input-sm" data-action="search" data-column="is_combine">
-                        <option value=""></option>
-                        <option @selected('is_combine', 1) value="1">Комбіновані</option>
-                        <option @selected('is_combine', 0) value="0">Одиничні</option>
-                    </select>
-                </td>
-                <td>
-                    <select data-action="search" data-column="category_id" class="form-control input-sm">
-                        @if(request()->has('category_id'))
-                            <option value="@request('category_id')" class="none">{{ $category_name ?? '' }}</option>
-                        @endif
-                        <option value=""></option>
-                        {!!  $categories !!}
-                    </select>
-                </td>
-                <td>
-                    <select class="form-control input-sm" data-action="search" data-column="manufacturer_id">
-                        <option value=""></option>
-                        @foreach($manufacturers as $item)
-                            <option value="{{ $item->id }}" @selected('manufacturer_id', $item->id)>
-                                {{ $item->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </td>
-                <td>
-                    <input class="form-control input-sm" data-action="search" data-column="article"
-                           value="@request('article')">
-                </td>
-                <td>
-                    <input class="form-control input-sm" data-action="search" data-column="id_storage"
-                           value="@request('id_storage')">
-                </td>
-                <td>
-                    <input class="form-control input-sm" data-action="search" data-column="price"
-                           value="@request('price')">
-                </td>
-                <td></td>
-                <td></td>
-                <td>
-                    <button class="btn btn-primary btn-xs" id="search">
-                        <span class="fa fa-search"></span>
-                    </button>
-                </td>
-            </tr>
-            @foreach ($products as $item)
+    <table class="table table-bordered products-table" cellspacing="0" width="100%">
+        <tr>
+            <th>Назва</th>
+            <th>Облік</th>
+            <th>Тип</th>
+            <th>Категорія</th>
+            <th>Виробник</th>
+            <th>Артикул</th>
+            <th>Ід.складу</th>
+            <th>Ціна</th>
+            <th>На доставці</th>
+            <th>На складі</th>
+            <th>Дія</th>
+        </tr>
+        <tr>
+            <td>
+                <input class="form-control input-sm" data-action="search" data-column="name"
+                       value="@request('name')">
+            </td>
+            <td>
+                <select class="form-control input-sm" data-action="search" data-column="is_accounted">
+                    <option value=""></option>
+                    <option @selected('is_accounted', '1') value="1">Так</option>
+                    <option @selected('is_accounted', '0') value="0">Ні</option>
+                </select>
+            </td>
+            <td>
+                <select class="form-control input-sm" data-action="search" data-column="is_combine">
+                    <option value=""></option>
+                    <option @selected('is_combine', '1') value="1">Комбіновані</option>
+                    <option @selected('is_combine', '0') value="0">Одиничні</option>
+                </select>
+            </td>
+            <td>
+                <select data-action="search" data-column="category_id" class="form-control input-sm">
+                    @if(request()->has('category_id'))
+                        <option value="@request('category_id')" class="none">
+                            {{ \App\Models\Category::find(request('category_id'))->name ?? '' }}
+                        </option>
+                    @endif
+                    <option value=""></option>
+                    {!!  $categories !!}
+                </select>
+            </td>
+            <td>
+                <select class="form-control input-sm" data-action="search" data-column="manufacturer_id">
+                    <option value=""></option>
+                    @foreach($manufacturers as $item)
+                        <option value="{{ $item->id }}" @selected('manufacturer_id', (string)$item->id)>
+                            {{ $item->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </td>
+            <td>
+                <input class="form-control input-sm" data-action="search" data-column="article"
+                       value="@request('article')">
+            </td>
+            <td>
+                <input class="form-control input-sm" data-action="search" data-column="id_storage"
+                       value="@request('id_storage')">
+            </td>
+            <td>
+                <input class="form-control input-sm" data-action="search" data-column="price"
+                       value="@request('price')">
+            </td>
+            <td></td>
+            <td></td>
+            <td>
+                <button class="btn btn-primary btn-xs" id="search">
+                    <span class="fa fa-search"></span>
+                </button>
+            </td>
+        </tr>
+        @if($products->count() > 0)
+
+            @foreach ($products as $product)
                 <tr>
                     <td>
-                        <span data-value="{{ $item->id }}" class="checkbox product_item"> {!! $item->editable('name_uk') !!}</span>
+                        <span data-value="{{ $product->id }}"
+                              class="checkbox product_item"> {!! $product->editable('name_uk') !!}</span>
                     </td>
-                    <td>{{ $item->is_combine ? 'Ні' : ($item->is_accounted ? 'Так' : 'Ні') }}</td>
-                    <td>{{ $item->is_combine ? 'Так' : 'Ні' }}</td>
-                    <td>{{ $item->category->name ?? '' }}</td>
-                    <td>{{ $item->manufacturer->name ?? '' }}</td>
-                    <td>{!! $item->editable('article') !!}</td>
-                    <td>{!! $item->editable('id_storage') !!}</td>
-                    <td>{!! $item->editable('price') !!}</td>
+                    <td>{{ $product->is_combine ? 'Ні' : ($product->is_accounted ? 'Так' : 'Ні') }}</td>
+                    <td>{{ $product->is_combine ? 'Так' : 'Ні' }}</td>
+                    <td>{{ $product->category->name ?? '' }}</td>
+                    <td>{{ $product->manufacturer->name ?? '' }}</td>
+                    <td>{!! $product->editable('article') !!}</td>
+                    <td>{!! $product->editable('id_storage') !!}</td>
+                    <td>{!! $product->editable('price') !!}</td>
                     <td>0</td>
-                    {{--                        <td>{{ !empty($item->delivery_count) ? $item->delivery_count : '0' }}</td>--}}
+                    {{--                        <td>{{ !empty($product->delivery_count) ? $product->delivery_count : '0' }}</td>--}}
                     <td>
-                        @if($item->is_accounted)
+                        @if($product->is_accounted)
                             <div class="relative product-pts-more pointer">
                                 <div class="none product-pts-more-inner">
                                     <table>
-                                        @foreach($item->storage_list as $storage)
+                                        @foreach($product->storage_list as $storage)
                                             <tr>
-                                                <td class="text-primary">{{ $storage->storage->name }}</td>
+                                                <td class="text-primary">{{ $storage->getStorageName() }}</td>
                                                 <td class="text-success"><b>{{ $storage->count }}</b></td>
                                             </tr>
                                         @endforeach
                                     </table>
                                 </div>
-                                {{ $item->storage_list->sum('count') }}
+                                {{ $product->storage_list->sum('count') }}
                             </div>
                         @endif
                     </td>
                     <td class="action-2">
-                        <a class="btn btn-primary btn-xs" href="@uri('product/update', ['id' => $item->id])">
+                        <a class="btn btn-primary btn-xs" href="@uri('product/update', ['id' => $product->id])">
                             <span class="fa fa-pencil"></span>
                         </a>
-                        <a class="btn btn-primary btn-xs" href="@uri('product/history', ['id' => $item->id])">
+                        <a class="btn btn-primary btn-xs" href="@uri('product/history', ['id' => $product->id])">
                             <span class="glyphicon glyphicon-time"></span>
                         </a>
                     </td>
                 </tr>
             @endforeach
-        </table>
+        @else
+            <tr>
+                <td colspan="11">
+                    <h4 class="centered">Тут пусто :(</h4>
+                </td>
+            </tr>
+        @endif
+    </table>
 
-        <div class="centered">
-            {{ $products->links() }}
-        </div>
-    @else
-        <h4 class="centered">Тут пусто :(</h4>
-    @endif
+    <div class="centered">
+        {{ $products->links() }}
+    </div>
 @stop
 
-@push('scripts')
-    <script src="{{ asset('js/controllers/product.js') }}"></script>
-@endpush
+@pushonce('js:products')
+<script src="/js/products.js"></script>
+@endpushonce

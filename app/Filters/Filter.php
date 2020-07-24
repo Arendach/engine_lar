@@ -17,6 +17,10 @@ class Filter
      */
     protected $builder;
 
+    public $simple = [];
+
+    public $like = [];
+
     /**
      * Filter constructor.
      */
@@ -33,17 +37,32 @@ class Filter
     {
         $this->builder = $builder;
 
-        foreach ($this->request->toArray() as $field => $value)
-            if (method_exists($this, $field))
+        foreach ($this->request->toArray() as $field => $value) {
+            if (method_exists($this, $field)) {
                 $this->{$field}($value);
+            }
+        }
 
 
         foreach (get_class_methods($this) as $method) {
             if (preg_match('/^default_/', $method)) {
                 $field = str_replace('default_', '', $method);
 
-                if (!$this->request->has($field))
+                if (!$this->request->has($field)){
                     $this->{$method}();
+                }
+            }
+        }
+
+        foreach ($this->simple as $item) {
+            if ($this->request->get($item)) {
+                $this->builder->where($item, $this->request->get($item));
+            }
+        }
+
+        foreach ($this->like as $item) {
+            if ($this->request->get($item)) {
+                $this->builder->where($item, 'like', "%{$this->request->get($item)}%");
             }
         }
 

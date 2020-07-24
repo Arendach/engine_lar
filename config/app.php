@@ -169,6 +169,7 @@ return [
          */
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Barryvdh\Elfinder\ElfinderServiceProvider::class,
+        Appstract\BladeDirectives\BladeDirectivesServiceProvider::class,
 
         /*
          * Application Service Providers...

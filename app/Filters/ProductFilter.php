@@ -6,6 +6,18 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ProductFilter extends Filter
 {
+    public $simple = [
+        'manufacturer_id',
+        'is_accounted',
+        'is_combine',
+        'article',
+        'id_storage'
+    ];
+
+    public $like = [
+        'price'
+    ];
+
     public function name($value): void
     {
         $this->builder->where(function (Builder $builder) use ($value) {
@@ -16,11 +28,6 @@ class ProductFilter extends Filter
                 ->orWhere('service_code', 'like', "%$value%")
                 ->orWhere('article', 'like', "%$value%");
         });
-    }
-
-    public function manufacturer_id($value): void
-    {
-        $this->builder->where('manufacturer_id', $value);
     }
 
     public function storage_id($value): void

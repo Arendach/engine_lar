@@ -65,26 +65,6 @@ $(document).on 'click', '.get_product_to_combine', (event) ->
             $(@).remove()
             change_sum()
 
-    
-filter_products = ->
-    data = {}
-    $('[data-action=search]').each ->
-        data[$(@).data 'column'] = $(@).val()
-    
-    new UrlGenerator().appends(data).unset('page').unsetEmpty().go()
-
-    
-$(document).on 'click', '#search',  filter_products
-
-
-$(document).on 'keyup', '[data-action=search]', (event) ->
-    if event.which == 13
-        filter_products()
-
-
-$(document).on 'change', 'select[data-action=search]', filter_products
-
-
 $(document).on 'click', '.sort', (event) ->
     event.preventDefault()
     GET.set('order_field', $(@).data('field')).set('order_by', $(@).data('by')).go()

@@ -34,4 +34,13 @@ class ProductStorage extends Model
     {
         $builder->where('storage_id', $storage_id)->where('product_id', $product_id);
     }
+
+    public function getStorageName(): ?string
+    {
+        try {
+            return $this->storage->name;
+        } catch (\Exception $exception) {
+            return null;
+        }
+    }
 }

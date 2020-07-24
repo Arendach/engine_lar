@@ -174,7 +174,7 @@
                         <script src="{{ asset("js/controllers/{$controller}.js?").rand32() }}"></script>
                     @endisset
 
-                    @stack('scripts')
+                    @stack('js')
 
                     <script src="{{ asset('js/Reinitiable.js?'). rand32()  }}"></script>
 
