@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Category;
 use App\Models\Product;
 
 class ProductService
@@ -39,5 +40,22 @@ class ProductService
     public function purchased(Product $product, int $storageId): void
     {
         $product->storage($storageId)->pivot->increment('count', $product->pivot->amount);
+    }
+
+    public function generateServiceCode(int $categoryId): int
+    {
+        $category = Category::findOrFail($categoryId);
+        $product = Product::where('category_id', $categoryId)->orderByDesc('id')->first();
+
+        $serviceCode = $category->service_code * 100;
+
+        return $product ? ($serviceCode + 1) : $serviceCode;
+    }
+
+    public function create(array $data): Product
+    {
+        $product = Product::create($data);
+
+        return $product;
     }
 }

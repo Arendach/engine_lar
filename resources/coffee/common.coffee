@@ -1,7 +1,7 @@
 window.Modal = require './Modal.coffee'
 window.SuccessToastr = require './handlers/SuccessToastr.coffee'
-window.SuccessHandler = require './handlers/SuccessHandler.coffee'
-window.ErrorHandler = require './handlers/ErrorHandler.coffee'
+window.SuccessHandler = require '../scripts/handlers/SuccessHandler.js'
+window.ErrorHandler = require '../scripts/handlers/ErrorHandler.js'
 window.DeleteOnClick = require './handlers/DeleteOnClick.coffee'
 
 patterns =

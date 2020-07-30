@@ -9,6 +9,11 @@ class Product {
                 this.filterList()
             }
         })
+
+        eventRegister('change', '[name=level1]', this.storageIdsChangeHandler)
+
+        eventRegister('change', '#category', this.generateServiceCode)
+
     }
 
     filterList() {
@@ -20,6 +25,35 @@ class Product {
 
         new UrlGenerator().appends(data).unset('page').unsetEmpty().go()
     }
+
+    storageIdsChangeHandler(event) {
+        let k = $(event.currentTarget).val()
+
+        if (k === '') {
+            return $('[name=level2]').attr('disabled', 'disabled').html('')
+        }
+
+        let result = ''
+        let ids = window.storageIds
+
+        ids[k].forEach(function (i) {
+            result = result + `<option value="${i}">${i}</option>`
+        })
+
+        $('[name=level2]').html(result).removeAttr('disabled')
+    }
+
+    generateServiceCode(event) {
+        let $this = $(event.currentTarget)
+        let id = $this.val()
+
+        $.post('/product/generate_service_code', {id}).then(function (response) {
+            $('#service_code').html(response.data)
+            $('[name="service_code"]').val(response.data)
+            $('.service_code').show()
+        })
+    }
+
 }
 
 new Product().init()

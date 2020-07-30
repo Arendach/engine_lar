@@ -16,6 +16,7 @@
     "appstract/laravel-blade-directives": "^1.9",
     "barryvdh/laravel-elfinder": "^0.4.4",
     "fideloper/proxy": "^4.0",
+    "google/cloud-translate": "^1.8",
     "imangazaliev/didom": "^1.14",
     "laravel/framework": "^7.2.2",
     "laravel/tinker": "^2.0",

@@ -9,6 +9,7 @@ use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\Payout;
+use App\Models\Product;
 use App\Models\PurchasePayment;
 use App\Models\Report;
 use App\Models\User;
@@ -20,6 +21,7 @@ use App\Observers\InventoryObserver;
 use App\Observers\OrderHistoryObserver;
 use App\Observers\OrderObserver;
 use App\Observers\PayoutObserver;
+use App\Observers\ProductObserver;
 use App\Observers\PurchasePaymentObserver;
 use App\Observers\ReportObserver;
 use App\Observers\UserAccessObserver;
@@ -45,5 +47,6 @@ class EloquentModelsServiceProvider extends ServiceProvider
         Report::observe(ReportObserver::class);
         UserAccess::observe(UserAccessObserver::class);
         User::observe(UserObserver::class);
+        Product::observe(ProductObserver::class);
     }
 }

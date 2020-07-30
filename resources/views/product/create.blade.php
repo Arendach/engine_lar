@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layout', ['editor' => 'full'])
 
 @section('title', 'Товари :: Новий товар')
 
@@ -8,173 +8,110 @@
 )
 
 @section('content')
-    <form class="form-horizontal" data-type="ajax" action="@uri('ProductController@actionCreate')">
-        <div class="form-group">
-            <label class="col-md-4 control-label">Назва <i class="text-danger">*</i></label>
-            <div class="col-md-5">
-                <input name="name" class="form-control">
-            </div>
-        </div>
+
+    <x-form action="/product/create" class="col-md-offset-3 col-md-6">
+        <x-input name="name" :lang="true" :required="true">
+            <x-slot name="label">Назва</x-slot>
+            <x-slot name="tooltip">Назва товару як на етикетці! Якщо англійською то не перекладаємо! Якщо російською/українською - перекладаємо! Не додавати до назви: арткул, модель чи будь які характеристики!</x-slot>
+        </x-input>
+
+        <x-input name="article" :required="true">
+            <x-slot name="label">Артикул</x-slot>
+        </x-input>
+
+        <x-input name="model" :lang="true" :required="true">
+            <x-slot name="label">Модель</x-slot>
+            <x-slot name="tooltip">Модель визначається окремо для кожної групи товарів! Наприклад: для всіх салютів це Салютна установка/Салютная установка</x-slot>
+        </x-input>
+
+        <hr>
 
         <div class="form-group">
-            <label class="col-md-4 control-label">Артикул <i class="text-danger">*</i></label>
-            <div class="col-md-5">
-                <input name="articul" class="form-control">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="col-md-4 control-label">Модель <i class="text-danger">*</i></label>
-            <div class="col-md-5">
-                <input name="model" class="form-control">
-            </div>
-        </div>
-
-        <br>
-
-        <div class="form-group">
-            <label class="col-md-4 control-label">Ідентифікатор для складу <i class="text-danger">*</i></label>
-            <div class="col-md-5">
-                <div class="row">
-                    <div class="col-md-6">
-                        <select class="form-control" name="level1">
-                            <option value=""></option>
-                            @foreach ($ids as $k => $item)
-                                <option value="{{ $k }}">{{ $k }}   </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <select disabled name="level2" class="form-control"></select>
-                    </div>
+            <label><i class="text-danger">*</i> Ідентифікатор для складу</label>
+            <div class="row">
+                <div class="col-md-6">
+                    <select class="form-control" name="level1">
+                        <option value=""></option>
+                        @foreach ($ids as $k => $item)
+                            <option value="{{ $k }}">{{ $k }}   </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <select disabled name="level2" class="form-control"></select>
                 </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="col-md-4 control-label">Виробник <i class="text-danger">*</i></label>
-            <div class="col-md-5">
-                <select name="manufacturer" class="form-control">
-                    <option value=""></option>
-                    @foreach($manufacturers as $item)
-                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
+        <x-select name="manufacturer_id" :required="true" :options="\App\Models\Manufacturer::toOptions()">
+            <x-slot name="label">Виробник</x-slot>
+        </x-select>
 
+        <x-select name="is_combine" :required="true" :options="['Одиничний', 'Комбінований']">
+            <x-slot name="label">Тип</x-slot>
+        </x-select>
 
-        <div class="form-group">
-            <label class="col-md-4 control-label">Тип <i class="text-danger">*</i></label>
-            <div class="col-md-5">
-                <select name="combine" class="form-control">
-                    <option value="0">Одиничний</option>
-                    <option value="1">Комбінований</option>
-                </select>
-            </div>
-        </div>
+        <hr>
 
-        <br>
+        <x-input name="weight" :required="true" data-inspect="decimal">
+            <x-slot name="label">Вага</x-slot>
+        </x-input>
 
         <div class="form-group">
-            <label class="col-md-4 control-label">Вага</label>
-            <div class="col-md-5">
-                <input value="0" name="weight" class="form-control" data-inspect="decimal">
+            <label>Об'єм</label>
+            <div class="row">
+                <div class="col-md-4">
+                    <input class="form-control" name="volume[]" value="0" data-inspect="integer">
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" name="volume[]" value="0" data-inspect="integer">
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" name="volume[]" value="0" data-inspect="integer">
+                </div>
             </div>
+            <input style="margin-top: 15px" id="volume" value="0" class="form-control" disabled>
         </div>
+
+        <hr>
+
+        <x-input :required="true" name="procurement_price" data-inspect="decimal">
+            <x-slot name="label">Закупівельна вартість<b style="color: #f00;">($)</b></x-slot>
+        </x-input>
+
+        <x-input :required="true" name="price" data-inspect="decimal">
+            <x-slot name="label">Роздрібна вартість</x-slot>
+        </x-input>
+
+        <hr>
 
         <div class="form-group">
-            <label class="col-md-4 control-label">Об'єм</label>
-            <div class="col-md-5">
-                <input style="width: calc(33.3% - 3px)" name="volume[]" value="0" data-inspect="integer">
-                <input style="width: calc(33.3% - 3px)" name="volume[]" value="0" data-inspect="integer">
-                <input style="width: calc(33.3% - 3px)" name="volume[]" value="0" data-inspect="integer">
-                <input style="margin-top: 15px" id="volume"
-                       value="0"
-                       class="form-control"
-                       disabled>
-            </div>
+            <label><i class="text-danger">*</i> Категорія</label>
+            <select name="category_id" class="form-control" id="category">
+                <option value=""></option>
+                {!! $categories !!}
+            </select>
         </div>
 
-        <br>
-
-        <div class="form-group">
-            <label class="col-md-4 control-label">
-                Закупівельна вартість<b style="color: #f00;">($)</b><i class="text-danger">*</i>
-            </label>
-            <div class="col-md-5">
-                <input name="procurement_costs" class="form-control" data-inspect="decimal">
-            </div>
+        <div class="form-group service_code none">
+            <label>Сервісний код</label>
+            <div disabled id="service_code" class="fake-input">0</div>
+            <input type="hidden" name="service_code" value="">
         </div>
 
-        <div class="form-group">
-            <label for="costs" class="col-md-4 control-label">
-                Роздрібна вартість <i class="text-danger">*</i>
-            </label>
-            <div class="col-md-5">
-                <input name="costs" class="form-control" id="costs" data-inspect="decimal">
-            </div>
-        </div>
+        <hr>
 
-        <br>
+        <x-editor name="description" :lang="true">
+            <x-slot name="label">Опис</x-slot>
+        </x-editor>
 
-        <div class="form-group">
-            <label class="col-md-4 control-label">Категорія <i class="text-danger">*</i></label>
-            <div class="col-md-5">
-                <select name="category" class="form-control">
-                    <option value=""></option>
-                    {{ $categories }}
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group service_code_container none">
-            <label class="col-md-4 control-label">Сервісний код</label>
-            <div class="col-md-5">
-                <div disabled id="fake-service-code" class="fake-input">0</div>
-                <input type="hidden" name="services_code" value="0">
-            </div>
-        </div>
-
-        <br>
-
-        <div class="form-group">
-            <label class="col-md-4 control-label">Опис</label>
-            <div class="col-md-5">
-                <textarea class="form-control" name="description"></textarea>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-offset-4 col-md-5">
-                <button class="btn btn-primary">Зберегти</button>
-            </div>
-        </div>
-
-    </form>
-
-    <script>
-        let ids = {{ json($ids) }};
-
-        $(document).ready(function () {
-            CKEDITOR.replace('description');
-
-            $(document).on('change', '[name=level1]', function () {
-                var k = $(this).val();
-
-                if (k == '') {
-                    $('[name=level2]').attr('disabled', 'disabled').html('');
-                    return;
-                }
-
-                var result = '';
-                ids[k].forEach(function (i) {
-                    result = result + '<option value="' + i + '">' + i + '</option>';
-                });
-
-                $('[name=level2]').html(result).removeAttr('disabled');
-            });
-        });
-    </script>
-
+        <x-button>
+            <x-slot name="label">Зберегти</x-slot>
+        </x-button>
+    </x-form>
 @endsection
+
+@pushonce('js:product')
+<script>window.storageIds = @json($ids);</script>
+<script src="{{ asset('js/products.js') }}"></script>
+@endpushonce

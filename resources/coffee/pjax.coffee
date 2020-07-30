@@ -17,7 +17,7 @@ window.PjaxLoad = (url) ->
 window.eventStorage = []
 
 window.eventRegister = (type, element, handler) ->
-    $('#pjax-container').on(type, element, handler);
+    $(document).on(type, element, handler);
 
     window.eventStorage.push({type, element, handler})
 

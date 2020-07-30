@@ -180,6 +180,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\BladeExtendsServiceProvider::class,
+        App\Providers\BladeComponentsServiceProvider::class,
         App\Providers\EloquentModelsServiceProvider::class,
     ],
 

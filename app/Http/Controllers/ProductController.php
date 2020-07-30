@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Filters\ProductFilter;
 use App\Http\Requests\Product\UniversalAssetsRequest;
+use App\Http\Requests\Products\CreateProductRequest;
 use App\Http\Requests\Products\UpdateInfoRequest;
 use App\Http\Requests\Products\UpdateStorageRequest;
 use App\Models\Manufacturer;
@@ -13,8 +14,10 @@ use App\Models\ProductImage;
 use App\Models\Storage;
 use App\Models\StorageId;
 use App\Services\CategoryTree;
+use App\Services\ProductService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
@@ -44,15 +47,15 @@ class ProductController extends Controller
         return view('product.main', $data);
     }
 
-    public function sectionCreate(CategoryTree $categoryTree)
+    public function sectionCreate(CategoryTree $categoryTree): View
     {
         $data = [
             'manufacturers' => Manufacturer::all(),
             'categories'    => $categoryTree->option(),
-            'ids'           => Storage::getIds()
+            'ids'           => StorageId::tree()
         ];
 
-        $this->view->display('product.create', $data);
+        return view('product.create', $data);
     }
 
     public function sectionUpdate(int $id, CategoryTree $categoryTree)
@@ -220,23 +223,12 @@ class ProductController extends Controller
     }
 
 
-    public function actionCreate($post)
+    public function actionCreate(CreateProductRequest $request)
     {
-        $post->identefire_storage = $post->level1 . '-' . $post->level2;
-        unset($post->level1, $post->level2);
+        $product = app(ProductService::class)->create($request->validated());
 
-        if (empty($post->name)) response(400, 'Заповніть назву!');
-        if (empty($post->articul)) response(400, 'Заповніть артикул!');
-        if (empty($post->model)) response(400, 'Заповніть модель!');
-        if (empty($post->procurement_costs)) response(400, 'Заповніть закупівельну вартість!');
-        if (empty($post->costs)) response(400, 'Заповніть ціну!');
-
-        $id = Products::save($post);
-
-        response(200, [
-            'action'  => 'redirect',
-            'uri'     => uri('product', ['section' => 'update', 'id' => $id]),
-            'message' => 'Товар вдало створено'
+        return response()->json([
+            'url' => $product->url
         ]);
     }
 
@@ -249,15 +241,13 @@ class ProductController extends Controller
         response(200, "Товар вдало скопійовано $amount раз(ів)");
     }
 
-    public function action_get_service_code($post)
+    public function actionGenerateServiceCode(Request $request)
     {
-        if (!isset($post->id) || empty($post->id)) response(200, '0');
+        $code = app(ProductService::class)->generateServiceCode($request->get('id'));
 
-        $result = Products::get_service_code($post->id);
-
-        if ($result === false) response(400, 'Неправильні вхідні параметри!');
-        elseif (is_numeric($result)) response(200, (string)$result);
-        else response(500, 'Невідома помилка!');
+        return response()->json([
+            'data' => $code
+        ]);
     }
 
     public function section_print()

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Casts\Translatable;
-use Illuminate\Database\Eloquent\Model;
 
 class Manufacturer extends Model
 {

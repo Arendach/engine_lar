@@ -1,4 +1,3 @@
-require './create.coffee'
 require './update.coffee'
 
 add_margin = ->
@@ -192,9 +191,3 @@ $(document).on 'click', '.print_stickers',  ->
 $(document).ready ->
     if $('[name="descripton"]').length then CKEDITOR.replace('description')
     if $('[name="descripton_ru"]').length then CKEDITOR.replace('description_ru')
-
-$(document).on 'change', '[name=level1]', ->
-    k = $(@).val()
-    result = ''
-    ids[k].forEach (i) -> result += "<option value='#{i}'>#{i}</option>"
-    $('[name=level2]').html(result)

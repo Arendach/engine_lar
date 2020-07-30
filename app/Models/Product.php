@@ -36,9 +36,10 @@ class Product extends Model
         'meta_description' => Translatable::class,
         'meta_keywords'    => Translatable::class,
         'meta_title'       => Translatable::class,
+        'volume'           => 'array',
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function storage($storage_id): ?Storage
     {
@@ -84,15 +85,9 @@ class Product extends Model
             ->withPivot('price', 'minus');
     }
 
-    public function getVolumeArrayAttribute(): array
-    {
-        if (is_null($this->volume) || $this->volume == '' || $this->volume == '[]') return [0, 0, 0];
-        else return json_decode($this->volume);
-    }
-
     public function getVolumeGeneralAttribute(): float
     {
-        $volume = $this->volume_array;
+        $volume = $this->volume;
 
         return $volume[0] * $volume[1] * $volume[2] / 1000000;
     }
@@ -129,5 +124,29 @@ class Product extends Model
             ->orWhere('article', 'like', "%$query%")
             ->orWhere('model_uk', 'like', "%$query%")
             ->orWhere('name_ru', 'like', "%$query%");
+    }
+
+    public function setLevel1Attribute($value)
+    {
+        if (isset($this->attributes['id_storage']) && preg_match('/-/', $this->attributes['id_storage'])) {
+            $ids = explode('-', $this->attributes['id_storage']);
+            $ids[0] = $value;
+        } else {
+            $ids = [$value, ''];
+        }
+
+        $this->attributes['id_storage'] = implode('-', $ids);
+    }
+
+    public function setLevel2Attribute($value)
+    {
+        if (isset($this->attributes['id_storage']) && preg_match('/-/', $this->attributes['id_storage'])) {
+            $ids = explode('-', $this->attributes['id_storage']);
+            $ids[1] = $value;
+        } else {
+            $ids = ['', $value];
+        }
+
+        $this->attributes['id_storage'] = implode('-', $ids);
     }
 }
