@@ -5,11 +5,12 @@
         @endif
         {{ $label }}
     </label>
+
     <select name="{{ $name }}" class="form-control">
         <option value=""></option>
 
         @foreach($options as $key => $value)
-            <option {{ isset($selected) and $key == $selected ? 'selected' : '' }} value="{{ $key }}">
+            <option {{ (isset($selected) and $key == $selected) ? 'selected' : '' }} value="{{ $key }}">
                 {{ $value }}
             </option>
         @endforeach

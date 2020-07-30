@@ -66,5 +66,9 @@
 
 @section('scripts')
     @share('id', $product->id)
-    @share('ids', $ids)
 @stop
+
+@pushonce('js:product')
+<script>window.storageIds = @json($ids);</script>
+<script src="{{ asset('js/products.js') }}"></script>
+@endpushonce

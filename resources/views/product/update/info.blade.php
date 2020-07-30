@@ -1,162 +1,104 @@
-<div class="row">
-    <div class="col-md-offset-4 col-md-5">
-        <ul class="nav nav-tabs nav-justified">
-            <li class="active">
-                <a href="#uk" data-toggle="tab">
-                    <img src="{{ asset('icons/uk.ico') }}">
-                </a>
-            </li>
-            <li>
-                <a href="#ru" data-toggle="tab">
-                    <img src="{{ asset('icons/ru.ico') }}">
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
-
-<br>
-
-<form action="{{ uri('product/update_info') }}" data-type="ajax" class="form-horizontal">
+@php /** @var \App\Models\Product $product */ @endphp
+<x-form action="/product/update_info" class="col-md-offset-3 col-md-6">
     <input type="hidden" name="id" value="{{ $product->id }}">
 
-    <div class="tab-content">
-        @foreach (['uk', 'ru'] as $lang)
-            <div class="tab-pane @displayIf($loop->first, 'active')" id="{{ $lang }}">
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Назва <i class="text-danger">*</i></label>
-                    <div class="col-md-5">
-                        <input name="{{ "name_{$lang}" }}" value="{{ $product->{"name_{$lang}"} }}" class="form-control">
-                    </div>
-                </div>
+    <x-input name="name" :lang="true" :value="$product->name_uk" :value-ru="$product->name_ru" :required="true">
+        <x-slot name="label">Назва</x-slot>
+        <x-slot name="tooltip">Назва товару як на етикетці! Якщо англійською то не перекладаємо! Якщо
+            російською/українською - перекладаємо! Не додавати до назви: арткул, модель чи будь які характеристики!
+        </x-slot>
+    </x-input>
 
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Модель <i class="text-danger">*</i></label>
-                    <div class="col-md-5">
-                        <input value="{{ $product->{"model_{$lang}"} }}" name="{{ "model_{$lang}" }}" class="form-control">
-                    </div>
-                </div>
+    <x-input name="model" :lang="true" :value="$product->model_uk" :value-ru="$product->model_ru" :required="true">
+        <x-slot name="label">Модель</x-slot>
+        <x-slot name="tooltip">Модель визначається окремо для кожної групи товарів! Наприклад: для всіх салютів це
+            Салютна установка/Салютная установка
+        </x-slot>
+    </x-input>
 
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Опис</label>
-                    <div class="col-md-5">
-                        <textarea data-type="ckeditor" name="{{ "description_$lang" }}" class="form-control">{{ $product->{"description_$lang"} }}</textarea>
-                    </div>
-                </div>
-            </div>
-        @endforeach
-    </div>
+    <x-input name="article" :value="$product->article" :required="true">
+        <x-slot name="label">Артикул</x-slot>
+    </x-input>
 
-    <div class="row"><div class="col-md-offset-4 col-md-5"><hr></div></div>
+    <hr>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label">Артикул <i class="text-danger">*</i></label>
-        <div class="col-md-5">
-            <input value="{{ $product->article }}" name="article" class="form-control">
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-md-4 control-label">Сервісний код <i class="text-danger">*</i></label>
-        <div class="col-md-5">
-            <input value="{{ $product->service_code }}" name="service_code" class="form-control">
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-md-4 control-label">Закупівельна вартість(в доларах) <i class="text-danger">*</i></label>
-        <div class="col-md-5">
-            <input value="{{ $product->procurement_price }}" name="procurement_price" class="form-control">
-        </div>
-    </div>
+    <x-input name="procurement_price" :value="$product->procurement_price" :required="true" data-inspect="decimal">
+        <x-slot name="label">Закупівельна вартість <b style="color: #f00;">($)</b></x-slot>
+    </x-input>
 
     @if(!$product->is_combine)
-        <div class="form-group">
-            <label class="col-md-4 control-label">Роздрібна вартість <i class="text-danger">*</i></label>
-            <div class="col-md-5">
-                <input value="{{ $product->price }}" name="price" class="form-control">
-            </div>
-        </div>
+        <x-input name="price" :value="$product->price" :required="true" data-inspect="decimal">
+            <x-slot name="label">Роздрібна вартість</x-slot>
+        </x-input>
     @endif
 
-    <div class="col-md-offset-4 col-md-5">
-        <hr>
+    <hr>
+
+    <div class="form-group">
+        <label>Категорія</label>
+        <select name="category_id" class="form-control" id="category">
+            <option value=""></option>
+            <option hidden selected value="{{ $product->category_id }}">{{ $product->category->name }}</option>
+            {!! $categories !!}
+        </select>
+    </div>
+
+    <x-input name="service_code" :value="$product->service_code" :required="true">
+        <x-slot name="label">Сервісний код</x-slot>
+    </x-input>
+
+    <x-select name="manufacturer_id" :options="\App\Models\Manufacturer::toOptions()" :required="true"
+              :selected="$product->manufacturer_id">
+        <x-slot name="label">Виробник</x-slot>
+    </x-select>
+
+    <hr>
+
+    <x-input name="weight" :value="$product->weight" :required="true" data-inspect="decimal">
+        <x-slot name="label">Вага</x-slot>
+    </x-input>
+
+    <div class="form-group">
+        <label>Об'єм</label> <br>
+        <input style="width: calc(33.3% - 3px)" name="volume[]" value="{{ $product->volume[0] }}" data-inspect="decimal">
+        <input style="width: calc(33.3% - 3px)" name="volume[]" value="{{ $product->volume[1] }}" data-inspect="decimal">
+        <input style="width: calc(33.3% - 3px)" name="volume[]" value="{{ $product->volume[2] }}" data-inspect="decimal">
+        <input style="margin-top: 15px" id="volume" value="{{ $product->volume_general }}" class="form-control"
+               disabled>
     </div>
 
     <div class="form-group">
-        <label class="col-md-4 control-label">Категорія</label>
-        <div class="col-md-5">
-            <select name="category_id" class="form-control" id="category">
-                <option hidden selected value="{{ $product->category_id }}">{{ $product->category->name }}</option>
-                {!! $categories !!}
-            </select>
-        </div>
-    </div>
+        <label>Ідентифікатор для складу</label>
+        <div class="row">
+            <div class="col-md-6">
+                <select class="form-control" name="level1">
+                    <option value=""></option>
+                    @foreach ($ids as $l1 => $items)
+                        <option @selected($l1 == $product->level1) value="{{ $l1 }}">{{ $l1 }}</option>
+                    @endforeach
+                </select>
+            </div>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label">Виробник</label>
-        <div class="col-md-5">
-            <select name="manufacturer_id" class="form-control">
-                @foreach ($manufacturers as $item) { ?>
-                    <option @selected($item->id == $product->manufacturer_id) value="{{ $item->id }}">
-                        {{ $item->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-md-4 control-label">Ідентифікатор для складу</label>
-        <div class="col-md-5">
-            <div class="row">
-                <div class="col-md-6">
-                    <select class="form-control" name="level1">
-                        <option class="none" value="{{ $product->level1 }}">{{ $product->level1 }}</option>
-                        @foreach ($ids as $l1 => $items)
-                            <option value="{{ $l1 }}">{{ $l1 }}</option>
+            <div class="col-md-6">
+                <select name="level2" class="form-control">
+                    <option class="none" value="{{ $product->level2 }}">{{ $product->level2 }}</option>
+                    @isset($ids[$product->level1])
+                        @foreach($ids[$product->level1] as $item)
+                            <option @selected($item == $product->level2) value="{{ $item }}">{{ $item }}</option>
                         @endforeach
-                    </select>
-                </div>
-
-                <div class="col-md-6">
-                    <select name="level2" class="form-control">
-                        <option class="none" value="{{ $product->level2 }}">{{ $product->level2 }}</option>
-                        @isset($ids[$product->level1])
-                            @foreach($ids[$product->level1] as $item)
-                                <option value="{{ $item }}">{{ $item }}</option>
-                            @endforeach
-                        @endisset
-                    </select>
-                </div>
+                    @endisset
+                </select>
             </div>
         </div>
     </div>
 
-    <div class="col-md-offset-4 col-md-5">
-        <hr>
-    </div>
+    <hr>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label">Вага</label>
-        <div class="col-md-5">
-            <input value="{{ $product->weight }}" name="weight" class="form-control">
-        </div>
-    </div>
+    <x-editor name="description" :lang="true" :value="$product->description_uk" :value-ru="$product->description_ru">
+        <x-slot name="label">Опис</x-slot>
+    </x-editor>
 
-    <div class="form-group">
-        <label class="col-md-4 control-label">Об'єм</label>
-        <div class="col-md-5">
-            <input style="width: calc(33.3% - 3px)" name="volume[]" value="{{ $product->volume_array[0] }}">
-            <input style="width: calc(33.3% - 3px)" name="volume[]" value="{{ $product->volume_array[1] }}">
-            <input style="width: calc(33.3% - 3px)" name="volume[]" value="{{ $product->volume_array[2] }}">
-            <input style="margin-top: 15px" id="volume" value="{{ $product->volume_general }}" class="form-control" disabled>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-4 col-md-5">
-            <button class="btn btn-primary">Оновити</button>
-        </div>
-    </div>
-</form>
+    <x-button>
+        <x-slot name="label">Оновити</x-slot>
+    </x-button>
+</x-form>

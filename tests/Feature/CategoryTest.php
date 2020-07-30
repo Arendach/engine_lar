@@ -25,7 +25,7 @@ class CategoryTest extends TestCase
         $category = $this->getCategory();
         $name = $this->faker->name;
         $serviceCode = $this->faker->numberBetween(1000, 99999);
-        $parentId = rand(0, 1) ? $category->id : null;
+        $parentId = $category->id;
 
         $this->post('/category/create', [
             'name'         => $name,

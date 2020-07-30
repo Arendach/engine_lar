@@ -117,13 +117,7 @@ class ProductController extends Controller
 
     public function actionUpdateInfo(UpdateInfoRequest $request)
     {
-        $data = $request->except('level1', 'level2');
-        $data['id_storage'] = $request->get('level1') . '-' . $request->get('level2');
-        $data['volume'] = json_encode($request->get('volume'));
-
-        Product::findOrFail($request->get('id'))->update($data);
-
-        return response(null, 200);
+        Product::findOrFail($request->get('id'))->update($request->validated());
     }
 
     public function actionUpdateSeo(Request $request)
