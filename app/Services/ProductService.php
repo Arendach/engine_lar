@@ -58,4 +58,15 @@ class ProductService
 
         return $product;
     }
+
+    public function updateSeo(int $id, array $data): Product
+    {
+        $withTranslate = app(TranslateService::class)->generateTranslateFromArray($data);
+
+        $product = Product::findOrFail($id);
+
+        $product->update($withTranslate);
+
+        return $product;
+    }
 }

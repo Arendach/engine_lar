@@ -1,49 +1,42 @@
+@php /** @var \App\Models\Product $product */ @endphp
 @if(!$product->is_combine)
-    <form action="@uri('product/update_accounted')" data-type="ajax" class="form-horizontal">
+    <x-form action="/product/update_accounted" class="col-md-offset-3 col-md-6">
         <input type="hidden" name="id" value="{{ $product->id }}">
 
-        <div class="form-group">
-            <label class="col-md-4 control-label">Обліковувати товар</label>
-            <div class="col-md-5">
-                <select name="is_accounted" class="form-control">
-                    <option @selected(!$product->is_accounted) value="0">Ні</option>
-                    <option @selected($product->is_accounted) value="1">Так</option>
-                </select>
-            </div>
-        </div>
+        <x-select name="is_accounted" options="boolean" :required="true" :selected="$product->is_accounted">
+            <x-slot name="label">Обліковувати товар</x-slot>
+        </x-select>
 
-        <div class="form-group">
-            <div class="col-md-offset-4 col-md-5">
-                <button class="btn btn-primary">Зберегти</button>
-            </div>
-        </div>
-    </form>
+        <x-button>
+            <x-slot name="label">Зберегти</x-slot>
+        </x-button>
+    </x-form>
 
     <hr>
+
 @endif
 
-<form action="@uri('product/update_storage')" class="form-horizontal" data-type="ajax">
+<x-form action="/product/update_storage" class="col-md-offset-3 col-md-6">
     <input type="hidden" name="id" value="{{ $product->id }}">
+
     <div class="form-group">
-        <label class="col-md-4 control-label">Склади</label>
-        <div class="col-md-5">
-            @foreach($storage as $item)
-                <label>
-                    <input type="checkbox" name="storage[]" @checked(in_array($item->id, $product->storage_list->pluck('storage_id')->toArray())) value="{{ $item->id }}">
-                    {{ $item->name }}
-                </label>
-                <br>
-                @if((isset($pts[$item->id]) && !$product->combine) && (isset($pts[$item->id]) && $product->accounted))
-                    <span class="text-primary">Кількість:</span> {{ $pts[$item->id]->count }}
-                @endif
-            @endforeach
-        </div>
+        <hr>
+        <h2>Склади</h2>
+        <hr>
+        @foreach($storage as $item)
+            <label>
+                <input type="checkbox" name="storage[]" @checked(in_array($item->id, $product->storage_list->pluck('storage_id')->toArray())) value="{{ $item->id }}">
+                {!! $product->storage($item->id) ?  "(<b style='color: red'>" . $product->storage($item->id)->pivot->count . "</b>)" : null !!} {{ $item->name }}
+            </label>
+            <br>
+            @if((isset($pts[$item->id]) && !$product->combine) && (isset($pts[$item->id]) && $product->accounted))
+                <span class="text-primary">Кількість:</span> {{ $pts[$item->id]->count }}
+            @endif
+        @endforeach
     </div>
 
-    <div class="form-group" style="margin-bottom: 15px">
-        <div class="col-md-offset-4 col-md-5">
-            <button class="btn btn-primary">Оновити</button>
-        </div>
-    </div>
-</form>
+    <x-button>
+        <x-slot name="label">Оновити</x-slot>
+    </x-button>
+</x-form>
 

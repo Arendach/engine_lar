@@ -4,31 +4,12 @@ namespace App\Models;
 
 use App\Traits\File;
 use App\Traits\Image;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductImage extends Model
 {
-    use File, Image;
+    use File, Image, SoftDeletes;
 
     protected $table = 'product_images';
-/*
-    protected $fillable = [
-        'product_id',
-        'path',
-        'alt',
-        'deleted_at',
-        'created_at',
-        'updated_at',
-        'is_main'
-    ];*/
-
     protected $guarded = [];
-
-    public $timestamps = true;
-
-    protected $dates = [
-        'deleted_at',
-        'created_at',
-        'updated_at'
-    ];
 }

@@ -2,6 +2,7 @@ class Forms {
     init() {
         eventRegister('submit', '[data-type="ajax"]', this.sendAjaxForm)
         eventRegister('keyup', '[data-max]', this.maxFieldChecker)
+        eventRegister('click', '[data-type="ajax_request"]', this.ajaxRequest)
     }
 
     sendAjaxForm(event) {
@@ -88,6 +89,29 @@ class Forms {
         if (val > max) {
             $(context).val(max)
         }
+    }
+
+    ajaxRequest(event) {
+        event.preventDefault()
+
+        let url = $(this).data('uri')
+        let data = $(this).data('post')
+        let after = $(this).data('after')
+
+        $(this).attr('disabled', true)
+
+        $.ajax({
+            type: 'post',
+            url, data,
+            success(response) {
+                $(event.currentTarget).attr('disabled', false)
+                new SuccessHandler(response).setAfter(after).apply()
+            },
+            error(response) {
+                $(event.currentTarget).attr('disabled', false)
+                new ErrorHandler(response).apply()
+            }
+        })
     }
 }
 

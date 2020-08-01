@@ -1,20 +1,18 @@
+@php /** @var \App\Models\ProductImage $image */ @endphp
 @extends('modal')
 
 @section('title', 'Редагування зображення')
 
 @section('content')
-
-    <form action="@uri('product/update_image')" data-type="ajax" data-after="reload">
+    <x-form action="/product/update_image" data-after="reload">
         <input type="hidden" name="id" value="{{ $image->id }}">
 
-        <div class="form-group">
-            <label>Альтернативний текст</label>
-            <input class="form-control" name="alt" value="{{ $image->alt }}">
-        </div>
+        <x-input name="alt" :value="$image->alt">
+            <x-slot name="label">Альтернативний текст</x-slot>
+        </x-input>
 
-        <div class="form-group">
-            <button class="btn btn-primary">Зберегти</button>
-        </div>
-    </form>
-
+        <x-button>
+            <x-slot name="label">Зберегти</x-slot>
+        </x-button>
+    </x-form>
 @stop

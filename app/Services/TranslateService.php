@@ -27,4 +27,33 @@ class TranslateService
 
         return $result['text'];
     }
+
+    public function generateTranslateFromArray(array $data): array
+    {
+        $useTranslateService = setting('Використовувати Google перекладач', true);
+
+        if (!$useTranslateService) {
+            return $data;
+        }
+
+        foreach ($data as $key => $value) {
+            if (!preg_match('~_uk$~', $key)) {
+                continue;
+            }
+
+            $ruKey = preg_replace('~_uk$~', '_ru', $key);
+
+            if (!array_key_exists($ruKey, $data)) {
+                continue;
+            }
+
+            if ($data[$ruKey]) {
+                continue;
+            }
+
+            $data[$ruKey] = $this->get($data[$key]);
+        }
+
+        return $data;
+    }
 }

@@ -17,10 +17,19 @@ class Select extends Component
         $this->name = $name;
         $this->required = $required;
         $this->selected = $selected;
+
+        $this->setOptions();
     }
 
     public function render()
     {
         return view('components.select');
+    }
+
+    private function setOptions()
+    {
+        if ($this->options == 'boolean') {
+            $this->options = ['Ні', 'Так'];
+        }
     }
 }

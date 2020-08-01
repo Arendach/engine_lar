@@ -6,6 +6,7 @@ use App\Filters\ProductFilter;
 use App\Http\Requests\Product\UniversalAssetsRequest;
 use App\Http\Requests\Products\CreateProductRequest;
 use App\Http\Requests\Products\UpdateInfoRequest;
+use App\Http\Requests\Products\UpdateSeoRequest;
 use App\Http\Requests\Products\UpdateStorageRequest;
 use App\Models\Manufacturer;
 use App\Models\Product;
@@ -120,9 +121,13 @@ class ProductController extends Controller
         Product::findOrFail($request->get('id'))->update($request->validated());
     }
 
-    public function actionUpdateSeo(Request $request)
+    public function actionUpdateSeo(UpdateSeoRequest $request)
     {
-        Product::findOrFail($request->id)->update($request->all());
+        app(ProductService::class)->updateSeo(
+            $request->get('id'),
+            $request->validated()
+        );
+
     }
 
     public function section_to_archive()
@@ -193,18 +198,18 @@ class ProductController extends Controller
         }
     }
 
-    public function actionChangeMainImage(int $product_id, int $image_id)
+    public function actionChangeMainImage(int $product_id, int $image_id): void
     {
         ProductImage::where('product_id', $product_id)->update(['is_main' => 0]);
         ProductImage::findOrFail($image_id)->update(['is_main' => 1]);
     }
 
-    public function actionDeleteImage(int $id)
+    public function actionDeleteImage(int $id): void
     {
         ProductImage::findOrFail($id)->delete();
     }
 
-    public function actionUpdateImageForm(int $id)
+    public function actionUpdateImageForm(int $id): View
     {
         return view('product.update.forms.image', [
             'image' => ProductImage::findOrFail($id)

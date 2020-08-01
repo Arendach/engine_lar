@@ -109,29 +109,6 @@ $(document).on 'click', '[data-type="get_form"]', (event) ->
             $(@).attr('disabled', no)
             new ErrorHandler(answer).apply()
 
-
-eventRegister 'click', '[data-type="ajax_request"]', (event) ->
-    event.preventDefault()
-
-    alert(1)
-
-    url = $(@).data 'uri'
-    data = $(@).data 'post'
-    after = $(@).data('after')
-
-    $(@).attr('disabled', yes)
-
-    $.ajax
-        type: 'post'
-        url: url
-        data: data
-        success: (answer, status, xhr) =>
-            $(@).attr('disabled', no)
-            new SuccessHandler(answer, xhr).setAfter(after).apply()
-        error: (answer) =>
-            $(@).attr('disabled', no)
-            new ErrorHandler(answer).apply()
-
 eventRegister 'click', '.map-signs', (event) ->
     current = $(event.currentTarget)
     content_left = $ '.content-left'

@@ -1,26 +1,25 @@
 <div class="row">
     <div class="col-md-6 col-lg-6">
-        <form action="@uri('product/upload_images')" data-type="ajax" data-after="reload">
+        <x-form action="/product/upload_images" data-after="reload">
             <input type="hidden" name="id" value="{{ $product->id }}">
 
-            <div class="form-group">
-                <label>Фото <i class="text-danger">*</i></label>
-                @include('tools.file', ['name' => 'images', 'multiple' => true])
-            </div>
+            <x-input-file name="images" :multiple="true">
+                <x-slot name="label">Фото</x-slot>
+            </x-input-file>
 
-            <div class="form-group">
-                <label>Альтернативний текст</label>
-                <input class="form-control" name="alt">
-            </div>
+            <x-input name="alt">
+                <x-slot name="label">Альтернативний текст</x-slot>
+            </x-input>
 
-            <div class="form-group">
-                <button class="btn btn-primary">Завантажити зображення</button>
-            </div>
-        </form>
+            <x-button>
+                <x-slot name="label">Завантажити</x-slot>
+            </x-button>
+        </x-form>
     </div>
 
     <div class="col-md-6 col-lg-6">
         @foreach ($product->images->sortByDesc('is_main') as $file)
+            @php /** @var \App\Models\ProductImage $file */ @endphp
             <a class="order-file item-row" href="{{ $file->public_path }}">
                 <img class="order-file-image" src="{{ $file->icon }}" alt="{{ $file->alt }}">
                 <div class="order-file-info">
@@ -38,39 +37,27 @@
                             <i class="fa fa-check"></i>
                         </button>
                     @else
-                        <button @data([
-                                    'type' => 'ajax_request',
-                                    'toggle' => 'tooltip',
-                                    'post' => params([
-                                        'image_id' => $file->id,
-                                        'product_id' => $product->id
-                                    ]),
-                                    'uri' => uri('product/change_main_image'),
-                                    'after' => 'reload'
-                                ])
+                        <button data-type="ajax_request"
+                                data-post="@params(['image_id' => $file->id,'product_id' => $product->id])"
+                                data-uri="/product/change_main_image"
+                                data-after="reload"
                                 class="btn btn-default btn-xs"
-                                title="Зробити головним">
+                                @tooltip("Зробити головним")>
                             <i class="fa fa-check"></i>
                         </button>
                     @endif
-                    <button @data([
-                                'toggle' => 'tooltip',
-                                'type' => 'get_form',
-                                'post' => params(['id' => $file->id]),
-                                'uri' => uri('product/update_image_form')
-                            ])
+                    <button data-type="get_form"
+                            data-post="@params(['id' => $file->id])"
+                            data-uri="/product/update_image_form"
                             class="btn btn-primary btn-xs"
-                            title="Редагувати">
+                            @tooltip("Редагувати")>
                         <i class="fa fa-pencil"></i>
                     </button>
-                    <span @data([
-                              'toggle' => 'tooltip',
-                              'id' => $file->id,
-                              'type' => 'delete',
-                              'uri' => uri('product/delete_image')
-                          ])
+                    <span data-type="delete"
+                          data-uri="/product/delete_image"
+                          data-id="{{ $file->id }}"
                           class="btn btn-danger btn-xs"
-                          title="Видалити">
+                          @tooltip("Видалити")>
                         <i class="fa fa-remove"></i>
                     </span>
                 </div>
