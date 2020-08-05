@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Filters\ProductFilter;
 use App\Http\Requests\Product\UniversalAssetsRequest;
+use App\Http\Requests\Products\CreateAssetsRequest;
 use App\Http\Requests\Products\CreateProductRequest;
+use App\Http\Requests\Products\UpdateAssetsRequest;
 use App\Http\Requests\Products\UpdateInfoRequest;
 use App\Http\Requests\Products\UpdateSeoRequest;
 use App\Http\Requests\Products\UpdateStorageRequest;
@@ -280,48 +282,56 @@ class ProductController extends Controller
         $this->view->display('product.part.combine_products', $data);
     }
 
-    public function sectionAssets()
+    public function sectionAssets(): View
     {
         $assets = ProductAsset::with('storage')
+            ->when(request()->has('archive'), function ($builder) {
+                $builder->onlyTrashed();
+            })
             ->latest()
             ->paginate(config('app.items'));
 
         return view('product.assets.main', compact('assets'));
     }
 
-    public function actionCreateAssetsForm()
+    public function actionCreateAssetsForm(): View
     {
-        $storage = Storage::where('is_accounted', 0)->get();
+        $storage = Storage::toOptions('name', 'id', function (Builder $builder) {
+            $builder->where('is_accounted', false);
+        });
 
         return view('product.assets.form_create', compact('storage'));
     }
 
-    public function actionUpdateAssetsForm(int $id)
+    public function actionUpdateAssetsForm(int $id): View
     {
-        $storage = Storage::where('is_accounted', 0)->get();
+        $storage = Storage::toOptions('name', 'id', function (Builder $builder) {
+            $builder->where('is_accounted', false);
+        });
+
         $assets = ProductAsset::findOrFail($id);
 
         return view('product.assets.form_update', compact('storage', 'assets'));
     }
 
-    public function actionCreateAssets(UniversalAssetsRequest $request)
+    public function actionCreateAssets(CreateAssetsRequest $request): void
     {
-        ProductAsset::create($request->all());
+        ProductAsset::create($request->validated());
     }
 
-    public function actionUpdateAssets(UniversalAssetsRequest $request)
+    public function actionUpdateAssets(UpdateAssetsRequest $request): void
     {
-        ProductAsset::findOrFail($request->id)->update($request->all());
+        ProductAsset::findOrFail($request->get('id'))->update($request->validated());
     }
 
-    public function actionAssetsToArchive(int $id)
+    public function actionAssetsToArchive(int $id): void
     {
-        ProductAsset::findOrFail($id)->update(['is_archive' => 1]);
+        ProductAsset::findOrFail($id)->delete();
     }
 
-    public function actionAssetsUnArchive(int $id)
+    public function actionAssetsUnArchive(int $id): void
     {
-        ProductAsset::findOrFail($id)->update(['is_archive' => 0]);
+        ProductAsset::withTrashed()->findOrFail($id)->restore();
     }
 
     public function section_moving()

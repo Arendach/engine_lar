@@ -32,13 +32,15 @@ trait Editable
         return (new Select($model))->value($value)->options($options)->field($field);
     }
 
-    public static function toOptions(string $valueField = 'name', string $keyField = 'id'): array
+    public static function toOptions(string $valueField = 'name', string $keyField = 'id', callable $callback = null): array
     {
-        return self::all()->mapWithKeys(function ($item) use ($valueField, $keyField) {
-            return [
-                $item->{$keyField} => $item->{$valueField}
-            ];
-        })
+        return self::when(!is_null($callback), $callback)
+            ->get()
+            ->mapWithKeys(function ($item) use ($valueField, $keyField) {
+                return [
+                    $item->{$keyField} => $item->{$valueField}
+                ];
+            })
             ->toArray();
     }
 }

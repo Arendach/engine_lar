@@ -10,9 +10,11 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Tests\Entities\CategoryEntity;
 use Tests\Entities\InventoryEntity;
 use Tests\Entities\ManufacturerEntity;
+use Tests\Entities\ProductAssetEntity;
 use Tests\Entities\ProductEntity;
 use Tests\Entities\StorageEntity;
 use Tests\Entities\UserEntity;
+use function GuzzleHttp\Psr7\str;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -26,6 +28,7 @@ abstract class TestCase extends BaseTestCase
     use ManufacturerEntity;
     use UserEntity;
     use InventoryEntity;
+    use ProductAssetEntity;
 
     public $user;
 
@@ -41,5 +44,18 @@ abstract class TestCase extends BaseTestCase
             Session::put('login', 'Arendach');
             Session::put('password', 'qwerty');
         }
+    }
+
+    public function convertValuesToString(array $data): array
+    {
+        foreach ($data as $key => $item) {
+            try {
+                $data[$key] = (string)$data[$key];
+            } catch (\Exception $exception) {
+
+            }
+        }
+
+        return $data;
     }
 }

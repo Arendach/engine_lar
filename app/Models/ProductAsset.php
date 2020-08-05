@@ -2,16 +2,14 @@
 
 namespace App\Models;
 
-use App\Traits\DateHuman;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductAsset extends Model
 {
-    use DateHuman;
+    use SoftDeletes;
 
     protected $table = 'product_assets';
-
     protected $guarded = [];
 
     public function storage(): BelongsTo

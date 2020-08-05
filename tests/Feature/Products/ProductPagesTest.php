@@ -4,7 +4,7 @@ namespace Tests\Feature\Products;
 
 use Tests\TestCase;
 
-class ProductPagesTests extends TestCase
+class ProductPagesTest extends TestCase
 {
     public function testShowMain()
     {

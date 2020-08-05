@@ -1,50 +1,38 @@
+@php /** @var \App\Models\ProductAsset $assets */ @endphp
 @extends('modal')
 
 @section('title', 'Редагування активу')
 
 @section('content')
-    <form action="@uri('ProductController@actionUpdateAssets')" data-after="reload" data-type="ajax">
+    <x-form action="/product/update_assets" data-after="reload">
         <input type="hidden" name="id" value="{{ $assets->id }}">
 
-        <div class="form-group">
-            <label><i class="text-danger">*</i> Назва</label>
-            <input value="{{ $assets->name }}" name="name" class="form-control input-sm">
-        </div>
+        <x-input name="name" :required="true" :value="$assets->name">
+            <x-slot name="label">Назва</x-slot>
+        </x-input>
 
-        <div class="form-group">
-            <label>Ідентифікатор для складу</label>
-            <input value="{{ $assets->id_in_storage }}" name="id_in_storage" class="form-control input-sm">
-        </div>
+        <x-input name="code" :value="$assets->code">
+            <x-slot name="label">Ідентифікатор для складу</x-slot>
+        </x-input>
 
-        <div class="form-group">
-            <label>Опис</label>
-            <textarea name="description" class="form-control input-sm">{{ $assets->description }}</textarea>
-        </div>
+        <x-select name="storage_id" :required="true" :options="$storage" :selected="$assets->storage_id">
+            <x-slot name="label">Склад</x-slot>
+        </x-select>
 
-        <div class="form-group">
-            <label><i class="text-danger">*</i> Склад</label>
-            <select name="storage_id" class="form-control input-sm">
-                <option value=""></option>
-                @foreach($storage as $item)
-                    <option @selected($assets->storage_id == $item->id) value="{{ $item->id }}">
-                        {{ $item->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+        <x-input name="price" :required="true" :value="$assets->price" data-inspect="decimal">
+            <x-slot name="label">Ціна</x-slot>
+        </x-input>
 
-        <div class="form-group">
-            <label><i class="text-danger">*</i> Ціна</label>
-            <input value="{{ $assets->price }}" name="price" class="form-control input-sm" data-inspect="decimal">
-        </div>
+        <x-input name="course" :required="true" :value="$assets->course" data-inspect="decimal">
+            <x-slot name="label">Курс</x-slot>
+        </x-input>
 
-        <div class="form-group">
-            <label><i class="text-danger">*</i> Курс</label>
-            <input value="{{ $assets->course }}" name="course" class="form-control input-sm" data-inspect="decimal">
-        </div>
+        <x-editor name="description" :value="$assets->description">
+            <x-slot name="label">Опис</x-slot>
+        </x-editor>
 
-        <div class="form-group">
-            <button class="btn btn-primary btn-sm">Зберегти</button>
-        </div>
-    </form>
+        <x-button>
+            <x-slot name="label">Зберегти</x-slot>
+        </x-button>
+    </x-form>
 @endsection
