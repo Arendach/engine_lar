@@ -2,87 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Storage\UniversalRequest;
+use App\Http\Requests\Storage\CreateRequest;
+use App\Http\Requests\Storage\UpdateRequest;
 use App\Models\Storage;
-use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class StorageController extends Controller
 {
     public $access = 'storage';
 
-    public function sectionMain()
+    public function sectionMain(): View
     {
-        $storage = Storage::all();
+        $storage = Storage::orderByDesc('priority')->get();
 
         return view('storage.main', compact('storage'));
     }
 
-    public function actionFormCreate()
+    public function actionFormCreate(): View
     {
         return view('storage.form_create');
     }
 
-    public function actionFormUpdate(int $id)
+    public function actionFormUpdate(int $id): View
     {
         $storage = Storage::findOrFail($id);
 
         return view('storage.form_update', compact('storage'));
     }
 
-    public function actionDelete(int $id)
+    public function actionDelete(int $id): void
     {
         Storage::findOrFail($id)->delete();
     }
 
-    public function actionCreate(UniversalRequest $request)
+    public function actionCreate(CreateRequest $request): void
     {
-        Storage::create($request->merge([
-            'delivery' => $request->get('delivery', 0),
-            'self'     => $request->get('self', 0),
-            'sending'  => $request->get('sending', 0)
-        ])->all());
+        Storage::create($request->validated());
     }
 
-    public function actionUpdate(UniversalRequest $request)
+    public function actionUpdate(UpdateRequest $request): void
     {
         Storage::findOrFail($request->id)->update($request->merge([
             'delivery' => $request->get('delivery', 0),
             'self'     => $request->get('self', 0),
             'sending'  => $request->get('sending', 0)
-        ])->all());
-    }
-
-    /**
-     * @param Request $request
-     * @todo rewrite
-     */
-    public function apiCountProducts(Request $request)
-    {
-        $ids = implode("','", (array)$post->ids);
-
-        $products = R::findAll('products', "`product_key` IN('$ids')");
-
-        $result = [];
-        foreach ($products as $product) {
-            $pts = R::findAll('product_to_storage', 'product_id = ?', [$product->id]);
-
-            $result[$product->product_key] = [];
-
-            foreach ($pts as $pt) {
-                $storage = R::load('storage', $pt->storage_id);
-
-                $result[$product->product_key][] = [
-                    'count' => $pt->count,
-                    'name'  => $storage->name,
-                    'id'    => $storage->id
-                ];
-            }
-        }
-
-        header('Content-Type: application/json');
-
-        echo json($result);
+        ])->validated());
     }
 }
-
-?>

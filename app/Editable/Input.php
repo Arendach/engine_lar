@@ -11,6 +11,10 @@ class Input extends EditableBasic
 
     public function __toString(): string
     {
+        if (env('APP_ENV') == 'testing') {
+            return $this->model->{$this->field};
+        }
+
         return view('assets.input')->with(['input' => $this])->render();
     }
 

@@ -10,6 +10,10 @@ class Select extends EditableBasic
 
     public function __toString(): string
     {
+        if (env('APP_ENV') == 'testing') {
+            return $this->model->{$this->field};
+        }
+
         return view('assets.select')->with(['select' => $this])->render();
     }
 

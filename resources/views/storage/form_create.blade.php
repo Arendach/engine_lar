@@ -5,32 +5,37 @@
 @section('modal_size', 'lg')
 
 @section('content')
-    <form data-type="ajax" action="@uri('StorageController@actionCreate')" data-after="reload">
-        <div class="form-group">
-            <label><i class="text-danger">*</i> Назва</label>
-            <input name="name" class="form-control">
-        </div>
+    <x-form action="/storage/create" data-after="reload">
+        <x-checkbox name="is_delivery">
+            <x-slot name="label">Доступний в доставках</x-slot>
+        </x-checkbox>
 
-        <div class="form-group">
-            <label>Сортування</label>
-            <input name="sort" class="form-control">
-        </div>
+        <x-checkbox name="is_self">
+            <x-slot name="label">Доступний в самовивозах</x-slot>
+        </x-checkbox>
 
-        <div class="form-group">
-            <label><i class="text-danger">*</i> Тип</label>
-            <select name="accounted" class="form-control">
-                <option value="0">const=0</option>
-                <option value="1">+/-</option>
-            </select>
-        </div>
+        <x-checkbox name="is_sending">
+            <x-slot name="label">Доступний в відправках</x-slot>
+        </x-checkbox>
 
-        <div class="form-group">
-            <label>Додаткова інформація</label>
-            <textarea data-type="ckeditor" name="info"></textarea>
-        </div>
+        <x-input :required="true" name="name">
+            <x-slot name="label">Назва</x-slot>
+        </x-input>
 
-        <div class="form-group">
-            <button class="btn btn-primary">Зберегти</button>
-        </div>
-    </form>
+        <x-input name="priority" value="0">
+            <x-slot name="label">Пріоритет</x-slot>
+        </x-input>
+
+        <x-select :required="true" name="is_accounted" :options="['const=0', '+/-']">
+            <x-slot name="label">Тип</x-slot>
+        </x-select>
+
+        <x-editor name="info">
+            <x-slot name="label">Додаткова інформація</x-slot>
+        </x-editor>
+
+        <x-button>
+            <x-slot name="label">Зберегти</x-slot>
+        </x-button>
+    </x-form>
 @endsection

@@ -3,6 +3,7 @@ class Forms {
         eventRegister('submit', '[data-type="ajax"]', this.sendAjaxForm)
         eventRegister('keyup', '[data-max]', this.maxFieldChecker)
         eventRegister('click', '[data-type="ajax_request"]', this.ajaxRequest)
+        eventRegister('click', '.custom-checkbox', this.customCheckBox)
     }
 
     sendAjaxForm(event) {
@@ -112,6 +113,15 @@ class Forms {
                 new ErrorHandler(response).apply()
             }
         })
+    }
+
+    customCheckBox(event) {
+        let  input = $(event.currentTarget).find('input')
+
+        input
+            .val(input.val() === '0' ? '1' : '0')
+            .siblings('.fa')
+            .toggle()
     }
 }
 

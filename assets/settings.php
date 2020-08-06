@@ -12,6 +12,7 @@ use App\Models\Setting;
 use App\Models\Shop;
 use App\Models\Site;
 use App\Models\Street;
+use App\Models\Storage;
 
 return [
     'hints' => [
@@ -305,5 +306,7 @@ return [
                 'title' => 'Значення'
             ]
         ]
-    ]
+    ],
+
+    'storage' => app(Storage::class)->builder(),
 ];

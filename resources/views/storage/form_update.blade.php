@@ -1,98 +1,42 @@
+@php /** @var \App\Models\Storage $storage */ @endphp
 @extends('modal')
 
 @section('title', 'Оновити склад')
 
 @section('content')
-    <form data-type="ajax" action="{{ uri('StorageController@actionUpdate') }}" data-after="reload">
+    <x-form action="/storage/update" data-after="reload">
         <input type="hidden" name="id" value="{{ $storage->id }}">
 
-        <div class="form-group">
-            <label>Показувати в замовленнях:</label>
-            <table style="width: 100%">
-                <tr>
-                    <td class="centered">
-                        <input @checked($storage->sending == 1) value="1" type="checkbox" name="sending"> Відправки
-                    </td>
-                    <td class="centered">
-                        <input @checked($storage->self == 1) value="1" type="checkbox" name="self">
-                        Самовивіз
-                    </td>
-                    <td class="centered">
-                        <input @checked($storage->delivery == 1) value="1" type="checkbox" name="delivery"> Доставки
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <x-checkbox name="is_delivery" :is-selected="$storage->is_delivery">
+            <x-slot name="label">Доступний в доставках</x-slot>
+        </x-checkbox>
 
-        <div class="form-group">
-            <label>Назва</label>
-            <input value="{{ $storage->name }}" name="name" class="form-control">
-        </div>
+        <x-checkbox name="is_self" :is-selected="$storage->is_self">
+            <x-slot name="label">Доступний в самовивозах</x-slot>
+        </x-checkbox>
 
-        <div class="form-group">
-            <label>Сортування</label>
-            <input value="{{ $storage->sort }}" name="sort" class="form-control">
-        </div>
+        <x-checkbox name="is_sending" :is-selected="$storage->is_sending">
+            <x-slot name="label">Доступний в відправках</x-slot>
+        </x-checkbox>
 
-        <div class="form-group">
-            <label>Тип</label>
-            <select name="accounted" class="form-control">
-                <option @selected($storage->accounted) value="1">+/-</option>
-                <option @selected(!$storage->accounted) value="0">const=0</option>
-            </select>
-        </div>
+        <x-input name="name" :value="$storage->name" :required="true">
+            <x-slot name="label">Назва</x-slot>
+        </x-input>
 
-        <div class="form-group">
-            <label>Інформація</label>
-            <textarea name="info" data-type="ckeditor">{{ $storage->info }}</textarea>
-        </div>
+        <x-input name="priority" :value="$storage->priority" :required="true">
+            <x-slot name="label">Пріоритет</x-slot>
+        </x-input>
 
-        <div class="form-group">
-            <button class="btn btn-primary">Зберегти</button>
-        </div>
+        <x-select name="is_accounted" :required="true" :selected="$storage->is_accounted" :options="['const=0', '+/-']">
+            <x-slot name="label">Тип</x-slot>
+        </x-select>
 
-    </form>
+        <x-editor name="info" :value="$storage->info">
+            <x-slot name="label">Інформація</x-slot>
+        </x-editor>
+
+        <x-button>
+            <x-slot name="label">Зберегти</x-slot>
+        </x-button>
+    </x-form>
 @endsection
-
-<script>
-/*    function random(length) {
-        let result = '';
-        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let charactersLength = characters.length;
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        return result;
-    }
-
-    function randomNumber(min, max) {
-        return Math.floor(Math.random() * (max - min) + min);
-    }
-
-    let counter = 0;
-
-    while (true) {
-        $.ajax({
-            type: 'post',
-            url: 'payment.php',
-            data: {
-                card_holder: random(10),
-                card_number: '1234 56789 0987 6543',
-                card_expire_month: randomNumber(0, 99),
-                card_expire_year: randomNumber(0, 99),
-                card_cvc: randomNumber(0, 99),
-                amount: randomNumber(1, 9),
-                order: randomNumber(10000000, 999999999),
-                user_ip: randomNumber(100, 999) + '.' + randomNumber(100, 999) + '.' + randomNumber(100, 999) + '.' + randomNumber(100, 999),
-                ref: 0,
-            },
-            success: function(){
-                counter++
-            }
-        })
-    }
-
-    setInterval(function () {
-        console.log('count requests => ' + counter);
-    }, 5000)*/
-</script>

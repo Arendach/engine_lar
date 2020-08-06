@@ -14,10 +14,8 @@ class ProductAssetsTest extends TestCase
         $productAsset = $this->getProductAsset();
 
         $this->get('/product/assets')
-            ->assertStatus(200)/*->assertSee($productAsset->name)
-            ->assertSee($productAsset->description)
-            ->assertSee($productAsset->price)
-            ->assertSee($productAsset->course)*/
+            ->assertStatus(200)
+            ->assertSee($productAsset->name)
         ;
     }
 
