@@ -14,7 +14,11 @@ function router(string $controller, string $action, string $prefix, $params = []
     $action = s2c($prefix . $action);
     $controller = s2c($controller);
 
-    $namespace = "\\App\\Http\\Controllers\\{$controller}Controller";
+    if (isset($params['namespace'])) {
+        $namespace = "{$params['namespace']}\\{$controller}Controller";
+    } else {
+        $namespace = "\\App\\Http\\Controllers\\{$controller}Controller";
+    }
 
     $controller = app($namespace);
 

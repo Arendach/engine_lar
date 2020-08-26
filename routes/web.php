@@ -15,5 +15,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/{controller}/{method}', function ($controller, $method) {
         return router($controller, $method, 'action');
     });
+
+    Route::get('shop/{controller}/{method}', function ($controller, $method) {
+        return router($controller, $method, 'section', [
+            'namespace' => '\\App\\Http\\Controllers\\Shop'
+        ]);
+    });
+
+    Route::post('shop/{controller}/{method}', function ($controller, $method) {
+        return router($controller, $method, 'action', [
+            'namespace' => '\\App\\Http\\Controllers\\Shop'
+        ]);
+    });
 });
 
