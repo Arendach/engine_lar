@@ -182,6 +182,7 @@ return [
         App\Providers\BladeExtendsServiceProvider::class,
         App\Providers\BladeComponentsServiceProvider::class,
         App\Providers\EloquentModelsServiceProvider::class,
+        App\Providers\ComposerServiceProvider::class,
     ],
 
     /*

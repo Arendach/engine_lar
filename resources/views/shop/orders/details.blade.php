@@ -5,8 +5,8 @@
 @section('title', "Замовлення з сайту # {$order->id}")
 
 @breadcrumbs(
-    ['Інтеграція', 'shop/main'],
-    ['Замовлення', 'shop/orders/main'],
+    ['Інтеграція', '/shop/main'],
+    ['Замовлення', '/shop/orders/main'],
     ["# {$order->id}"]
 )
 

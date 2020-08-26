@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Order extends Model
 {
     protected $connection = 'shop';
+    protected $guarded = [];
 
     private $deliveries = [
         'self'     => 'Самовивіз',
@@ -49,5 +50,17 @@ class Order extends Model
     public function getStatusText(): ?string
     {
         return $this->statuses[$this->status] ?? null;
+    }
+
+    public function connection(string $connection): self
+    {
+        $this->connection = $connection;
+
+        return $this;
+    }
+
+    public function getStatuses(): array
+    {
+        return $this->statuses;
     }
 }
