@@ -26,9 +26,14 @@ class ProductObserver
             }
         }
 
-        if (!$product->author_id) {
-            $product->author_id = user()->id;
+        try {
+            if (!$product->author_id) {
+                $product->author_id = user()->id;
+            }
+        } catch (\Exception $exception) {
+
         }
+
 
         if (!$product->product_key) {
             $product->product_key = rand32();
