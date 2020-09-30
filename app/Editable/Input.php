@@ -4,7 +4,7 @@ namespace App\Editable;
 
 class Input extends EditableBasic
 {
-    public $editor = false;
+    public $editor = true;
     public $element = 'input';
     public $type = 'text';
     public $localize = false;
@@ -18,7 +18,7 @@ class Input extends EditableBasic
         return view('assets.input')->with(['input' => $this])->render();
     }
 
-    public function editor(bool $editor = true): self
+    public function editor(bool $editor = false): self
     {
         $this->editor = $editor;
 

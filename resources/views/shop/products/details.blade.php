@@ -30,24 +30,20 @@
             <td>{{ $order->phone }}</td>
         </tr>
 
-        @if($order->email)
-            <tr>
-                <th>Електронна пошта</th>
-                <td>{{ $order->email }}</td>
-            </tr>
-        @endif
+        <tr>
+            <th>Електронна пошта</th>
+            <td>{{ $order->email }}</td>
+        </tr>
 
         <tr>
             <th>Спосіб доставки</th>
             <td>{{ $order->getDeliveryText() }}</td>
         </tr>
 
-        @if($order->date_delivery)
-            <tr>
-                <th>Дата доставки</th>
-                <td>{{ $order->date_delivery }}</td>
-            </tr>
-        @endif
+        <tr>
+            <th>Дата доставки</th>
+            <td>{{ $order->date_delivery }}</td>
+        </tr>
 
         <tr>
             <th>Створено</th>
@@ -63,44 +59,6 @@
             <th>Статус замовлення</th>
             <td>{{ $order->getStatusText() }}
         </tr>
-
-        @if($order->delivery == 'sending')
-
-            <tr>
-                <th>Місто</th>
-                <td>{{ $order->city_name }}</td>
-            </tr>
-
-            <tr>
-                <th>Відділення</th>
-                <td>{{ $order->warehouse_name }}</td>
-            </tr>
-
-        @elseif($order->delivery == 'delivery')
-
-            <tr>
-                <th>Місто</th>
-                <td>{{ $order->city }}</td>
-            </tr>
-
-            <tr>
-                <th>Вулиця</th>
-                <td>{{ $order->street }}</td>
-            </tr>
-
-            <tr>
-                <th>Адреса</th>
-                <td>{{ $order->address }}</td>
-            </tr>
-
-        @elseif($order->delivery == 'self')
-
-            <tr>
-                <th>Магазин</th>
-                <td>{{ $order->shop_name }}</td>
-            </tr>
-
-        @endif
 
         @if($order->base_id)
 
@@ -145,14 +103,6 @@
                 </td>
             </tr>
         @endforeach
-
-        <tr>
-            <td colspan="4" class="right">
-                <strong>
-                    Сума замовлення: <b class="text-danger">{{ $order->sum }}</b>
-                </strong>
-            </td>
-        </tr>
     </table>
 
 @endsection

@@ -1,7 +1,7 @@
 @php /** @var \App\Editable\Select $select */ @endphp
 <div class="content-editable-select">
     <div class="content-editable-text">
-        {{ $select->options[$select->value] ?? null }}
+        {!! $select->options[$select->value] ?? null !!}
     </div>
 
     <div class="content-editable-element" style="display: none">
@@ -15,7 +15,7 @@
             @endif
             @foreach($select->options as $optionKey => $optionValue)
                 <option value="{{ $optionKey }}" @selected($select->value == $optionKey)>
-                    {{ $optionValue }}
+                    {!! $optionValue !!}
                 </option>
             @endforeach
         </select>

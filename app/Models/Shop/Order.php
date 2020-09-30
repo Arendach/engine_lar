@@ -2,12 +2,11 @@
 
 namespace App\Models\Shop;
 
-use App\Models\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Order extends Model
 {
-    protected $connection = 'shop';
     protected $guarded = [];
 
     private $deliveries = [
@@ -37,6 +36,50 @@ class Order extends Model
             ->withPivot(['amount', 'price']);
     }
 
+    public function warehouse(): BelongsTo
+    {
+        return $this->belongsTo(NewPostWarehouse::class);
+    }
+
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class);
+    }
+
+    public function getCityNameAttribute(): ?string
+    {
+        try {
+            return $this->warehouse->city->name;
+        } catch (\Exception $exception) {
+            return null;
+        }
+    }
+
+    public function getWarehouseNameAttribute(): ?string
+    {
+        try {
+            return $this->warehouse->name;
+        } catch (\Exception $exception) {
+            return null;
+        }
+    }
+
+    public function getShopNameAttribute(): ?string
+    {
+        try {
+            return "{$this->shop->name} ({$this->shop->address})";
+        } catch (\Exception $exception) {
+            return null;
+        }
+    }
+
+    public function getSumAttribute(): ?float
+    {
+        return $this->products->sum(function (Product $product) {
+            return $product->pivot->price * $product->pivot->amount;
+        });
+    }
+
     public function getDeliveryText(): ?string
     {
         return $this->deliveries[$this->delivery] ?? null;
@@ -50,13 +93,6 @@ class Order extends Model
     public function getStatusText(): ?string
     {
         return $this->statuses[$this->status] ?? null;
-    }
-
-    public function connection(string $connection): self
-    {
-        $this->connection = $connection;
-
-        return $this;
     }
 
     public function getStatuses(): array
