@@ -12,4 +12,11 @@ class Model extends \App\Models\Model
 
         return $this;
     }
+
+    public function getUrl(string $path): string
+    {
+        $path = trim($path, '/');
+
+        return "http://piston.kiev.ua/$path";
+    }
 }

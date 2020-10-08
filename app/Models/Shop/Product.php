@@ -17,4 +17,14 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function getUrlAttribute(): string
+    {
+        return $this->getUrl("product/{$this->slug}");
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->article} {$this->name}";
+    }
 }
