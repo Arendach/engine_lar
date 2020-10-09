@@ -32,9 +32,9 @@
                 <td>{!! $product->editable('article') !!}</td>
 
                 <td class="action-2">
-                    <button class="btn btn-xs btn-primary">
+                    <a href="/shop/products/update?id={{$product->id}}" class="btn btn-xs btn-primary">
                         <i class="fa fa-pencil"></i>
-                    </button>
+                    </a>
 
                     <button class="btn btn-xs btn-danger">
                         <i class="fa fa-remove"></i>

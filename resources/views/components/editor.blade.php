@@ -19,7 +19,7 @@
             <div class="tab-pane active" id="tab_{{$name}}_uk">
                 <textarea name="{{ $name }}_uk" data-type="ckeditor">{{ $value  }}</textarea>
             </div>
-            <div class="tab-pane" id="#tab_{{$name}}_ru">
+            <div class="tab-pane" id="tab_{{$name}}_ru">
                 <textarea name="{{ $name }}_ru" data-type="ckeditor">{{ $valueRu  }}</textarea>
             </div>
         </div>

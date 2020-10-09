@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\Shop\Category;
 use App\Models\Shop\Order;
 use App\Repositories\Shop\ProductRepository;
@@ -23,6 +24,13 @@ class ProductsController extends Controller
         $categories = Category::getTreeSelect();
 
         return view('shop.products.main', compact('products', 'categories'));
+    }
+
+    public function sectionUpdate(int $id): View
+    {
+        $product = Product::findOrFail($id);
+
+        return view('shop.products.update.main', compact('product'));
     }
 
     public function sectionDetails(int $id): View

@@ -3,6 +3,7 @@
 Route::get('login', 'UserController@sectionLogin');
 Route::post('login', 'UserController@actionAuthorize')->name('login');
 Route::get('exit', 'UserController@sectionunAuthorize')->name('exit');
+Route::get('/shop/main', 'Shop\\MainController@main');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'MainController@index')->name('home');
