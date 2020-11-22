@@ -28,10 +28,6 @@ class ReviewsController extends Controller
         $review = Review::findOrFail($request->id);
 
         $review->update($request->validated());
-
-        $review->product->update([
-            'rating' => $review->product->reviews->avg('rating')
-        ]);
     }
 
     public function actionDelete(int $id): void

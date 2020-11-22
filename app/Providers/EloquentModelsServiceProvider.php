@@ -12,6 +12,7 @@ use App\Models\Payout;
 use App\Models\Product;
 use App\Models\PurchasePayment;
 use App\Models\Report;
+use App\Models\Shop\Review;
 use App\Models\User;
 use App\Models\UserAccess;
 use App\Observers\ArticleObserver;
@@ -24,6 +25,7 @@ use App\Observers\PayoutObserver;
 use App\Observers\ProductObserver;
 use App\Observers\PurchasePaymentObserver;
 use App\Observers\ReportObserver;
+use App\Observers\ReviewObserver;
 use App\Observers\UserAccessObserver;
 use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
@@ -48,5 +50,6 @@ class EloquentModelsServiceProvider extends ServiceProvider
         UserAccess::observe(UserAccessObserver::class);
         User::observe(UserObserver::class);
         Product::observe(ProductObserver::class);
+        Review::observe(ReviewObserver::class);
     }
 }
