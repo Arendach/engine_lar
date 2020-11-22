@@ -23,6 +23,12 @@ Route::group(['middleware' => 'auth'], function () {
         ]);
     });
 
+    Route::get('rozetka/{controller}/{method}', function ($controller, $method) {
+        return router($controller, $method, 'section', [
+            'namespace' => '\\App\\Http\\Controllers\\Rozetka'
+        ]);
+    });
+
     Route::post('shop/{controller}/{method}', function ($controller, $method) {
         return router($controller, $method, 'action', [
             'namespace' => '\\App\\Http\\Controllers\\Shop'

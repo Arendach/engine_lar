@@ -147,6 +147,7 @@
                     @endisset
 
                     @stack('js')
+                    @stack('css')
 
                     <script src="{{ asset('js/Reinitiable.js?'). rand32()  }}"></script>
 

@@ -10,13 +10,15 @@ class Select extends Component
     public $name;
     public $required;
     public $selected;
+    public $multiple;
 
-    public function __construct($name, $options = [], $required = false, $selected = null)
+    public function __construct($name, $options = [], $required = false, $selected = null, bool $multiple = false)
     {
         $this->options = $options;
         $this->name = $name;
         $this->required = $required;
         $this->selected = $selected;
+        $this->multiple = $multiple;
 
         $this->setOptions();
     }

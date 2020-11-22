@@ -10,6 +10,13 @@
 )
 
 @section('content')
+
+    <div class="right" style="margin-bottom: 15px">
+        <a href="/shop/products/import" class="btn btn-primary">
+            Імпорт товарів
+        </a>
+    </div>
+
     <table class="table table-bordered">
         <tr>
             <th>ID</th>

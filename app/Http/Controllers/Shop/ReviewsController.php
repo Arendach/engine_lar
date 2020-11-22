@@ -25,7 +25,13 @@ class ReviewsController extends Controller
 
     public function actionUpdate(UpdateReviewRequest $request): void
     {
-        Review::findOrFail($request->id)->update($request->validated());
+        $review = Review::findOrFail($request->id);
+
+        $review->update($request->validated());
+
+        $review->product->update([
+            'rating' => $review->product->reviews->avg('rating')
+        ]);
     }
 
     public function actionDelete(int $id): void
