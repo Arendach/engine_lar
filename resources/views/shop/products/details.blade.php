@@ -79,6 +79,7 @@
 
         <tr>
             <th>Товар</th>
+            <th>Артикул</th>
             <th>Кількість</th>
             <th>Ціна</th>
             <th>Сума</th>
@@ -88,6 +89,10 @@
             <tr>
                 <td>
                     {{ $product->full_name }}
+                </td>
+
+                <td>
+                    {{ $product->article }}
                 </td>
 
                 <td>
