@@ -87,7 +87,7 @@
         @foreach($order->products as $product)
             <tr>
                 <td>
-                    {{ $product->name_uk }}
+                    {{ $product->full_name }}
                 </td>
 
                 <td>
