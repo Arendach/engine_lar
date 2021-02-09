@@ -41,6 +41,10 @@
             <th>Спосіб доставки</th>
             <td>{{ $order->getDeliveryText() }}</td>
         </tr>
+        <tr>
+            <th>Сума доставки</th>
+            <td>{{ $order->delivery_price }}</td>
+        </tr>
 
         @if($order->date_delivery)
             <tr>
@@ -150,6 +154,9 @@
             <td colspan="4" class="right">
                 <strong>
                     Сума замовлення: <b class="text-danger">{{ $order->sum }}</b>
+                </strong><br>
+                <strong>
+                    З доставкою: <b class="text-danger">{{ $order->sum + $order->delivery_price }}</b>
                 </strong>
             </td>
         </tr>
