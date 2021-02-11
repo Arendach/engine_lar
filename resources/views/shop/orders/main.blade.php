@@ -12,6 +12,21 @@
 @section('content')
     <table class="table table-bordered">
         <tr>
+            @foreach($sites as $site)
+                <td>
+                    @if($_REQUEST['shop'] != $site->key)
+                    <a style="font-size: 18px" href="{{ uri('shop/orders/main?shop='.$site->key) }}">{{ $site->name }}</a>
+                    @else
+                        <span style="font-size: 18px">{{ $site->name }} (Текущий)</span>
+                    @endif
+                </td>
+            @endforeach
+        </tr>
+    </table>
+
+
+    <table class="table table-bordered">
+        <tr>
             <th>Імя</th>
             <th>Номер телефону</th>
             <th>Електронна пошта</th>

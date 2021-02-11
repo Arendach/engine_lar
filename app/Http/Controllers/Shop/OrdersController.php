@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shop\Order;
+use App\Models\Site;
 use App\Repositories\Shop\OrderRepository;
 use Illuminate\View\View;
 
@@ -19,8 +20,8 @@ class OrdersController extends Controller
     public function sectionMain(): View
     {
         $orders = $this->orderRepository->getForList();
-
-        return view('shop.orders.main', compact('orders'));
+        $sites = Site::where('key','!=', null)->get();
+        return view('shop.orders.main', compact('orders','sites'));
     }
 
     public function sectionDetails(int $id): View

@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'shop'
+    'shop',
+    'shop2'
 ];

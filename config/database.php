@@ -103,6 +103,26 @@ return [
             ]) : [],
         ],
 
+        'shop2' => [
+            'driver'         => 'mysql',
+            'url'            => env('SHOP2_DATABASE_URL'),
+            'host'           => env('SHOP2_DB_HOST', '127.0.0.1'),
+            'port'           => env('SHOP2_DB_PORT', '3306'),
+            'database'       => env('SHOP2_DB_DATABASE', 'forge'),
+            'username'       => env('SHOP2_DB_USERNAME', 'forge'),
+            'password'       => env('SHOP2_DB_PASSWORD', ''),
+            'unix_socket'    => env('SHOP2_DB_SOCKET', ''),
+            'charset'        => 'utf8mb4',
+            'collation'      => 'utf8mb4_unicode_ci',
+            'prefix'         => '',
+            'prefix_indexes' => true,
+            'strict'         => true,
+            'engine'         => null,
+            'options'        => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'refactor' => [
             'driver'         => 'mysql',
             'url'            => env('DATABASE_URL'),
