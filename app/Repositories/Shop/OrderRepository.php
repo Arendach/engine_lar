@@ -23,6 +23,11 @@ class OrderRepository
             ->paginate(20);
     }
 
+    public function getForDetail($id)
+    {
+        return $this->getInstance()->where('id', $id)->firstOrFail();
+    }
+
     public function getNewOrdersOnlyConnection(): int
     {
         return $this->instance

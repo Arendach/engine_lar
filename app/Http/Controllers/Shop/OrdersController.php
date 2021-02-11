@@ -20,13 +20,13 @@ class OrdersController extends Controller
     public function sectionMain(): View
     {
         $orders = $this->orderRepository->getForList();
-        $sites = Site::where('key','!=', null)->get();
-        return view('shop.orders.main', compact('orders','sites'));
+        $sites = Site::where('key', '!=', null)->get();
+        return view('shop.orders.main', compact('orders', 'sites'));
     }
 
     public function sectionDetails(int $id): View
     {
-        $order = Order::findOrFail($id);
+        $order = $this->orderRepository->getForDetail($id);
 
         return view('shop.orders.details', compact('order'));
     }
