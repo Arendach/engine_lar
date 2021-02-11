@@ -14,7 +14,10 @@
         <tr>
             @foreach($sites as $site)
                 <td>
-                    @if($_REQUEST['shop'] != $site->key)
+                    @php
+                    $shop = ($_REQUEST['shop']) ?? 'shop';
+                    @endphp
+                    @if($shop != $site->key)
                     <a style="font-size: 18px" href="{{ uri('shop/orders/main?shop='.$site->key) }}">{{ $site->name }}</a>
                     @else
                         <span style="font-size: 18px">{{ $site->name }} (Текущий)</span>
