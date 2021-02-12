@@ -126,7 +126,8 @@
         <tr>
             <th>Товар</th>
             <th>Кількість</th>
-            <th>Ціна</th>
+            <th>Ціна на<br>момент заказу</th>
+            <th>Ціна в магазині<br>на даний час</th>
             <th>Сума</th>
         </tr>
 
@@ -145,13 +146,25 @@
                 </td>
 
                 <td>
+                    {{ $product->price }}
+                </td>
+
+                <td>
                     {{ $product->pivot->price * $product->pivot->amount }}
                 </td>
             </tr>
         @endforeach
 
         <tr>
-            <td colspan="4" class="right">
+            <td>
+                <strong>
+                    Всього товарів:
+                </strong>
+            </td>
+            <td>
+                <b class="text-dark">{{ $order->products->count() }}</b>
+            </td>
+            <td colspan="3" class="right">
                 <strong>
                     Сума замовлення: <b class="text-danger">{{ $order->sum }}</b>
                 </strong><br>

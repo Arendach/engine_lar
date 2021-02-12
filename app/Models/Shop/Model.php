@@ -4,11 +4,11 @@ namespace App\Models\Shop;
 
 class Model extends \App\Models\Model
 {
-    protected $connection = 'shop';
+    protected $connection;
 
     public function connection(string $connection): self
     {
-        $this->connection = $connection;
+        $this->connection = request()->has('shop') ? request('shop') : 'shop';
 
         return $this;
     }

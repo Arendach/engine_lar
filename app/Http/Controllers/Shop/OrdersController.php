@@ -6,15 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Shop\Order;
 use App\Models\Site;
 use App\Repositories\Shop\OrderRepository;
+use App\Repositories\Shop\ProductRepository;
 use Illuminate\View\View;
 
 class OrdersController extends Controller
 {
-    private $orderRepository;
+    private $orderRepository, $productRepository;
 
-    public function __construct(OrderRepository $orderRepository)
+    public function __construct(OrderRepository $orderRepository,ProductRepository $productRepository)
     {
         $this->orderRepository = $orderRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function sectionMain(): View

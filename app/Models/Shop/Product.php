@@ -13,7 +13,10 @@ class Product extends Model
     protected $casts = [
         'name' => Translatable::class
     ];
-
+    public function connection(string $connection): Model
+    {
+        return parent::connection($connection);
+    }
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

@@ -29,6 +29,10 @@ class Order extends Model
         'canceled'   => 'Відмінено',
         'success'    => 'Виконано'
     ];
+    public function connection(string $connection): Model
+    {
+        return parent::connection($connection);
+    }
 
     public function products(): BelongsToMany
     {
