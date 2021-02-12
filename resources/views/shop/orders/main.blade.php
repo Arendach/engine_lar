@@ -55,7 +55,7 @@
                         <i class="fa fa-angle-double-down"></i>
                     </button>
 
-                    <a @tooltip('Деталі') href="{{ uri('shop/orders/details', ['id' => $order->id]) }}" class="btn btn-xs btn-success">
+                    <a @tooltip('Деталі') href="{{ uri('shop/orders/details', ['id' => $order->id,'shop' => $shop]) }}" class="btn btn-xs btn-success">
                         <i class="fa fa-bars"></i>
                     </a>
                 </td>
