@@ -1,5 +1,5 @@
 @php /** @var \App\Models\Product $product */ @endphp
-<x-form action="/product/update_info" class="col-md-offset-3 col-md-6">
+<x-form action="/product/update_info" class="col-md-offset-3 col-md-6" style="margin-bottom: 50px">
     <input type="hidden" name="id" value="{{ $product->id }}">
 
     <x-input name="name" :lang="true" :value="$product->name_uk" :value-ru="$product->name_ru" :required="true">

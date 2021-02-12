@@ -85,11 +85,15 @@ class Product extends Model
             ->withPivot('price', 'minus');
     }
 
-    public function getVolumeGeneralAttribute(): float
+    public function getVolumeGeneralAttribute()
     {
         $volume = $this->volume;
+        try {
+            return $volume[0] * $volume[1] * $volume[2] / 1000000;
 
-        return $volume[0] * $volume[1] * $volume[2] / 1000000;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     public function getLevel1Attribute(): ?string
