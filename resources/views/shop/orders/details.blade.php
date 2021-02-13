@@ -46,7 +46,12 @@
             <td>{{ $order->delivery_price }}</td>
         </tr>
 
-        @if($order->date_delivery)
+        <tr>
+            <th>Впевнений в заказі (Не перезвонювати)</th>
+            <td>{{ $order->check_callback ? 'ТАК' : 'НІ' }}</td>
+        </tr>
+
+    @if($order->date_delivery)
             <tr>
                 <th>Дата доставки</th>
                 <td>{{ $order->date_delivery }}</td>
