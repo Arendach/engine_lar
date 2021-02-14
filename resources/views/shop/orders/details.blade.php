@@ -48,7 +48,7 @@
 
         <tr>
             <th>Впевнений в заказі (Не перезвонювати)</th>
-            <td>{{ $order->check_callback ? 'ТАК' : 'НІ' }}</td>
+            <td>{{ $order->check_callback ? 'Можна доставляти' : 'ТЕЛЕФОНУВАТИ!' }}</td>
         </tr>
 
     @if($order->date_delivery)
