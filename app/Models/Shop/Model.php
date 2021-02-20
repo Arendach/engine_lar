@@ -8,7 +8,7 @@ class Model extends \App\Models\Model
 
     public function connection(string $connection): self
     {
-        $this->connection = request()->has('shop') ? request('shop') : 'shop';
+        $this->connection = request()->has('shop') ? request('shop') : $connection ?? 'shop';
 
         return $this;
     }
