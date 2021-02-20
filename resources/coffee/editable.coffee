@@ -59,6 +59,9 @@ window.changeField = (context) ->
     value = element.val()
     html = element.find('option:selected').html()
 
+    url = new URL(window.location.href)
+    shop = url.searchParams.get("shop")
+
     $.ajax({
         type: 'post'
         url: '/universal/update'
@@ -67,6 +70,7 @@ window.changeField = (context) ->
             value: value
             model: model
             id: id
+            shop: shop
         success: (response) =>
             toastr.success('Збережено')
             element.parent().hide()

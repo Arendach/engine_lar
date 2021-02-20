@@ -14,8 +14,15 @@ class UniversalController extends Controller
     public function actionUpdate(Request $request)
     {
         $model = $request->get('model');
-        $connection = app($model)->connection('shop'); // Надо как то передать  ТЕКУЩИЙ коннекшн вместо shop
-        $connection->findOrFail($request->id)->update([
+        $connection = $request->get('shop');
+
+        $modelInstance = resolve($model);
+
+        if ($connection) {
+            $modelInstance = $modelInstance->connection($connection);
+        }
+
+        $modelInstance->findOrFail($request->id)->update([
             $request->field => $request->value
         ]);
     }

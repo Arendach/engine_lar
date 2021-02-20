@@ -23,7 +23,9 @@ class OrdersController extends Controller
     {
         $orders = $this->orderRepository->getForList();
         $sites = Site::where('key', '!=', null)->get();
-        return view('shop.orders.main', compact('orders', 'sites'));
+        $shop = request('shop', 'shop');
+
+        return view('shop.orders.main', compact('orders', 'sites', 'shop'));
     }
 
     public function sectionDetails(int $id): View
