@@ -31,7 +31,7 @@ class ShopLinkDetected
         $currentUrl = $this->request->fullUrl();
         $previous = url()->previous();
 
-        $shop = preg_match('~shop=([a-z]+)~', $previous, $matches) ? $matches[1] : 'shop';
+        $shop = preg_match('~shop=([a-z0-9]+)~', $previous, $matches) ? $matches[1] : 'shop';
 
         if (preg_match('~\?~', $currentUrl)) {
             return $currentUrl . '&shop=' . $shop;
