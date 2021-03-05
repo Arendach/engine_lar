@@ -11,4 +11,9 @@ class MainController extends Controller
     {
         return view('shop.main');
     }
+    public function sectionIndex()
+    {
+
+        return view('shop.index');
+    }
 }

@@ -36,5 +36,29 @@
                 </li>
             @endif
         @endforeach
+        <li class="dropdown">
+            <a href="#{{-- uri('shop/main/index') --}}">
+                <i class="fa fa-newspaper-o"></i>
+                <span>
+                    Управління сайтами
+                </span>
+            </a>
+            <ul class="dropdown-1">
+                @foreach($siteList as $site)
+                    <li>
+                        <a href="{{ uri('shop/main?shop='.$site->key) }}">
+                            <i class="fa fa-newspaper-o"></i>
+                            <span>
+                                {{ $site->name }}
+                                <strong class="text-danger">
+                                    ({{ app(\App\Models\Shop\Order::class)->connection($site->key)->where('status','new_order')->count() }})
+                                </strong>
+                            </span>
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </li>
+
     </ul>
 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Composers;
 
+use App\Models\Site;
 use Illuminate\View\View;
 
 class LeftMenuComposer
@@ -9,7 +10,7 @@ class LeftMenuComposer
     public function compose(View $view)
     {
         $alertDanger = 'yes is it skillet';
-
-        $view->with(compact('alertDanger'));
+        $siteList = Site::where('key', !'IS NULL')->get();
+        $view->with(compact('alertDanger','siteList'));
     }
 }

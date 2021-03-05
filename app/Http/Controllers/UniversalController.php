@@ -25,5 +25,6 @@ class UniversalController extends Controller
         $modelInstance->findOrFail($request->id)->update([
             $request->field => $request->value
         ]);
+        return json_encode(['return'=>'ok']);
     }
 }

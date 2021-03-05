@@ -39,14 +39,23 @@ window.switchField = (context) ->
     field = element.data('field')
     value = element.is(':checked')
 
+    url = new URL(window.location.href)
+    shop = url.searchParams.get("shop")
+
     $.ajax({
         type: 'post'
         url: '/universal/update'
         data:
-            field: field
-            value: value
-            model: model
-            id: id
+            JSON.stringify({
+                field: field,
+                value: value,
+                model: model,
+                id: id,
+                shop: shop
+            })
+
+        dataType: 'json'
+        contentType:'application/json'
         success: (response) -> toastr.success('Збережено')
         error: (response) -> toastr.error('Помилка')
     })

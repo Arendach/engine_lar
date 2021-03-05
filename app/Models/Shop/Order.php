@@ -27,6 +27,7 @@ class Order extends Model
         'in_process' => 'Обробляється менеджером',
         'accepted'   => 'Прийнято менеджером',
         'canceled'   => 'Відмінено',
+        'payment'    => 'Сплачено',
         'success'    => 'Виконано'
     ];
     public function connection(string $connection): Model

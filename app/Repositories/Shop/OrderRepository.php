@@ -3,6 +3,7 @@
 namespace App\Repositories\Shop;
 
 use App\Models\Shop\Order;
+use Debugbar;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class OrderRepository

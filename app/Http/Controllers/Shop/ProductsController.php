@@ -22,15 +22,16 @@ class ProductsController extends Controller
     {
         $products = $this->productRepository->getForList();
         $categories = Category::getTreeSelect();
-
-        return view('shop.products.main', compact('products', 'categories'));
+        $shop = request('shop', 'shop');
+        return view('shop.products.main', compact('products', 'categories', 'shop'));
     }
 
     public function sectionUpdate(int $id): View
     {
         $product = Product::findOrFail($id);
+        $shop = request('shop', 'shop');
 
-        return view('shop.products.update.main', compact('product'));
+        return view('shop.products.update.main', compact('product','shop'));
     }
 
     public function sectionImport(): View
