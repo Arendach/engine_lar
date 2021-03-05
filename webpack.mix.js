@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+require('laravel-mix-alias');
 
 mix.options({
     processCssUrls: false
@@ -46,3 +47,5 @@ mix
     .less('resources/less/themes/flatfly.less', 'public/css/themes/flatfly.css')
     .less('resources/less/themes/yeti.less', 'public/css/themes/yeti.css')
     .less('resources/less/themes/paper.less', 'public/css/themes/paper.css')
+
+mix.version()
