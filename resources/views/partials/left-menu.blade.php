@@ -51,7 +51,7 @@
                             <span>
                                 {{ $site->name }}
                                 <strong class="text-danger">
-                                    ({{ app(\App\Models\Shop\Order::class)->connection($site->key)->where('status','new_order')->count() }})
+                                    ({{ app(\App\Models\Shop\Order::class)->strictConnection($site->key)->where('status','new_order')->count() }})
                                 </strong>
                             </span>
                         </a>

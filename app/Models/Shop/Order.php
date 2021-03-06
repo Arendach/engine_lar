@@ -31,9 +31,11 @@ class Order extends Model
         'payment'    => 'Сплачено',
         'success'    => 'Виконано'
     ];
-    public function connection(string $connection): Model
+    public function strictConnection(string $connection): Model
     {
-        return parent::connection($connection);
+        $this->connection = $connection;
+
+        return $this;
     }
 
     public function products(): BelongsToMany

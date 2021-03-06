@@ -10,7 +10,7 @@ class LeftMenuComposer
     public function compose(View $view)
     {
         $alertDanger = 'yes is it skillet';
-        $siteList = Site::where('key', !'IS NULL')->get();
+        $siteList = Site::whereNotNull('key')->get();
         $view->with(compact('alertDanger','siteList'));
     }
 }
