@@ -16,6 +16,7 @@ class Order extends Model
     ];
 
     private $payMethods = [
+        'online'            => 'Онлайн оплата LiqPay',
         'privat24'          => 'Оплата на карту ПБ',
         'cash'              => 'Оплата при доставці',
         'cashless'          => 'Безготівкова оплата',
