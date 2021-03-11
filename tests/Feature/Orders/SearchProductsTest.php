@@ -11,7 +11,7 @@ class SearchProductsTest extends TestCase
     {
         $this->authenticate();
 
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
 
         $this->post('/orders/search_products', [
             'type'   => 'other',
@@ -27,7 +27,7 @@ class SearchProductsTest extends TestCase
     {
         $this->authenticate();
 
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
 
         $this->post('/orders/get_product', [
             'type' => 'sending',

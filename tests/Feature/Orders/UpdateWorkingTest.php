@@ -15,10 +15,10 @@ class UpdateWorkingTest extends TestCase
     {
         $this->authenticate();
 
-        $hint = factory(OrderHint::class)->create();
-        $site = factory(Site::class)->create();
-        $courier = factory(User::class)->create();
-        $order = factory(Order::class)->create(['type' => 'self']);
+        $hint = OrderHint::factory()->create();
+        $site = Site::factory()->create();
+        $courier = User::factory()->create();
+        $order = Order::factory()->create(['type' => 'self']);
 
         $request = $this->post('/orders/update_working', [
             'id'            => $order->id,
@@ -38,10 +38,10 @@ class UpdateWorkingTest extends TestCase
     {
         $this->authenticate();
 
-        $hint = factory(OrderHint::class)->create();
-        $site = factory(Site::class)->create();
-        $courier = factory(User::class)->create();
-        $order = factory(Order::class)->create(['type' => 'delivery']);
+        $hint = OrderHint::factory()->create();
+        $site = Site::factory()->create();
+        $courier = User::factory()->create();
+        $order = Order::factory()->create(['type' => 'delivery']);
 
         $request = $this->post('/orders/update_working', [
             'id'            => $order->id,
@@ -61,11 +61,11 @@ class UpdateWorkingTest extends TestCase
     {
         $this->authenticate();
 
-        $hint = factory(OrderHint::class)->create();
-        $site = factory(Site::class)->create();
-        $courier = factory(User::class)->create();
-        $logistic = factory(Logistic::class)->create();
-        $order = factory(Order::class)->create(['type' => 'sending']);
+        $hint = OrderHint::factory()->create();
+        $site = Site::factory()->create();
+        $courier = User::factory()->create();
+        $logistic = Logistic::factory()->create();
+        $order = Order::factory()->create(['type' => 'sending']);
 
         $request = $this->post('/orders/update_working', [
             'id'            => $order->id,

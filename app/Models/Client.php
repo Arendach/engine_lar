@@ -2,53 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\DateHuman;
 use App\Traits\Filterable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * App\Models\Client
- *
- * @property int $id
- * @property string|null $name
- * @property string|null $email
- * @property string|null $phone
- * @property string|null $address
- * @property string|null $info
- * @property \App\Models\ClientGroup $group
- * @property int $percentage
- * @property int $manager_id
- * @property-read \App\Models\User $manager
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereGroup($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereInfo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereManagerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client wherePercentage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client wherePhone($value)
- * @mixin \Eloquent
- * @property int|null $group_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereGroupId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client whereUpdatedAt($value)
- * @property-read string $created_date_human
- * @property-read string $updated_date_human
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
- * @property-read int|null $orders_count
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Client filter($filters)
- */
 class Client extends Model
 {
     use Filterable;
-    use DateHuman;
 
     protected $table = 'clients';
 

@@ -2,12 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 class ClientGroup extends Model
 {
-    protected $table = 'client_groups';
-
     protected $guarded = [];
 
     public $timestamps = false;

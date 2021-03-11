@@ -1,14 +1,20 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\Site;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Site::class, function (Faker $faker) {
-    return [
-        'name' => $faker->name,
-        'url'  => $faker->url,
-        'key'  => $faker->md5
-    ];
-});
+class SiteFactory extends Factory
+{
+    protected $model = Site::class;
+
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->name,
+            'url'  => $this->faker->url,
+            'key'  => $this->faker->md5
+        ];
+    }
+}

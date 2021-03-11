@@ -1,18 +1,24 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\SmsTemplate;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(SmsTemplate::class, function (Faker $faker) {
-    return [
-        'name' => $faker->name,
-        'text' => $faker->realText(),
-        'type' => $faker->randomKey([
-            'delivery',
-            'self',
-            'sending'
-        ])
-    ];
-});
+class SmsTemplateFactory extends Factory
+{
+    protected $model = SmsTemplate::class;
+
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->name,
+            'text' => $this->faker->realText(),
+            'type' => $this->faker->randomKey([
+                'delivery',
+                'self',
+                'sending'
+            ])
+        ];
+    }
+}

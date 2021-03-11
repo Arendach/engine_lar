@@ -11,7 +11,7 @@ trait StorageEntity
     public function getStorage(): Storage
     {
         if (!$this->storage) {
-            $this->storage = factory(Storage::class)->create();
+            $this->storage = Storage::factory()->create();
         }
 
         return $this->storage;

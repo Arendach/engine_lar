@@ -23,7 +23,7 @@ class ProductAssetsTest extends TestCase
     {
         $this->authenticate();
 
-        $data = factory(ProductAsset::class)->make()->getAttributes();
+        $data = ProductAsset::factory()->make()->getAttributes();
 
         $this->post('/product/create_assets', $data)->assertStatus(200);
 
@@ -35,7 +35,7 @@ class ProductAssetsTest extends TestCase
         $this->authenticate();
 
         $asset = $this->getProductAsset();
-        $data = factory(ProductAsset::class)->make()->getAttributes();
+        $data = ProductAsset::factory()->make()->getAttributes();
 
         $this->post('/product/update_assets', array_merge($asset->getAttributes(), $data))
             ->assertStatus(200);

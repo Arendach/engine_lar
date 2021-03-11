@@ -13,9 +13,9 @@ class PreviewTest extends TestCase
     {
         $this->authenticate();
 
-        $order = factory(Order::class)->create();
-        $product = factory(Product::class)->create();
-        $storage = factory(Storage::class)->create();
+        $order = Order::factory()->create();
+        $product = Product::factory()->create();
+        $storage = Storage::factory()->create();
 
         $order->products()->attach($product, [
             'storage_id' => $storage->id,

@@ -1,17 +1,24 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\ProductAsset;
-use Faker\Generator as Faker;
+use App\Models\Storage;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(ProductAsset::class, function (Faker $faker) {
-    return [
-        'name'        => $faker->name,
-        'storage_id'  => factory(\App\Models\Storage::class)->create(),
-        'price'       => $faker->numberBetween(1, 99999),
-        'course'      => $faker->numberBetween(1, 9999),
-        'code'        => $faker->numberBetween(0, 9999999),
-        'description' => $faker->randomHtml()
-    ];
-});
+class ProductAssetFactory extends Factory
+{
+    protected $model = ProductAsset::class;
+
+    public function definition(): array
+    {
+        return [
+            'name'        => $this->faker->name,
+            'storage_id'  => Storage::factory()->create(),
+            'price'       => $this->faker->numberBetween(1, 99999),
+            'course'      => $this->faker->numberBetween(1, 9999),
+            'code'        => $this->faker->numberBetween(0, 9999999),
+            'description' => $this->faker->randomHtml()
+        ];
+    }
+}

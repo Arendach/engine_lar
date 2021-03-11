@@ -10,7 +10,7 @@ class NewPostTest extends TestCase
 {
     public function testSearchCities()
     {
-        $city = factory(NewPostCity::class)->create();
+        $city = NewPostCity::factory()->create();
 
         $request = $this->postJson('/api/new_post/search_cities', [
             'name' => $city->name
@@ -29,9 +29,9 @@ class NewPostTest extends TestCase
     public function testSearchWarehouses()
     {
         // test search by ref
-        $cityRef = factory(NewPostCity::class)->create();
+        $cityRef = NewPostCity::factory()->create();
 
-        $warehouseRef = factory(NewPostWarehouse::class)->create([
+        $warehouseRef = NewPostWarehouse::factory()->create([
             'city_ref' => $cityRef->ref,
             'city_id'  => $cityRef->id
         ]);
@@ -54,9 +54,9 @@ class NewPostTest extends TestCase
 
 
         // test search by id
-        $cityId = factory(NewPostCity::class)->create();
+        $cityId = NewPostCity::factory()->create();
 
-        $warehouseId = factory(NewPostWarehouse::class)->create([
+        $warehouseId = NewPostWarehouse::factory()->create([
             'city_id'  => $cityId->id,
             'city_ref' => $cityId->ref
         ]);

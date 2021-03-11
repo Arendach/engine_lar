@@ -108,7 +108,7 @@ class ManufacturerTest extends TestCase
     {
         $this->authenticate();
 
-        $manufacturer = factory(Manufacturer::class)->create();
+        $manufacturer = Manufacturer::factory()->create();
 
         $this->post('/manufacturer/delete', ['id' => $manufacturer->id])
             ->assertStatus(200);

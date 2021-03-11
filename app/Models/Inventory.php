@@ -2,17 +2,11 @@
 
 namespace App\Models;
 
-use App\Traits\DateHuman;
-use App\Traits\Editable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Inventory extends Model
 {
-    use DateHuman;
-    use Editable;
-
     protected $table = 'inventory';
 
     protected $guarded = [];

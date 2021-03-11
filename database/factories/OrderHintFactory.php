@@ -1,14 +1,20 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\OrderHint;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(OrderHint::class, function (Faker $faker) {
-    return [
-        'color'       => $faker->hexColor,
-        'description' => $faker->text(30),
-        'type'        => $faker->randomKey(['self', 'delivery', 'sending', 'common'])
-    ];
-});
+class OrderHintFactory extends Factory
+{
+    protected $model = OrderHint::class;
+
+    public function definition(): array
+    {
+        return [
+            'color'       => $this->faker->hexColor,
+            'description' => $this->faker->text(30),
+            'type'        => $this->faker->randomKey(['self', 'delivery', 'sending', 'common'])
+        ];
+    }
+}

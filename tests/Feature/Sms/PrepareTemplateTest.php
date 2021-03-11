@@ -12,12 +12,12 @@ class PrepareTemplateTest extends TestCase
     {
         $this->authenticate();
 
-        $template = factory(SmsTemplate::class)->create([
+        $template = SmsTemplate::factory()->create([
             'text' => '@date@ @id@',
             'type' => 'sending'
         ]);
 
-        $order = factory(Order::class)->create([
+        $order = Order::factory()->create([
             'type' => $template->type
         ]);
 

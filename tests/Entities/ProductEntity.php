@@ -11,7 +11,7 @@ trait ProductEntity
     public function getProduct(): Product
     {
         if (!$this->product) {
-            $this->product = factory(Product::class)->create([
+            $this->product = Product::factory()->create([
                 'manufacturer_id' => $this->getManufacturer()->id,
                 'category_id'     => $this->getCategory()->id,
                 'author_id'       => $this->getUser()->id

@@ -9,7 +9,7 @@ class StreetTest extends TestCase
 {
     public function testSearch()
     {
-        $street = factory(Street::class)->create();
+        $street = Street::factory()->create();
 
         $request = $this->postJson('/api/streets/search', [
             'name' => $street->name

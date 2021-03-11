@@ -11,7 +11,7 @@ trait ProductAssetEntity
     public function getProductAsset(): ProductAsset
     {
         if (!$this->productAsset) {
-            $this->productAsset = factory(ProductAsset::class)->create([
+            $this->productAsset = ProductAsset::factory()->create([
                 'storage_id' => $this->getStorage()->id
             ]);
         }

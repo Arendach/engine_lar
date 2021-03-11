@@ -1,17 +1,24 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\Inventory;
 use App\Models\Manufacturer;
 use App\Models\Storage;
-use Faker\Generator as Faker;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Inventory::class, function (Faker $faker) {
-    return [
-        'user_id'         => factory(\App\Models\User::class)->create(),
-        'comment'         => $faker->randomHtml(),
-        'manufacturer_id' => factory(Manufacturer::class)->create(),
-        'storage_id'      => factory(Storage::class)->create(),
-    ];
-});
+class InventoryFactory extends Factory
+{
+    protected $model = Inventory::class;
+
+    public function definition(): array
+    {
+        return [
+            'user_id'         => User::factory()->create(),
+            'comment'         => $this->faker->randomHtml(),
+            'manufacturer_id' => Manufacturer::factory()->create(),
+            'storage_id'      => Storage::factory()->create(),
+        ];
+    }
+}

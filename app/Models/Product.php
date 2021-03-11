@@ -7,11 +7,9 @@ use App\Casts\ProductAttributesCast;
 use App\Casts\ProductName;
 use App\Casts\Translatable;
 use App\Services\ProductHistoryService;
-use App\Traits\Editable;
 use App\Traits\Filterable;
 use App\Traits\NumberFormat;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,7 +20,6 @@ class Product extends Model
     use EagerLoadPivotTrait;
     use Filterable;
     use NumberFormat;
-    use Editable;
 
     protected $table = 'products';
 

@@ -1,17 +1,23 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\Inventory;
 use App\Models\InventoryProduct;
 use App\Models\Product;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(InventoryProduct::class, function (Faker $faker) {
-    return [
-        'inventory_id'    => factory(Inventory::class)->create(),
-        'product_id'      => factory(Product::class)->create(),
-        'amount'          => $faker->numberBetween(1, 100),
-        'previous_amount' => $faker->numberBetween(1, 100)
-    ];
-});
+class InventoryProductFactory extends Factory
+{
+    protected $model = InventoryProduct::class;
+
+    public function definition(): array
+    {
+        return [
+            'inventory_id'    => Inventory::factory()->create(),
+            'product_id'      => Product::factory()->create(),
+            'amount'          => $this->faker->numberBetween(1, 100),
+            'previous_amount' => $this->faker->numberBetween(1, 100)
+        ];
+    }
+}

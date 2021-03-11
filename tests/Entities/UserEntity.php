@@ -11,7 +11,7 @@ trait UserEntity
     public function getUser(): User
     {
         if (!$this->user) {
-            $this->user = factory(User::class)->create();
+            $this->user = User::factory()->create();
         }
 
         return $this->user;

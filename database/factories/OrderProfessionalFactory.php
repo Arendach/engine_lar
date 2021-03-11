@@ -1,13 +1,19 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\OrderProfessional;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(OrderProfessional::class, function (Faker $faker) {
-    return [
-        'name'  => $faker->text,
-        'color' => trim($faker->hexColor, '#')
-    ];
-});
+class OrderProfessionalFactory extends Factory
+{
+    protected $model = OrderProfessional::class;
+
+    public function definition(): array
+    {
+        return [
+            'name'  => $this->faker->text,
+            'color' => trim($this->faker->hexColor, '#')
+        ];
+    }
+}

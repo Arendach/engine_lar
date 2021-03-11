@@ -11,7 +11,7 @@ trait ManufacturerEntity
     public function getManufacturer(): Manufacturer
     {
         if (!$this->manufacturer) {
-            $this->manufacturer = factory(Manufacturer::class)->create();
+            $this->manufacturer = Manufacturer::factory()->create();
         }
 
         return $this->manufacturer;

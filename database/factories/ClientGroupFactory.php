@@ -1,12 +1,18 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\ClientGroup;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(ClientGroup::class, function (Faker $faker) {
-    return [
-        'name' => $faker->name
-    ];
-});
+class ClientGroupFactory extends Factory
+{
+    protected $model = ClientGroup::class;
+
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->name
+        ];
+    }
+}

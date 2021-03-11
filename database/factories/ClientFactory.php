@@ -1,22 +1,28 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\Client;
 use App\Models\ClientGroup;
 use App\Models\User;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Client::class, function (Faker $faker) {
-    return [
-        'name'            => $faker->name,
-        'email'           => $faker->email,
-        'phone'           => $faker->phoneNumber,
-        'address'         => $faker->address,
-        'info'            => $faker->randomHtml(),
-        'client_group_id' => factory(ClientGroup::class)->create(),
-        'percentage'      => rand(0, 99),
-        'user_id'         => factory(User::class)->create(),
-        'count_orders'    => rand(0, 999)
-    ];
-});
+class ClientFactory extends Factory
+{
+    protected $model = Client::class;
+
+    public function definition(): array
+    {
+        return [
+            'name'            => $this->faker->name,
+            'email'           => $this->faker->email,
+            'phone'           => $this->faker->phoneNumber,
+            'address'         => $this->faker->address,
+            'info'            => $this->faker->randomHtml(),
+            'client_group_id' => ClientGroup::factory()->create(),
+            'percentage'      => rand(0, 99),
+            'user_id'         => User::factory()->create(),
+            'count_orders'    => rand(0, 999)
+        ];
+    }
+}

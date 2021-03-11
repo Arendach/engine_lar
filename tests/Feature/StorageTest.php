@@ -25,7 +25,7 @@ class StorageTest extends TestCase
     {
         $this->authenticate();
 
-        $data = factory(Storage::class)->make()->getAttributes();
+        $data = Storage::factory()->make()->getAttributes();
 
         $this->post('/storage/create', $data)->assertStatus(200);
 
@@ -37,7 +37,7 @@ class StorageTest extends TestCase
         $this->authenticate();
 
         $asset = $this->getStorage();
-        $data = factory(Storage::class)->make()->getAttributes();
+        $data = Storage::factory()->make()->getAttributes();
 
         $this->post('/storage/update', array_merge($asset->getAttributes(), $data))
             ->assertStatus(200);

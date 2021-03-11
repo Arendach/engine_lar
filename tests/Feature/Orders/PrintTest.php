@@ -14,10 +14,10 @@ class PrintTest extends TestCase
     private function getOrder(): Order
     {
         if (is_null($this->order)) {
-            $this->order = factory(Order::class)->create();
-            $product = factory(Product::class)->create();
+            $this->order = Order::factory()->create();
+            $product = Product::factory()->create();
             $this->order->products()->attach($product, [
-                'storage_id' => factory(Storage::class)->create()->id,
+                'storage_id' => Storage::factory()->create()->id,
                 'amount'     => rand(1, 99),
                 'price'      => $product->price
             ]);

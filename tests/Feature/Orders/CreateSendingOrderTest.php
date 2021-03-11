@@ -20,16 +20,16 @@ class CreateSendingOrderTest extends TestCase
     {
         $this->authenticate();
 
-        $client = factory(Client::class)->create();
-        $hint = factory(OrderHint::class)->create();
-        $site = factory(Site::class)->create();
-        $courier = factory(User::class)->create();
-        $pay = factory(Pay::class)->create();
-        $product = factory(Product::class)->create();
-        $storage = factory(Storage::class)->create();
-        $city = factory(NewPostCity::class)->create();
-        $warehouse = factory(NewPostWarehouse::class)->create();
-        $logistic = factory(Logistic::class)->create();
+        $client = Client::factory()->create();
+        $hint = OrderHint::factory()->create();
+        $site = Site::factory()->create();
+        $courier = User::factory()->create();
+        $pay = Pay::factory()->create();
+        $product = Product::factory()->create();
+        $storage = Storage::factory()->create();
+        $city = NewPostCity::factory()->create();
+        $warehouse = NewPostWarehouse::factory()->create();
+        $logistic = Logistic::factory()->create();
 
         $this->post('/orders/create_sending', [
             'type'                  => 'sending',

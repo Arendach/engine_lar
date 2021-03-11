@@ -11,7 +11,7 @@ class SettingsLogisticsTest extends TestCase
     {
         $this->authenticate();
 
-        $hint = factory(Logistic::class)->create();
+        $hint = Logistic::factory()->create();
 
         $this->get('/setting/logistic')
             ->assertStatus(200)

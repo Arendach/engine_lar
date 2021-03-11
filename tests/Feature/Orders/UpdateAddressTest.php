@@ -14,10 +14,10 @@ class UpdateAddressTest extends TestCase
     {
         $this->authenticate();
 
-        $oldShop = factory(Shop::class)->create();
-        $newShop = factory(Shop::class)->create();
+        $oldShop = Shop::factory()->create();
+        $newShop = Shop::factory()->create();
 
-        $order = factory(Order::class)->create([
+        $order = Order::factory()->create([
             'shop_id' => $oldShop,
             'type'    => 'self'
         ]);
@@ -32,7 +32,7 @@ class UpdateAddressTest extends TestCase
     {
         $this->authenticate();
 
-        $order = factory(Order::class)->create([
+        $order = Order::factory()->create([
             'type' => 'delivery'
         ]);
 
@@ -49,12 +49,12 @@ class UpdateAddressTest extends TestCase
     {
         $this->authenticate();
 
-        $order = factory(Order::class)->create([
+        $order = Order::factory()->create([
             'type' => 'sending'
         ]);
 
-        $warehouse = factory(NewPostWarehouse::class)->create();
-        $city = factory(NewPostCity::class)->create();
+        $warehouse = NewPostWarehouse::factory()->create();
+        $city = NewPostCity::factory()->create();
 
         $this->post('/orders/update_address', [
             'id'                    => $order->id,

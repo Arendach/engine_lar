@@ -11,7 +11,6 @@ class CategoryTest extends TestCase
     {
         $this->authenticate();
 
-
         $category = $this->getCategory();
         $this->get('/category/main')
             ->assertStatus(200)
@@ -46,7 +45,7 @@ class CategoryTest extends TestCase
         $this->authenticate();
 
         $category = $this->getCategory();
-        $newCategory = factory(Category::class)->create();
+        $newCategory = Category::factory()->create();
 
         $name = $this->faker->name;
         $serviceCode = $this->faker->numberBetween(1000, 99999);

@@ -13,8 +13,8 @@ class BonusesTest extends TestCase
     {
         $this->authenticate();
 
-        $order = factory(Order::class)->create();
-        $user = factory(User::class)->create();
+        $order = Order::factory()->create();
+        $user = User::factory()->create();
 
         $this->post('/orders/create_bonus', [
             "data"      => $order->id,
@@ -30,9 +30,9 @@ class BonusesTest extends TestCase
     {
         $this->authenticate();
 
-        $order = factory(Order::class)->create();
-        $user = factory(User::class)->create();
-        $bonus = factory(Bonus::class)->create([
+        $order = Order::factory()->create();
+        $user = User::factory()->create();
+        $bonus = Bonus::factory()->create([
             'user_id' => $user->id,
             'data'    => $order->id
         ]);

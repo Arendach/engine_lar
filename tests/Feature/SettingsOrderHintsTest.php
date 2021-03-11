@@ -11,7 +11,7 @@ class SettingsOrderHintsTest extends TestCase
     {
         $this->authenticate();
 
-        $hint = factory(OrderHint::class)->create();
+        $hint = OrderHint::factory()->create();
 
         $this->get('/setting/hints')
             ->assertStatus(200)

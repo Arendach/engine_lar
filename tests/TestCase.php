@@ -35,7 +35,7 @@ abstract class TestCase extends BaseTestCase
     public function authenticate()
     {
         if (is_null($this->user)) {
-            $this->user = factory(User::class)->create([
+            $this->user = User::factory()->create([
                 'login'            => 'Arendach',
                 'user_position_id' => null,
                 'password'         => md5(md5('qwerty'))

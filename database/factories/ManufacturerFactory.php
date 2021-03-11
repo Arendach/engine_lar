@@ -1,17 +1,23 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\Manufacturer;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Manufacturer::class, function (Faker $faker) {
-    return [
-        'name_ru' => $faker->name,
-        'name_uk' => $faker->name,
-        'email'   => $faker->email,
-        'phone'   => $faker->phoneNumber,
-        'address' => $faker->address,
-        'info'    => $faker->randomHtml()
-    ];
-});
+class ManufacturerFactory extends Factory
+{
+    protected $model = Manufacturer::class;
+
+    public function definition(): array
+    {
+        return [
+            'name_ru' => $this->faker->name,
+            'name_uk' => $this->faker->name,
+            'email'   => $this->faker->email,
+            'phone'   => $this->faker->phoneNumber,
+            'address' => $this->faker->address,
+            'info'    => $this->faker->randomHtml()
+        ];
+    }
+}

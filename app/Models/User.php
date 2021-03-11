@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\Editable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -11,9 +9,6 @@ use Illuminate\Support\Collection;
 class User extends Model
 {
     use SoftDeletes;
-    use Editable;
-
-    protected $table = 'users';
 
     protected $guarded = [];
 

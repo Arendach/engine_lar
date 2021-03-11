@@ -18,14 +18,14 @@ class CreateSelfOrderTest extends TestCase
     {
         $this->authenticate();
 
-        $client = factory(Client::class)->create();
-        $hint = factory(OrderHint::class)->create();
-        $site = factory(Site::class)->create();
-        $courier = factory(User::class)->create();
-        $shop = factory(Shop::class)->create();
-        $pay = factory(Pay::class)->create();
-        $product = factory(Product::class)->create();
-        $storage = factory(Storage::class)->create();
+        $client = Client::factory()->create();
+        $hint = OrderHint::factory()->create();
+        $site = Site::factory()->create();
+        $courier = User::factory()->create();
+        $shop = Shop::factory()->create();
+        $pay = Pay::factory()->create();
+        $product = Product::factory()->create();
+        $storage = Storage::factory()->create();
 
         $this->post('/orders/create_self', [
             'type'          => 'self',

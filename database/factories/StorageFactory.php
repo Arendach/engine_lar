@@ -1,18 +1,24 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\Storage;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Storage::class, function (Faker $faker) {
-    return [
-        'name'         => $faker->name,
-        'is_accounted' => $faker->boolean,
-        'info'         => $faker->text,
-        'is_delivery'  => $faker->boolean,
-        'is_self'      => $faker->boolean,
-        'is_sending'   => $faker->boolean,
-        'priority'     => 1
-    ];
-});
+class StorageFactory extends Factory
+{
+    protected $model = Storage::class;
+
+    public function definition(): array
+    {
+        return [
+            'name'         => $this->faker->name,
+            'is_accounted' => $this->faker->boolean,
+            'info'         => $this->faker->text,
+            'is_delivery'  => $this->faker->boolean,
+            'is_self'      => $this->faker->boolean,
+            'is_sending'   => $this->faker->boolean,
+            'priority'     => 1
+        ];
+    }
+}

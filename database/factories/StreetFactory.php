@@ -1,15 +1,21 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\Street;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Street::class, function (Faker $faker) {
-    return [
-        'city'        => 'Київ',
-        'district'    => $faker->streetAddress,
-        'street_type' => $faker->streetSuffix,
-        'name'        => $faker->streetName
-    ];
-});
+class StreetFactory extends Factory
+{
+    protected $model = Street::class;
+
+    public function definition(): array
+    {
+        return [
+            'city'        => 'Київ',
+            'district'    => $this->faker->streetAddress,
+            'street_type' => $this->faker->streetSuffix,
+            'name'        => $this->faker->streetName
+        ];
+    }
+}

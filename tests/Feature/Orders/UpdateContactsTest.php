@@ -11,7 +11,7 @@ class UpdateContactsTest extends TestCase
     {
         $this->authenticate();
 
-        $order = factory(Order::class)->create();
+        $order = Order::factory()->create();
 
         $request = $this->post('/orders/update_contacts', [
             'id'     => $order->id,

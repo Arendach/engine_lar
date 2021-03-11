@@ -11,7 +11,7 @@ trait InventoryEntity
     public function getInventory(): Inventory
     {
         if (!$this->inventory) {
-            $this->inventory = factory(Inventory::class)->create([
+            $this->inventory = Inventory::factory()->create([
                 'user_id'         => $this->getUser()->id,
                 'manufacturer_id' => $this->getManufacturer()->id,
                 'storage_id'      => $this->getStorage()->id

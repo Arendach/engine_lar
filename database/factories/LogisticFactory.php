@@ -1,12 +1,18 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\Logistic;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Logistic::class, function (Faker $faker) {
-    return [
-        'name' => $faker->text(32)
-    ];
-});
+class LogisticFactory extends Factory
+{
+    protected $model = Logistic::class;
+
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->text(32)
+        ];
+    }
+}

@@ -1,19 +1,25 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\NewPostWarehouse;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(NewPostWarehouse::class, function (Faker $faker) {
-    return [
-        'name'             => $faker->text,
-        'ref'              => $faker->md5,
-        'city_ref'         => $faker->md5,
-        'number'           => $faker->randomNumber(),
-        'max_weight_all'   => $faker->numberBetween(1, 999),
-        'max_weight_place' => $faker->numberBetween(1, 999),
-        'city_id'          => 1,
-        'phone'            => $faker->phoneNumber
-    ];
-});
+class NewPostWarehouseFactory extends Factory
+{
+    protected $model = NewPostWarehouse::class;
+
+    public function definition(): array
+    {
+        return [
+            'name'             => $this->faker->text,
+            'ref'              => $this->faker->md5,
+            'city_ref'         => $this->faker->md5,
+            'number'           => $this->faker->randomNumber(),
+            'max_weight_all'   => $this->faker->numberBetween(1, 999),
+            'max_weight_place' => $this->faker->numberBetween(1, 999),
+            'city_id'          => 1,
+            'phone'            => $this->faker->phoneNumber
+        ];
+    }
+}

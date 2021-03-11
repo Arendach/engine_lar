@@ -11,7 +11,7 @@ trait CategoryEntity
     public function getCategory(): Category
     {
         if (!$this->category) {
-            $this->category = factory(Category::class)->create();
+            $this->category = Category::factory()->create();
         }
 
         return $this->category;

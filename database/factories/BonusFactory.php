@@ -1,17 +1,23 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Models\Bonus;
-use Faker\Generator as Faker;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Bonus::class, function (Faker $faker) {
-    return [
-        'data'      => $faker->randomNumber(),
-        'is_profit' => 1,
-        'sum'       => $faker->randomNumber(),
-        'user_id'   => factory(\App\Models\User::class)->create(),
-        'source'    => 'order',
+class BonusFactory extends Factory
+{
+    protected $model = Bonus::class;
 
-    ];
-});
+    public function definition(): array
+    {
+        return [
+            'data'      => $this->faker->randomNumber(),
+            'is_profit' => 1,
+            'sum'       => $this->faker->randomNumber(),
+            'user_id'   => User::factory()->create(),
+            'source'    => 'order',
+        ];
+    }
+}
