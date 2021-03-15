@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shop\Order;
+use App\Models\Shop\Product;
+use App\Models\Order as BaseOrder;
 use App\Models\Site;
 use App\Repositories\Shop\OrderRepository;
 use App\Repositories\Shop\ProductRepository;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class OrdersController extends Controller
@@ -33,5 +36,9 @@ class OrdersController extends Controller
         $order = $this->orderRepository->getForDetail($id);
 
         return view('shop.orders.details', compact('order'));
+    }
+    public function actionImport(Request $request){
+        $order = app(\App\Models\Shop\Order::class)->strictConnection($request->shop)->find($request->id);
+        return json_encode($order);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\ArrayCast;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderHistory extends Model
@@ -10,7 +11,7 @@ class OrderHistory extends Model
     public $timestamps = true;
     protected $guarded = [];
     protected $casts = [
-        'data' => 'array'
+        'data' => ArrayCast::class
     ];
 
     public $types = [

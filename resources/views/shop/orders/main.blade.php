@@ -48,7 +48,7 @@
                 <td>{{ $order->human('created_at', true) }}
                 <td>{!! $order->select('status', app(\App\Models\Shop\Order::class)->getStatuses()) !!}</td>
                 <td class="action-2">
-                    <button @tooltip('Імпортувати в базу') class="btn btn-primary btn-xs">
+                    <button @tooltip('Імпортувати в базу') class="import_order btn btn-primary btn-xs" data-src="import_order" data-id="{{ $order->id }}">
                         <i class="fa fa-angle-double-down"></i>
                     </button>
 

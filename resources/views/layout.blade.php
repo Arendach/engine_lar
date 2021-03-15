@@ -157,5 +157,6 @@
         </div>
     </div>
 </div>
+<script src="{{ asset("js/shop.js?") }}"></script>
 </body>
 </html>

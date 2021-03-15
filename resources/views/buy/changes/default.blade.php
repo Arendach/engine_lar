@@ -19,13 +19,12 @@
                 @foreach($history->getData() as $field => $item)
                     <tr>
                         <td>
-                            {{ $history->getFieldName($field) }}
+                            {{ $field }}
                         </td>
                         <td>
-                            {{ $item['old'] ?? 'null' }}
+                            {{ $item }}
                         </td>
                         <td>
-                            {{ $item['new'] ?? 'null' }}
                         </td>
                     </tr>
                 @endforeach

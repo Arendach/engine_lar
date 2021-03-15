@@ -33,6 +33,8 @@ mix
     .js('resources/scripts/forms.js', 'public/js/forms.js')
     .js('resources/scripts/products.js', 'public/js/products.js')
 
+    .js('resources/js/shop/ajax.js', 'public/js/shop.js')
+
 
     .less('resources/less/login.less', 'public/css/login.css')
     .less('resources/less/app.less', 'public/css/app.css')

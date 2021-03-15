@@ -153,13 +153,13 @@ class ScheduleController extends Controller
     public function actionCreateBonus(CreateBonusRequest $request)
     {
         $schedule = ScheduleMonth::findOrFail($request->id);
-
         Bonus::create([
-            'type'    => 'bonus',
-            'sum'     => $request->sum,
-            'user_id' => $schedule->user_id,
-            'date'    => create_date_or_now($schedule->year, $schedule->month, 1, true),
-            'source'  => 'other'
+            'data'    => $request->id,
+            'is_profit' => true,
+            'sum'       => $request->sum,
+            'user_id'   => $schedule->user_id,
+            //'date'    => create_date_or_now($schedule->year, $schedule->month, 1, true),
+            'source'    => 'other'
         ]);
     }
 
