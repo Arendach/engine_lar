@@ -120,7 +120,7 @@ class Product extends Model
     public function scopeSearch(Builder $builder, string $query): void
     {
         $builder->where('name_uk', 'like', "%$query%")
-            ->where('name_ru', 'like', "%$query%")
+            ->orwhere('name_ru', 'like', "%$query%")
             ->orWhere('service_code', 'like', "%$query%")
             ->orWhere('article', 'like', "%$query%")
             ->orWhere('model_uk', 'like', "%$query%")

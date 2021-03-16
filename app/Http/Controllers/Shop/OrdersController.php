@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
-use App\Models\Shop\Order;
-use App\Models\Shop\Product;
-use App\Models\Order as BaseOrder;
 use App\Models\Site;
 use App\Repositories\Shop\OrderRepository;
 use App\Repositories\Shop\ProductRepository;
+use App\Services\Shop\OrderImportService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -37,8 +35,10 @@ class OrdersController extends Controller
 
         return view('shop.orders.details', compact('order'));
     }
-    public function actionImport(Request $request){
-        $order = app(\App\Models\Shop\Order::class)->strictConnection($request->shop)->find($request->id);
-        return json_encode($order);
+    public function actionImport(Request $request, OrderImportService $importService){
+        $order = $this->orderRepository->getForDetail($request->id);
+//        $newOrder = $importService->createOrder($orders);
+
+        return response()->json($order);
     }
 }

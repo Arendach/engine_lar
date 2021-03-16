@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Shop\Category;
 use App\Models\Shop\Order;
 use App\Repositories\Shop\ProductRepository;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ProductsController extends Controller
@@ -47,13 +48,12 @@ class ProductsController extends Controller
     }
 
 
-    public function actionSearchForImport(string $search): View
+    public function actionSearchForImport(string $search, Request $request): View
     {
-        $exclude = \App\Models\Shop\Product::all()->map(function (\App\Models\Shop\Product $product) {
+        $exclude =  app(\App\Models\Shop\Product::class)->strictConnection($request->shop)->all()->map(function (\App\Models\Shop\Product $product) {
             return $product->product_key;
         })->toArray();
-
-        $products = Product::search($search)->whereNotIn('product_key', $exclude)->limit(30)->get();
+        $products = Product::search($search)->whereNotIn('product_key', [$exclude])->limit(30)->get();
 
         return view('shop.products.search_results', compact('products'));
     }

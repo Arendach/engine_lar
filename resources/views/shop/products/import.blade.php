@@ -26,9 +26,12 @@
 
     <script>
         $(document).on('keyup', '#search_field', function () {
+            let url = new URL(window.location.href)
+            let shop = url.searchParams.get("shop")
+
             $.ajax({
                 type: 'post',
-                url: '/shop/products/search_for_import',
+                url: '/shop/products/search_for_import?shop=' + shop,
                 data: {
                     search: $('#search_field').val()
                 },

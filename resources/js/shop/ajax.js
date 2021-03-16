@@ -1,6 +1,6 @@
 $(document).on('click', 'div.pull-right', (event) => {
     event.preventDefault()
-    alert('1');
+        // alert('1');
 })
 
 $('[data-src="import_order"]').click((event) => {
@@ -18,7 +18,7 @@ $('[data-src="import_order"]').click((event) => {
         dataType: 'json',
         contentType:'application/json'
     }).done((response)=>{
-        console.log(response)
+        console.log(JSON.parse(response))
         toastr.success('Замовлення № ' + response.id + ' успішно імпортовано','Імпорт')
     })
 })

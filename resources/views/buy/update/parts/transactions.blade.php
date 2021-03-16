@@ -1,6 +1,6 @@
 @php /** @var \App\Models\Order $order */ @endphp
 <div class="right" style="margin-bottom: 15px;">
-    @if($order->pay->merchant)
+    @if(!empty($order->pay->merchant))
         <button class="btn btn-primary"
                 data-type="get_form"
                 data-uri="@uri('orders/search_transactions')"
