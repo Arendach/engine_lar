@@ -25,7 +25,7 @@ class UpdateAddressTest extends TestCase
         $this->post('/orders/update_address', [
             'id'      => $order->id,
             'shop_id' => $newShop->id
-        ])->assertStatus(200);
+        ])->dump()->assertStatus(200);
     }
 
     public function testUpdateDeliveryAddress()

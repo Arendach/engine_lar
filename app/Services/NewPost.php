@@ -8,17 +8,15 @@ use LisDev\Delivery\NovaPoshtaApi2;
 
 class NewPost
 {
-    /**
-     * @var NovaPoshtaApi2
-     */
-    public $nova;
+    private string $apiKey;
 
-    /**
-     * NewPost constructor.
-     */
+    private NovaPoshtaApi2 $nova;
+
     public function __construct()
     {
-        $this->nova = new NovaPoshtaApi2(NEW_POST_KEY, 'ua');
+        $this->apiKey = config('api.new_post');
+
+        $this->nova = new NovaPoshtaApi2($this->apiKey, 'ua');
     }
 
     /**
@@ -54,21 +52,15 @@ class NewPost
         echo $str;
     }
 
-    /**
-     * @param $element
-     * @return string
-     */
-    public function settElementType($element)
+    public function settElementType(string $element): string
     {
-        if ($element == 'село') {
-            return 'с. ';
-        } elseif ($element == 'селище міського типу') {
-            return 'смт. ';
-        } elseif ($element == 'місто') {
-            return 'м. ';
-        } else {
-            return '?. ';
-        }
+        $elements = [
+            'село'                 => 'с. ',
+            'селище міського типу' => 'смт. ',
+            'місто'                => 'м. ',
+        ];
+
+        return $elements[$element] ?? '?. ';
     }
 
     /**
@@ -203,7 +195,7 @@ class NewPost
         return $result;
     }
 
-    public function getCities($page)
+    final public function getCities(int $page = 1): array
     {
         $result = $this->nova
             ->model('Address')
@@ -214,11 +206,11 @@ class NewPost
             ])
             ->execute();
 
-        return count($result['data']) == 0 ? false : $result['data'];
+        return $result['data'] ?? [];
     }
 
 
-    public function getWarehouses($page)
+    final public function getWarehouses(int $page = 1): array
     {
         $result = $this->nova
             ->model('AddressGeneral')
@@ -229,16 +221,16 @@ class NewPost
             ])
             ->execute();
 
-        return count($result['data']) == 0 ? false : $result['data'];
+        return $result['data'] ?? [];
     }
 
-    public function getMarker(Order $order): ?string
+    final public function getMarker(Order $order): ?string
     {
         if ($order->type == 'sending' && $order->street) {
             return null;
         }
 
-        $address = "https://my.novaposhta.ua/orders/printMarkings/orders[]/{$order->street}/type/html/apiKey/" . config('api.new_post');
+        $address = "https://my.novaposhta.ua/orders/printMarkings/orders[]/{$order->street}/type/html/apiKey/{$this->apiKey}";
 
         $dom = new Document($address, true);
 

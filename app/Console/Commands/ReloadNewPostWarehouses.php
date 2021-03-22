@@ -6,6 +6,7 @@ use App\Models\NewPostCity;
 use App\Models\NewPostWarehouse;
 use Illuminate\Console\Command;
 use App\Services\NewPost;
+use Throwable;
 
 class ReloadNewPostWarehouses extends Command
 {
@@ -13,23 +14,20 @@ class ReloadNewPostWarehouses extends Command
 
     protected $description = 'Перезавантаження міст та відділень нової пошти!';
 
-    private $service;
+    private NewPost $service;
 
-    public function __construct()
+    final public function handle(): void
     {
-        parent::__construct();
-
         $this->service = new NewPost();
-    }
 
-    public function handle()
-    {
         $this->loadCity();
 
         $this->loadWarehouse();
+
+        $this->info('Loading successful!');
     }
 
-    private function loadCity()
+    final private function loadCity(): void
     {
         $i = 1;
         while ($cities = $this->service->getCities($i)) {
@@ -50,12 +48,12 @@ class ReloadNewPostWarehouses extends Command
                 }
             }
 
-            echo "City: $i \n";
+            $this->info("City: {$i}");
             $i++;
         }
     }
 
-    private function loadWarehouse()
+    final private function loadWarehouse(): void
     {
         $i = 1;
         while ($warehouses = $this->service->getWarehouses($i)) {
@@ -83,14 +81,14 @@ class ReloadNewPostWarehouses extends Command
                                 'phone'            => $warehouse['Phone'],
                                 'city_id'          => $city->id
                             ]);
-                        } catch (\Exception $exception) {
+                        } catch (Throwable $exception) {
                             $this->error($exception->getMessage());
                         }
                     }
                 }
             }
 
-            echo "Warehouse: $i \n";
+            $this->info("Warehouse: {$i}");
             $i++;
         }
     }

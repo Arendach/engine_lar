@@ -126,7 +126,7 @@ class Order extends Model
     }
 
 
-    public function getTypeNameAttribute()
+    public function getTypeNameAttribute(): string
     {
         if ($this->type == 'sending') return 'Відправка';
         elseif ($this->type == 'delivery') return 'Доставка';
@@ -134,37 +134,37 @@ class Order extends Model
         else return '';
     }
 
-    public function getIsCLoseAttribute()
+    public function getIsCLoseAttribute(): bool
     {
         return in_array($this->status, [2, 3, 4]);
     }
 
-    public function getIsOpenAttribute()
+    public function getIsOpenAttribute(): bool
     {
         return in_array($this->status, [0, 1]);
     }
 
-    public function getStatusNameAttribute()
+    public function getStatusNameAttribute(): string
     {
         return assets('order_statuses')[$this->status]['text'] ?? 'Невідомий';
     }
 
-    public function getStatusColorAttribute()
+    public function getStatusColorAttribute(): string
     {
         return assets('order_statuses')[$this->status]['color'] ?? '#f0f';
     }
 
-    public function getSendingStatusNameAttribute()
+    public function getSendingStatusNameAttribute(): string
     {
         return assets('sending_statuses')[$this->phone2]['text'] ?? 'Невідомий';
     }
 
-    public function getSendingStatusColorAttribute()
+    public function getSendingStatusColorAttribute(): string
     {
         return assets('sending_statuses')[$this->phone2]['color'] ?? '#f0f';
     }
 
-    public function getDateDeliveryHumanAttribute()
+    public function getDateDeliveryHumanAttribute(): string
     {
         return date_for_humans($this->date_delivery->format('Y-m-d'));
     }
@@ -176,7 +176,7 @@ class Order extends Model
         });
     }
 
-    public function getTimeAttribute()
+    public function getTimeAttribute(): string
     {
         if (is_null($this->time_with) && is_null($this->time_to)) {
             return '<span class="text-primary">Не важливо</span>';
@@ -189,17 +189,17 @@ class Order extends Model
         }
     }
 
-    public function getTimeWithAttribute($value)
+    public function getTimeWithAttribute($value): string
     {
         return string_to_time($value);
     }
 
-    public function getTimeToAttribute($value)
+    public function getTimeToAttribute($value): string
     {
         return string_to_time($value);
     }
 
-    public function getPhoneFormatAttribute()
+    public function getPhoneFormatAttribute(): string
     {
         return get_number_world_format(str_replace('-', '', $this->phone));
     }
@@ -210,37 +210,37 @@ class Order extends Model
         $query->where('type', 'delivery');
     }
 
-    public function scopeSending(Builder $query)
+    public function scopeSending(Builder $query): void
     {
         $query->where('type', 'sending');
     }
 
-    public function scopeSelf(Builder $query)
+    public function scopeSelf(Builder $query): void
     {
         $query->where('type', 'self');
     }
 
-    public function scopeOpened(Builder $query)
+    public function scopeOpened(Builder $query): void
     {
         $query->whereIn('status', [0, 1]);
     }
 
-    public function scopeClosed(Builder $query)
+    public function scopeClosed(Builder $query): void
     {
         $query->whereIn('status', [2, 3, 4]);
     }
 
-    public function scopeICourier(Builder $query)
+    public function scopeICourier(Builder $query): void
     {
         $query->where('courier_id', user()->id);
     }
 
-    public function scopeIAuthor(Builder $query)
+    public function scopeIAuthor(Builder $query): void
     {
         $query->where('author_id', user()->id);
     }
 
-    public function scopeILiable(Builder $query)
+    public function scopeILiable(Builder $query): void
     {
         $query->where('liable_id', user()->id);
     }
