@@ -37,7 +37,8 @@ class OrdersController extends Controller
     }
     public function actionImport(Request $request, OrderImportService $importService){
         $order = $this->orderRepository->getForDetail($request->id);
-//        $newOrder = $importService->createOrder($orders);
+
+        $importService->import($order);
 
         return response()->json($order);
     }
