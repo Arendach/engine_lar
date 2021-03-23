@@ -16,8 +16,11 @@ class Forms {
         let success = $(context).data('success')
         let error = $(context).data('error')
         let after = $(context).data('after')
+        let shop = 'shop';
 
         let data = new FormData(context)
+
+        data.append('shop', shop)
 
         if (url === undefined || url === null) {
             url = window.location

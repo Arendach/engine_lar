@@ -1,5 +1,11 @@
 <?php
 
+Route::get('test-import', function (){
+    app(\App\Services\Shop\OrderImportService::class)->import(
+        app(\App\Models\Shop\Order::class)->connection('shop')->first()
+    );
+});
+
 Route::get('login', 'UserController@sectionLogin');
 Route::post('login', 'UserController@actionAuthorize')->name('login');
 Route::get('exit', 'UserController@sectionunAuthorize')->name('exit');

@@ -20,4 +20,18 @@ class NewPostRepository
     {
         return NewPostWarehouse::search($city)->get();
     }
+
+    public function getCityIdByRef(string $ref): ?int
+    {
+        $city = NewPostCity::where('ref', $ref)->first();
+
+        return $city->id ?? null;
+    }
+
+    public function getWarehouseIdByRef(string $ref): ?int
+    {
+        $city = NewPostWarehouse::where('ref', $ref)->first();
+
+        return $city->id ?? null;
+    }
 }

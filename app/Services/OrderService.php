@@ -68,7 +68,7 @@ class OrderService
         Order::findOrFail($id)->fill($data)->withHistory()->update();
     }
 
-    public function create(array $data): int
+    public function create(array $data): Order
     {
         // get products
         $products = $data['products'];
@@ -96,7 +96,7 @@ class OrderService
 
         $order->withHistory()->create($products);
 
-        return $order->id;
+        return $order;
     }
 
     private function syncProductIfPivot(OrderProduct $oldPivot, OrderProduct $newPivot, Product $product): void

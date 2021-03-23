@@ -3,19 +3,21 @@
 namespace App\Services\Shop;
 
 use App\Models\Order;
-use App\Models\OrderProduct;
-use App\Models\Product;
 use App\Models\Shop\Order as OrderShop;
 use App\Models\Shop\Product as ProductShop;
 use App\Repositories\ClientRepository;
+use App\Repositories\NewPostRepository;
+use App\Services\OrderService;
+use Illuminate\Support\Collection;
 
 class OrderImportService
 {
     private OrderShop $orderShop;
-
-    private Order $order;
-
     private ClientRepository $clientRepository;
+    private NewPostRepository $newPostRepository;
+    private OrderService $orderService;
+    private Collection $mappedOrder;
+    private int $storageId;
 
     private array $statuses = [
         'new_order'  => 0,
@@ -26,54 +28,38 @@ class OrderImportService
         'success'    => 4
     ];
 
-    public function __construct(ClientRepository $clientRepository)
+    public function __construct(ClientRepository $clientRepository, NewPostRepository $newPostRepository, OrderService $orderService)
     {
         $this->clientRepository = $clientRepository;
+        $this->newPostRepository = $newPostRepository;
+        $this->orderService = $orderService;
+
+        $this->mappedOrder = new Collection;
     }
 
-    final public function import(OrderShop $orderShop): void
+    final public function import(array $data, OrderShop $orderShop): Order
     {
         $this->orderShop = $orderShop;
-        $this->order = $this->createOrder($orderShop);
+        $this->storageId = arrayPull('storage_id', $data);
 
-        $this->attachProducts($orderShop, $order);
+        $this->loadingRelations();
 
-        //$this->createImportOrder($order);
+        $this->mappingMainOrder($data);
+
+        $this->mappingProducts();
+
+        return $this->orderService->create(
+            $this->mappedOrder->toArray()
+        );
     }
 
-    final private function attachProducts(): void
+    private function loadingRelations(): void
     {
-        $this->orderShop->products->each(function (ProductShop $productShop) {
-            $product = Product::where('product_key', $productShop->product_key)->first();
-
-            $this->order->products()->attach($product->id, [
-                'amount'     => $productShop->pivot->amount,
-                'price'      => $productShop->pivot->price,
-                'storage_id' => 1, // todo
-                'attributes' => '', // todo
-            ]);
-        });
-    }
-
-    final private function createOrder(OrderShop $orderShop): Order
-    {
-        return Order::create([
-            'type'           => $orderShop->delivery,
-            'status'         => $this->statuses[$orderShop->status],
-            'fio'            => $orderShop->name,
-            'phone'          => $orderShop->phone,
-            'email'          => $orderShop->email,
-            'is_payed'       => $this->isPayed(),
-            'discount'       => $orderShop->discount,
-            'delivery_price' => $orderShop->delivery_price,
-            'comment'        => $orderShop->comment,
-            'author_id'      => user()->id,
-            'client_id'      => $this->getClientId(),
-            'site_id'        => 0,// todo
-            'date_delivery'  => $orderShop->date_delivery,
-            'created_at'     => now(),
-            'updated_at'     => now()
-        ]);
+        $this->orderShop->load(
+            'warehouse',
+            'warehouse.city',
+            'products'
+        );
     }
 
     private function isPayed(): int
@@ -88,5 +74,89 @@ class OrderImportService
         );
 
         return $client->id ?? null;
+    }
+
+    private function getNewPostWarehouseId(): ?int
+    {
+        if ($this->orderShop->existsRelation('warehouse')) {
+            return $this->newPostRepository->getWarehouseIdByRef(
+                $this->orderShop->warehouse->ref
+            );
+        }
+
+        return null;
+    }
+
+    private function getNewPostCityId(): ?int
+    {
+        if ($this->orderShop->existsRelation('warehouse')) {
+            return $this->newPostRepository->getCityIdByRef(
+                $this->orderShop->warehouse->city_ref
+            );
+        }
+
+        return null;
+    }
+
+    private function mappingMainOrder(array $data): void
+    {
+        $orderShop = $this->orderShop;
+
+        $this->mappedOrder = $this->mappedOrder->merge([
+            'type'                  => $orderShop->delivery,
+            'status'                => $this->statuses[$orderShop->status] ?? 0,
+            'fio'                   => $orderShop->name,
+            'phone'                 => $orderShop->phone,
+            'phone2'                => null,
+            'email'                 => $orderShop->email,
+            'city'                  => $orderShop->city,
+            'address'               => $orderShop->address,
+            'street'                => $orderShop->street,
+            'comment_address'       => null,
+            'warehouse'             => null,
+            'is_payed'              => $this->isPayed(),
+            'prepayment'            => null,
+            'discount'              => $orderShop->discount,
+            'delivery_price'        => $orderShop->delivery_price,
+            'full_sum'              => !is_null($orderShop->full_sum) ? $orderShop->full_sum : 0,
+            'comment'               => $orderShop->comment,
+            'sending'               => 0,
+            'author_id'             => user()->id,
+            'pay_id'                => null,
+            'courier_id'            => null,
+            'logistic_id'           => null,
+            'hint_id'               => null,
+            'liable_id'             => null,
+            'client_id'             => $this->getClientId(),
+            'site_id'               => 0,// todo
+            'order_professional_id' => null,
+            'new_post_city_id'      => $this->getNewPostCityId(),
+            'new_post_warehouse_id' => $this->getNewPostWarehouseId(),
+            'shop_id'               => null,
+            'time_with'             => $orderShop->time_with,
+            'time_to'               => $orderShop->time_to,
+            'date_delivery'         => $orderShop->date_delivery,
+            'created_at'            => now(),
+            'updated_at'            => now(),
+        ]);
+
+        $this->mappedOrder = $this->mappedOrder->merge($data);
+    }
+
+    private function mappingProducts(): void
+    {
+        $products = $this->orderShop->products->map(function (ProductShop $productShop) {
+            return [
+                'product_id' => $productShop->id,
+                'amount'     => $productShop->pivot->amount,
+                'price'      => $productShop->pivot->price,
+                'storage_id' => $this->storageId,
+                'attributes' => null, // todo
+            ];
+        })->toArray();
+
+        $this->mappedOrder = $this->mappedOrder->merge([
+            'products' => $products
+        ]);
     }
 }

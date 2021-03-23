@@ -42,6 +42,6 @@ class ShopLinkDetected
 
     private function isNeedRedirect(): bool
     {
-        return $this->request->segment(1) == 'shop' && !$this->request->has('shop');
+        return !$this->request->ajax() && $this->request->segment(1) == 'shop' && !$this->request->has('shop');
     }
 }

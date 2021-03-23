@@ -46,6 +46,8 @@ function can_keys(array $array)
  */
 function user($id = 0)
 {
+    return \App\Models\User::first();
+
     if ($id === 'all') {
         return \App\Models\User::all();
     }
@@ -289,4 +291,13 @@ function setting(string $key, $default = null)
 function settingEditable(string $key, $default = null)
 {
     return app(\App\Services\SettingService::class)->getEditable($key, $default);
+}
+
+function arrayPull(string $key, array &$array)
+{
+    $value = $array[$key];
+
+    unset($array[$key]);
+
+    return $value;
 }
