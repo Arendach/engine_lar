@@ -25,7 +25,7 @@
     "lis-dev/nova-poshta-api-2": "^0.1.1",
     "mobizon/mobizon-php": "^2.0",
     "mtownsend/xml-to-array": "^1.0",
-    "sergeynezbritskiy/privatbank-api": "^3.0",
+    "sergeynezbritskiy/privatbank-api": "^4.0",
     "spatie/array-to-xml": "^2.11",
     "squizlabs/php_codesniffer": "^3.5",
     "symfony/dom-crawler": "^5.0"
@@ -73,5 +73,14 @@
       "@php artisan ide-helper:generate",
       "@php artisan ide-helper:meta"
     ]
+  },
+  "repositories": {
+    "sergeynezbritskiy/privatbank-api": {
+      "type": "path",
+      "url": "./packages/sergeynezbritskiy/privatbank-api",
+      "options": {
+        "symlink": true
+      }
+    }
   }
 }
