@@ -62,13 +62,18 @@ class ReloadNewPostWarehouses extends Command
             foreach ($warehouses as $warehouse) {
                 if (isset($warehouse['Ref']) && $warehouse['Ref'] != '') {
                     if (NewPostWarehouse::where('ref', $warehouse['Ref'])->count()) {
-                        NewPostWarehouse::where('ref', $warehouse['Ref'])->update([
-                            'name'             => $warehouse['Description'],
-                            'number'           => $warehouse['Number'],
-                            'max_weight_place' => $warehouse['PlaceMaxWeightAllowed'],
-                            'max_weight_all'   => $warehouse['TotalMaxWeightAllowed'],
-                            'phone'            => $warehouse['Phone'],
-                        ]);
+                        try {
+                            NewPostWarehouse::where('ref', $warehouse['Ref'])->update([
+                                'name'             => $warehouse['Description'],
+                                'number'           => $warehouse['Number'],
+                                'max_weight_place' => $warehouse['PlaceMaxWeightAllowed'],
+                                'max_weight_all'   => $warehouse['TotalMaxWeightAllowed'],
+                                'phone'            => $warehouse['Phone'],
+                            ]);
+                        } catch (\Exception $exception) {
+                            $this->error($exception->getMessage());
+                        }
+
                     } else {
                         try {
                             $city = NewPostCity::where('ref', $warehouse['CityRef'])->first();

@@ -18,7 +18,7 @@ class NewPost
      */
     public function __construct()
     {
-        $this->nova = new NovaPoshtaApi2(NEW_POST_KEY, 'ua');
+        $this->nova = new NovaPoshtaApi2(config('api.new_post'), 'ua');
     }
 
     /**
@@ -214,7 +214,8 @@ class NewPost
             ])
             ->execute();
 
-        return count($result['data']) == 0 ? false : $result['data'];
+        return $result['data'];
+//        return count($result['data']) == 0 ? false : $result['data'];
     }
 
 
@@ -229,7 +230,8 @@ class NewPost
             ])
             ->execute();
 
-        return count($result['data']) == 0 ? false : $result['data'];
+        return $result['data'];
+//        return count($result['data']) == 0 ? false : $result['data'];
     }
 
     public function getMarker(Order $order): ?string

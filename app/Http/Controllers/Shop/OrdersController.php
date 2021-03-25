@@ -37,8 +37,10 @@ class OrdersController extends Controller
     }
     public function actionImport(Request $request, OrderImportService $importService){
         $order = $this->orderRepository->getForDetail($request->id);
-//        $newOrder = $importService->createOrder($orders);
+        $order->site_id = Site::where('key', $request->shop)->first()->id;
 
-        return response()->json($order);
+        $newOrder = $importService->createOrder($order);
+
+        return response()->json($newOrder);
     }
 }

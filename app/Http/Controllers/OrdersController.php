@@ -60,7 +60,7 @@ class OrdersController extends Controller
 
     public function sectionView(OrdersListFilter $filter, Request $request, string $type = 'delivery')
     {
-        $orders = Order::with(['pay', 'courier', 'liable', 'bonuses', 'bonuses.user', 'hint', 'professional'])
+        $orders = Order::with(['pay', 'courier', 'liable', 'bonuses', 'bonuses.user', 'hint', 'professional','logistic'])
             ->filter($filter)
             ->paginate(config('app.items'));
 

@@ -18,7 +18,9 @@ $('[data-src="import_order"]').click((event) => {
         dataType: 'json',
         contentType:'application/json'
     }).done((response)=>{
-        console.log(JSON.parse(response))
-        toastr.success('Замовлення № ' + response.id + ' успішно імпортовано','Імпорт')
+        if (response != 0)
+            toastr.success('Замовлення успішно імпортовано.  №  Нового замовлення: ' + response ,'Імпорт')
+        else
+            toastr.warning('Замовлення Не імпортовано, по причині наявності данного замовлення в системі CRM' ,'Імпорт')
     })
 })

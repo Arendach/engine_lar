@@ -1,5 +1,4 @@
 @php /* @var \App\Models\Order $order */ @endphp
-@inject('logistic', App\Models\Logistic)
 <table class="table table-bordered orders-table">
     <thead>
     <tr>
@@ -62,7 +61,7 @@
         @foreach ($orders as $order)
             <tr id="{{ $order->id }}" @displayIf($order->client_id != '', 'class="client-order"')>
                 <td>
-                    @if ($order->logistic->name == 'НоваПошта')
+                    @if ($order->logistic_id && $order->logistic->name == 'НоваПошта')
                         <input type="checkbox" data-id="{{ $order->id }}" class="order_check">
                     @endif
                     {{ $order->id }}
@@ -71,7 +70,7 @@
                 <td>{!! $order->editable('phone')->element('textarea') !!}</td>
                 <td>{!! $order->editable('street')->editor() !!}</td>
                 <td>
-                    {!! $order->select('logistic_id', $logistic->toOptions())->required() !!}
+                    {!! $order->select('logistic_id', $order->logistic->toOptions())->required() !!}
                 <td>
                     <select class="courier form-control input-sm">
                         <option @disabled(!$order->status) @selected(!$order->courier_id) value="0">Не вибрано</option>

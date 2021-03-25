@@ -9,7 +9,7 @@ return [
     /**
      * New Post Api
      */
-    'new_post'         => 'e74adc5b12cfe1d51d070044b10e1fed',
+    'new_post'         => env('NOVA_API','e74adc5b12cf'),
 
     /**
      * Key for translate service from Google
