@@ -38,6 +38,8 @@ class Product extends Model
 
     public $timestamps = true;
 
+    private $toImportAdditional = [];
+
     public function storage($storage_id): ?Storage
     {
         return $this->storages->where('id', $storage_id)->first();
@@ -149,5 +151,27 @@ class Product extends Model
         }
 
         $this->attributes['id_storage'] = implode('-', $ids);
+    }
+
+    public static function getIdByKey(string $productKey): ?int
+    {
+        $record = self::where('product_key', $productKey)->first();
+
+        return $record->id ?? null;
+    }
+
+    public function setToImportAdditional(array $data): void
+    {
+        $this->toImportAdditional = $data;
+    }
+
+    public function getImportAmount(): ?int
+    {
+        return $this->toImportAdditional['amount'] ?? null;
+    }
+
+    public function getImportPrice(): ?int
+    {
+        return $this->toImportAdditional['price'] ?? null;
     }
 }

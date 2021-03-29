@@ -14,5 +14,7 @@ class ComposerServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('partials.left-menu', LeftMenuComposer::class);
+        View::composer('buy.create.elements', 'App\Http\Composers\CreateOrderComposer');
+        View::composer('buy.show_found_products', 'App\Http\Composers\CreateOrderProductsComposer');
     }
 }

@@ -52,11 +52,12 @@ class OrdersController extends Controller
         ]);
     }
 
-    public function sectionImportForm(): View
+    public function actionImportForm(Request $request, OrderRepository $repository): View
     {
-        $storages = Storage::toOptions('name', 'id', fn (Builder $builder) => $builder->where('is_accounted', true));
+        $storages = Storage::toOptions('name', 'id', fn(Builder $builder) => $builder->where('is_accounted', true));
         $couriers = User::toOptions();
+        $order = $repository->getForDetail($request->get('id'));
 
-        return view('shop.orders.forms.import', compact('storages', 'couriers'));
+        return view('shop.orders.forms.import', compact('storages', 'couriers', 'order'));
     }
 }

@@ -34,7 +34,9 @@
         @displayIf($type == 'sending', '<th>Місце</th>')
         <th class="action-1">Дії</th>
         </thead>
-        <tbody></tbody>
+        <tbody>
+        @include('buy.show_found_products')
+        </tbody>
     </table>
 </div>
 

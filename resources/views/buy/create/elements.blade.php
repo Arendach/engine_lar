@@ -1,13 +1,13 @@
-@inject('shopModel', App\Models\Shop)
-@inject('siteModel', App\Models\Site)
-@inject('clientModel', App\Models\Client)
-@inject('logisticModel', App\Models\Logistic)
+@inject('shopModel', 'App\Models\Shop')
+@inject('siteModel', 'App\Models\Site')
+@inject('clientModel', 'App\Models\Client')
+@inject('logisticModel', 'App\Models\Logistic')
 
 @if($key == 'fio')
     <div class="form-group">
         <label class="col-md-4 control-label">Імя <span class="text-danger">*</span></label>
         <div class="col-md-5">
-            <input id="fio" class="form-control" name="fio">
+            <input id="fio" class="form-control" name="fio" value="{{ $fio ?? null }}">
             <div class="search_clients"></div>
         </div>
     </div>
@@ -26,7 +26,7 @@
     <div class="form-group">
         <label class="col-md-4 control-label">Номер телефону <i class="text-danger">*</i></label>
         <div class="col-md-5">
-            <input id="phone" name="phone" class="form-control">
+            <input id="phone" name="phone" class="form-control" value="{{ $phone ?? null }}">
         </div>
     </div>
 @endif
@@ -44,7 +44,7 @@
     <div class="form-group">
         <label class="col-md-4 control-label">E-mail</label>
         <div class="col-md-5">
-            <input id="email" name="email" class="form-control" type="email">
+            <input id="email" name="email" class="form-control" type="email" {{ $email ?? null }}>
         </div>
     </div>
 @endif
@@ -118,7 +118,7 @@
     <div class="form-group">
         <label class="col-md-4 control-label">Коментар до замовлення</label>
         <div class="col-md-5">
-            <textarea name="comment" class="form-control" id="comment"></textarea>
+            <textarea name="comment" class="form-control" id="comment">{{ $comment ?? null }}</textarea>
         </div>
     </div>
 @endif
@@ -127,7 +127,7 @@
     <div class="form-group">
         <label class="col-md-4 control-label">Місто <span class="text-danger">*</span></label>
         <div class="col-md-5">
-            <input id="city" name="city" value="Київ" required class="form-control">
+            <input id="city" name="city" value="{{ $city ?? 'Київ' }}" required class="form-control">
         </div>
     </div>
 @endif
@@ -136,7 +136,7 @@
     <div class="form-group">
         <label class="col-md-4 control-label">Вулиця</label>
         <div class="col-md-5">
-            <input id="street" name="street" class="form-control">
+            <input id="street" name="street" class="form-control" {{ $street ?? null }}>
         </div>
     </div>
 @endif
@@ -169,7 +169,7 @@
     <div class="form-group">
         <label class="col-md-4 control-label">Предоплата</label>
         <div class="col-md-5">
-            <input class="form-control" name="prepayment">
+            <input class="form-control" name="prepayment" value="{{ $prepayment ?? null }}">
         </div>
     </div>
 @endif
@@ -237,8 +237,8 @@
         <label class="col-md-4 control-label">Статус оплати</label>
         <div class="col-md-5">
             <select class="form-control" name="payment_status">
-                <option value="0">Не оплачено</option>
-                <option value="1">Оплачено</option>
+                <option {{ isset($payment_status) && !$payment_status ? 'selected' : '' }} value="0">Не оплачено</option>
+                <option {{ isset($payment_status) && $payment_status ? 'selected' : '' }} value="1">Оплачено</option>
             </select>
         </div>
     </div>
@@ -250,7 +250,9 @@
         <div class="col-md-5">
             <select name="shop_id" class="form-control">
                 @foreach($shopModel->all() as $item)
-                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                    <option {{ isset($shop_id) && $shop_id == $item->id ? 'selected' : '' }} value="{{ $item->id }}">
+                        {{ $item->name }}
+                    </option>
                 @endforeach
             </select>
         </div>
@@ -264,7 +266,9 @@
             <select name="site_id" class="form-control">
                 <option value="">Виберіть сайт</option>
                 @foreach($siteModel->all() as $item)
-                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                    <option {{ isset($site_id) && $site_id == $item->id ? 'selected' : '' }} value="{{ $item->id }}">
+                        {{ $item->name }}
+                    </option>
                 @endforeach
             </select>
         </div>
@@ -291,7 +295,9 @@
             <select name="client_id" class="form-control" id="client_id">
                 <option value=""></option>
                 @foreach ($clientModel->all() as $item)
-                    <option @data(['fio' => $item->name, 'phone' => $item->phone, 'email' => $item->email]) value="{{ $item->id }}">{{ $item->name }}</option>
+                    <option {{ isset($client_id) && $client_id == $item->id ? 'selected' : '' }} @data(['fio' => $item->name, 'phone' => $item->phone, 'email' => $item->email]) value="{{ $item->id }}">
+                        {{ $item->name }}
+                    </option>
                 @endforeach
             </select>
         </div>

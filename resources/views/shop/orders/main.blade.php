@@ -48,9 +48,9 @@
                 <td>{{ $order->human('created_at', true) }}
                 <td>{!! $order->select('status', app(\App\Models\Shop\Order::class)->getStatuses()) !!}</td>
                 <td class="action-2">
-                    <button data-type="get_form" data-uri="/shop/orders/import_form" @tooltip('Імпортувати в базу') class="btn btn-primary btn-xs">
+                    <a href="/orders/create?type={{ $order->delivery }}&shop_order_id={{ $order->id }}&shop={{ request('shop') }}" @tooltip('Імпортувати в базу') class="btn btn-primary btn-xs">
                         <i class="fa fa-angle-double-down"></i>
-                    </button>
+                    </a>
 
                     <a @tooltip('Деталі') href="{{ uri('shop/orders/details', ['id' => $order->id,'shop' => $shop]) }}" class="btn btn-xs btn-success">
                         <i class="fa fa-bars"></i>

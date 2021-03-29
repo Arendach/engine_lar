@@ -1,4 +1,5 @@
 <?php $id = mb_substr(rand32(), 0, 8, 'UTF-8') ?>
+@php /** @var \App\Models\Product $product */ @endphp
 
 @foreach($products as $product)
     <tr class="product">
@@ -19,12 +20,12 @@
         </td>
 
         <td>
-            <input name="products[{{ $id }}][amount]" class="amount form-control" value="1" data-inspect="integer">
+            <input name="products[{{ $id }}][amount]" class="amount form-control" value="{{ $product->getImportAmount() ? $product->getImportAmount() : 1 }}" data-inspect="integer">
         </td>
 
         <td>
             <input name="products[{{ $id }}][price]" class="price form-control"
-                   value="{{ round($product->price) }}">
+                   value="{{ $product->getImportPrice() ? $product->getImportPrice() : round($product->price) }}">
         </td>
 
         <td style="width: 71px">
