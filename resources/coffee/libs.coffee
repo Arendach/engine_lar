@@ -4,7 +4,7 @@ window.$ = $
 window.jQuery = $
 
 # Global
-window.Inputmask = require('inputmask')
+jQuery.Inputmask = require('inputmask')
 window.toastr = require 'toastr'
 window.swal = require 'sweetalert2'
 window.URI = require 'urijs'

@@ -22,9 +22,9 @@
     <script type="text/javascript" src="{{ asset('packages/barryvdh/elfinder/js/standalonepopup.min.js') }}"></script>
 
     @if(isset($editor) && $editor == 'full')
-        <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+        <script src="{{ asset('packages/ckeditor/ckeditor.js') }}"></script>
     @else
-        <script src="{{ asset('ckeditor_basic/ckeditor.js') }}"></script>
+        <script src="{{ asset('packages/ckeditor_basic/ckeditor.js') }}"></script>
     @endif
 
     <script src="{{ asset('js/pjax.js') }}"></script>
