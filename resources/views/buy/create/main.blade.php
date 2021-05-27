@@ -10,12 +10,14 @@
 
 @section('content')
     <div class="right" style="margin-bottom: 15px;">
-        @foreach (assets('order_types') as $k => $item)
-            <a class="btn btn-<?= request()->is('type', $k) ? 'primary' : 'default' ?>"
-               href="<?= uri('orders/create', ['type' => $k]) ?>">
-                {{ $item['one'] }}
-            </a>
-        @endforeach
+        <div class="btn-group">
+            @foreach (assets('order_types') as $k => $item)
+                <a class="btn btn-{{ request()->get('type') == $k ? 'primary' : 'default' }}"
+                   href="{{ uri('orders/create', ['type' => $k, 'shop' => request()->shop, 'shop_order_id' => request()->shop_order_id]) }}">
+                    {{ $item['one'] }}
+                </a>
+            @endforeach
+        </div>
     </div>
 
     <hr>

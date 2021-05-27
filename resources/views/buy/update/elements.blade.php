@@ -1,12 +1,12 @@
 @php /** @var \App\Models\Order $order */ @endphp
 
-@inject('pay', App\Models\Pay)
-@inject('orderHint', App\Models\OrderHint)
-@inject('user', App\Models\User)
-@inject('shop', App\Models\Shop)
-@inject('logistic', App\Models\Logistic)
-@inject('site', App\Models\Site)
-@inject('client', App\Models\Client)
+@inject('pay', 'App\Models\Pay')
+@inject('orderHint', 'App\Models\OrderHint')
+@inject('user', 'App\Models\User')
+@inject('shop', 'App\Models\Shop')
+@inject('logistic', 'App\Models\Logistic')
+@inject('site', 'App\Models\Site')
+@inject('client', 'App\Models\Client')
 
 @if($key == 'id')
     <input type="hidden" name="id" value="{{ $order->id }}">

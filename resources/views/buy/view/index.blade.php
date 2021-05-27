@@ -1,6 +1,6 @@
-@inject('site', App\Models\Site)
+@inject('site', 'App\Models\Site')
 
-<?php $toJs = ['type' => $type] ?>
+@php $toJs = ['type' => request()->type] @endphp
 
 @extends('layout')
 

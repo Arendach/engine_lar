@@ -191,12 +191,12 @@ class Order extends Model
 
     public function getTimeWithAttribute($value): string
     {
-        return string_to_time($value);
+        return string_to_time($value || '');
     }
 
     public function getTimeToAttribute($value): string
     {
-        return string_to_time($value);
+        return string_to_time($value || '');
     }
 
     public function getPhoneFormatAttribute(): string

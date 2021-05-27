@@ -1,4 +1,4 @@
-@inject('userModel', App\Models\User)
+@inject('userModel', 'App\Models\User')
 
 <form action="@uri('orders/create_bonus')" data-type="ajax" data-after="reload">
     <input type="hidden" name="data" value="{{ $order->id }}">

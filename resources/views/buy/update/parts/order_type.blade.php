@@ -1,5 +1,5 @@
-@inject('orderProfessionalModel', App\Models\OrderProfessional)
-@inject('userModel', App\Models\User)
+@inject('orderProfessionalModel', 'App\Models\OrderProfessional')
+@inject('userModel', 'App\Models\User')
 
 <form action="@uri('orders/update_order_professional')" data-type="ajax" data-after="reload">
     <input type="hidden" name="id" value="{{ $order->id }}">

@@ -1,5 +1,5 @@
 @php /* @var \App\Models\Order $order */ @endphp
-@inject('logistic', App\Models\Logistic)
+@inject('logistic', 'App\Models\Logistic')
 <table class="table table-bordered orders-table">
     <thead>
     <tr>
