@@ -6,7 +6,7 @@
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" id="baze-theme" href="{{ asset('css/themes/' . user()->theme . '.css') }}">
-    <link href="/assets/css/colorbox.css" rel="stylesheet">
+    <link href="{{ asset('css/colorbox.css') }}" rel="stylesheet">
 
     <script>
         @isset($toJs)

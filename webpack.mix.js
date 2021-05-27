@@ -37,8 +37,9 @@ mix
 
 
     .less('resources/less/login.less', 'public/css/login.css')
-    .less('resources/less/app.less', 'public/css/app.css')
+    .less('resources/less/app.less', 'css/')
     .less('resources/less/print.less', 'public/css/print.css')
+    .less('resources/less/libs/jquery/colorbox.less', 'public/css/colorbox.css')
 
 
     // themes
