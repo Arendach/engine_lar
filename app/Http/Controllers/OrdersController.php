@@ -218,28 +218,29 @@ class OrdersController extends Controller
         return view('orders.print.sales_invoice', compact('order', 'pay'));
     }
 
-    public function actionCreateDelivery(CreateDeliveryRequest $request, OrderService $orderService): JsonResponse
+    public function actionCreateDelivery(CreateDeliveryRequest $request, OrderService $orderService)
     {
         return $this->createOrder($request, $orderService);
     }
 
-    public function actionCreateSelf(CreateSelfRequest $request, OrderService $orderService): JsonResponse
+    public function actionCreateSelf(CreateSelfRequest $request, OrderService $orderService)
     {
         return $this->createOrder($request, $orderService);
     }
 
-    public function actionCreateSending(CreateSendingRequest $request, OrderService $orderService): JsonResponse
+    public function actionCreateSending(CreateSendingRequest $request, OrderService $orderService)
     {
         return $this->createOrder($request, $orderService);
     }
 
-    private function createOrder($request, $orderService): JsonResponse
+    private function createOrder($request, $orderService)
     {
         $id = $orderService->create($request->validated());
 
-        return response()->json([
-            'url' => uri('orders/update', ['id' => $id])
-        ]);
+        return redirect('view?type=' . $id->type);
+//        return response()->json([
+//            'url' => uri('orders/update', ['id' => $id])
+//        ]);
     }
 
 

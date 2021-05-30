@@ -59,7 +59,7 @@
                     @if (!is_null($item->professional))
                         <button type="button"
                                 class="btn btn-xs btn-primary"
-                                style="background: #{{ $item->professional->color }}; height: 20px; width: 20px;"
+                                style="background: {{ '#'. $item->professional->color }}; height: 20px; width: 20px;"
                                 data-toggle="popover"
                                 data-placement="top"
                                 data-trigger="hover"
@@ -85,7 +85,7 @@
 
                 <td>{{ number_format($item->full_sum) }}</td>
 
-                <td><span style="color: <?= $item->status_color ?>">{{ $item->status_name }}</span></td>
+                <td><span style="color: {{$item->status_color }}">{{ $item->status_name }}</span></td>
 
                 <td>{{ $item->date_delivery_human }}</td>
 
@@ -113,7 +113,7 @@
                     <div class="centered buttons-2">
                         @if(!is_null($item->hint))
                             <button class="btn btn-xs" data-toggle="tooltip"
-                                    style="background-color: #{{ $item->hint->color }};"
+                                    style="background-color: {{ '#' . $item->hint->color }};"
                                     title="{{ $item->hint->description }}">
                                 <span class="glyphicon glyphicon-comment"></span>
                             </button>

@@ -73,12 +73,7 @@
                 <td>
                     {!! $order->select('logistic_id', $logistic->toOptions())->required() !!}
                 <td>
-                    <select class="courier form-control input-sm">
-                        <option @disabled(!$order->status) @selected(!$order->courier_id) value="0">Не вибрано</option>
-                        @foreach($couriers as $courier)
-                            <option @selected($courier->id == $order->courier_id) value="{{ $courier->id }}">{{ $courier->name }}</option>
-                        @endforeach
-                    </select>
+                    {!! $order->select('courier_id', \App\Models\User::toOptions()) !!}
                 </td>
                 <td>{{ number_format($order->full_sum) }}</td>
                 <td><span style="color: {{ $order->status_color }}">{{ $order->status_name }}</span></td>

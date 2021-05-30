@@ -69,7 +69,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <?php if ($type != 'sending') { ?>
+                    @if($type != 'sending')
                     <div class="form-group">
                         <label>Тип замовлення</label>
                         <select id="order_professional_id" class="search form-control">
@@ -81,7 +81,7 @@
                             <?php } ?>
                         </select>
                     </div>
-                    <?php } ?>
+                    @endif
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">

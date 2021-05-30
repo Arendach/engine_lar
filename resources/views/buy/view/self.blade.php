@@ -73,7 +73,7 @@
                     @if ($item->atype != 0)
                         <button type="button"
                                 class="btn btn-xs btn-primary"
-                                style="background: #{{ $item->order_type_color }}; height: 20px; width: 20px;"
+                                style="background: {{ '#' . $item->order_type_color }}; height: 20px; width: 20px;"
                                 data-toggle="popover"
                                 data-placement="top"
                                 data-trigger="hover"
@@ -90,16 +90,7 @@
                 <td>{{ $item->time }}</td>
                 <td>{{ $item->shop->name ?? '' }}</td>
                 <td>
-                    <select class="courier form-control input-sm">
-                        <option @disabled(!$item->status) @selected($item->courier_id == 0) value="0">
-                            Не вибрано
-                        </option>
-                        @foreach ($couriers as $courier)
-                            <option @selected($courier->id == $item->courier_id) value="{{ $courier->id }}">
-                                {{ $courier->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    {!! $item->select('courier_id', \App\Models\User::toOptions()) !!}
                 </td>
                 <td>{{ number_format($item->full_sum) }}</td>
                 <td><span style="color: {{ $item->status_color }}">{{ $item->status_name }}</span></td>
@@ -129,7 +120,7 @@
                     <div class="centered buttons-2">
                         @if(!is_null($item->hint))
                             <button class="btn btn-xs" data-toggle="tooltip"
-                                    style="background-color: #{{ $item->hint->color }}"
+                                    style="background-color: {{ '#' . $item->hint->color }}"
                                     title="{{ $item->hint->description }}">
                                 <span class="glyphicon glyphicon-comment"></span>
                             </button>
