@@ -18,7 +18,7 @@ class UpdateInfoRequest extends FormRequest
             'first_name'  => 'required|max:32',
             'last_name'   => 'required|max:32',
             'name'        => 'required|max:32',
-            'position_id' => 'required|numeric'
+            'user_position_id' => 'required|numeric'
         ];
     }
 }
