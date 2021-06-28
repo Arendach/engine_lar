@@ -8,7 +8,7 @@
 
         <div class="form-group" style="text-align: justify">
             @foreach($scheduleList as $item)
-                <label style="padding: 0 10px 0 10px"><input @checked($item->code == 'working') type="radio" value="{{$item->id}}" data-code="{{$item->code}}" name="type"> {{$item->name}}</label>
+                <label style="padding: 0 10px 0 10px"><input @checked($item->id == $schedule->type) type="radio" value="{{$item->id}}" data-code="{{$item->code}}" name="type"> {{$item->name}}</label>
             @endforeach
         </div>
         <div class="form-group">
