@@ -46,7 +46,7 @@
                     <select name="user_position_id" class="form-control">
                         <option value="0">Не вибрана</option>
                         @foreach($positions as $position)
-                            <option @selected($position->id == $user->position->id) value="{{ $position->id }}">
+                            <option @selected($position == $user->position) value="{{ $position->id }}">
                                 {{ $position->name }}
                             </option>
                         @endforeach
