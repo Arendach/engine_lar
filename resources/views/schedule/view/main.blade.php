@@ -1,3 +1,4 @@
+@inject('scheduleModel', 'App\Models\ScheduleType')
 <table class="table  table-bordered">
     <tr>
         <td class="centered">Вихідних: {{ $holidays }} дн.</td>
@@ -21,7 +22,7 @@
         <td>Початок</td>
         <td>Кінець</td>
         <td>Обід</td>
-        <td>Пропрцьовано</td>
+        <td>Пропрацьовано</td>
         <td>Перевиконано</td>
         @if (can() || user()->id == $schedules->user_id)
             <td class="action-1">Дія</td>
@@ -41,8 +42,11 @@
                 <td>{{ $i }}</td>
                 <td style="color: {{ $color }}">{{ date_to_day($date) }}</td>
                 <td>
+                    @php
+                        $item_type = $scheduleModel->where('id', $item->type)->first()
+                    @endphp
                     <span style="color: {{ $item->type_color }}">
-                        <b>{{ $item->type_name }}</b>
+                        <b style="color: #{{$item_type->color}}">{{ $item_type->name }}</b>
                     </span>
                 </td>
                 <td>{{ $item->turn_up }}</td>

@@ -49,11 +49,10 @@ class ScheduleController extends Controller
         $scheduleService->create($year, $month, $user->id);
 
         $schedules = ScheduleMonth::concrete($year, $month, $user->id)->first()->load('items');
-
-        $holidays = $schedules->items->where('type', 'holiday')->count(); // робочих днів (фактичних)
-        $working = $schedules->items->where('type', 'working')->count(); // у відпустці
-        $vacation = $schedules->items->where('type', 'vacation')->count(); // робочих днів (фактичних)
-        $hospital = $schedules->items->where('type', 'hospital')->count(); // лікарняних
+        $holidays = $schedules->items->where('type', '1')->count(); // робочих днів (фактичних)
+        $working = $schedules->items->where('type', '2')->count(); // у відпустці
+        $vacation = $schedules->items->where('type', '3')->count(); // робочих днів (фактичних)
+        $hospital = $schedules->items->where('type', '4')->count(); // лікарняних
 
         $priceMonth = $this->calculatePriceMonth($schedules);
 

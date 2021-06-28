@@ -7,11 +7,10 @@
         <input type="hidden" name="id" value="{{ $id }}">
         <input type="hidden" name="day" value="{{ $day}}">
 
-        <div class="form-group" style="text-align: justify">
-            <label style="width: 25%"><input type="radio" value="holiday" name="type"> Вихідний</label>
-            <label style="width: 25%"><input checked type="radio" value="working" name="type"> Робочий</label>
-            <label style="width: 25%"><input type="radio" value="vacation" name="type"> Відпустка</label>
-            <label><input type="radio" value="hospital" name="type"> Лікарняний</label>
+        <div class="form-group form-inline" style="text-align: justify">
+            @foreach($scheduleList as $schedule)
+            <label style="padding: 0 10px 0 10px"><input @checked($schedule->code == 'working') type="radio" value="{{$schedule->id}}" data-code="{{$schedule->code}}" name="type"> {{$schedule->name}}</label>
+            @endforeach
         </div>
         <div class="form-group">
             <label>Вихід на роботу</label>

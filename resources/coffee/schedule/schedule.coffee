@@ -7,7 +7,7 @@ $(document).on 'keyup', '.time', ->
     if $.inArray(+$this.val(), array) is -1 then $($this.val(0))
 
 $(document).on 'change', '[name=type]', ->
-    if $(@).val() isnt 'working'
+    if $(@).attr('data-code') isnt 'working'
         $('#turn_up, #went_away, #dinner_break').val('').attr('disabled', yes)
     else
         $('#turn_up, #went_away, #dinner_break').attr('disabled', no)
