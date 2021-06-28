@@ -49,6 +49,12 @@ class Schedule extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function type()
+    {
+        return $this->hasOne(ScheduleType::class);
+    }
+
+
     // accessor + mutator
     public function getTypeNameAttribute()
     {

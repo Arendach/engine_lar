@@ -42,13 +42,13 @@ class ScheduleMonth extends Model
     // Кількість пропрацьованих годин за місяць
     public function getWorkingHoursAttribute(): ?int
     {
-        return $this->items->where('type', 'working')->count() * 8;
+        return $this->items->where('type', '2')->count() * 8;
     }
 
     // кількість перепрацьованих годин за місяць
     public function getUpWorkingHoursAttribute(): int
     {
-        return $this->items->where('type', 'working')->sum(function (Schedule $item) {
+        return $this->items->where('type', '2')->sum(function (Schedule $item) {
             return $item->worked > 8 ? $item->worked - 8 : 0;
         });
     }
@@ -56,13 +56,13 @@ class ScheduleMonth extends Model
     // кількість годин у відпустці
     public function getVacationHoursAttribute()
     {
-        return $this->items->where('type', 'vacation')->count() * 8;
+        return $this->items->where('type', '3')->count() * 8;
     }
 
     // кількість дікарняних годин
     public function getHospitalHoursAttribute(): int
     {
-        return $this->items->where('type', 'hospital')->count() * 8;
+        return $this->items->where('type', '4')->count() * 8;
     }
 
     // Ціна роботи за 1 годину
