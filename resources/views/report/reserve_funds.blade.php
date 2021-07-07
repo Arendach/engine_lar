@@ -32,7 +32,7 @@
         </div>
 
         <div class="form-group">
-            <button @disabled($maxUp <= 0 && $max_down <= 0) class="btn btn-primary">Вперед</button>
+            <button @disabled($maxUp <= 0 && $maxDown <= 0) class="btn btn-primary">Вперед</button>
         </div>
     </form>
 @endsection

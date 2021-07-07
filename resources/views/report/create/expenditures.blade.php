@@ -12,6 +12,7 @@
 
 @section('content')
     <form data-type="ajax" data-after="reset" action="@uri('ReportController@actionCreateExpenditures')">
+        <input type="hidden" name="report_id" value="{{ $report_id }}">
         <div class="form-group">
             <label>Податки</label>
             <input class="form-control count" name="data[taxes]" data-inspect="decimal">

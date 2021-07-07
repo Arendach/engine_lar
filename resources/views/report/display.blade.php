@@ -12,12 +12,12 @@
 @section('content')
     <div class="right">
         <a href="@uri('ReportController@sectionStatistics', ['user' => $report->user_id])" class="btn btn-primary">Статистика</a>
-        <a href="@uri('ReportController@sectionReserveFunds')" class="btn btn-success">Резервний фонд</a>
-        <a href="@uri('ReportController@sectionMoving')" class="btn btn-success">Переміщення коштів</a>
-        <a href="@uri('ReportController@sectionExpenditures')" class="btn btn-success">Видатки</a>
-        <a href="@uri('ReportController@sectionShippingCosts')" class="btn btn-success">Витрати на доставку</a>
+        <a href="@uri('ReportController@sectionReserveFunds', ['report' => $report->id])" class="btn btn-success">Резервний фонд</a>
+        <a href="@uri('ReportController@sectionMoving', ['report' => $report->id])" class="btn btn-success">Переміщення коштів</a>
+        <a href="@uri('ReportController@sectionExpenditures', ['report' => $report->id])" class="btn btn-success">Видатки</a>
+        <a href="@uri('ReportController@sectionShippingCosts', ['report' => $report->id])" class="btn btn-success">Витрати на доставку</a>
         @if (can())
-            <a href="@uri('ReportController@sectionProfits')" class="btn btn-success">Коректування</a>
+            <a href="@uri('ReportController@sectionProfits', ['report' => $report->id])" class="btn btn-success">Коректування</a>
         @endif
     </div>
 
@@ -34,7 +34,7 @@
 
             <td style="border-top: none; text-align: center;">
                 На руках <span class="badge" style="background-color: #369">
-                    {{ $report->start_month + $report->just_now }} грн
+                    {{ $report->sumOnHands() }} грн
                 </span>
             </td>
 
@@ -43,7 +43,7 @@
             </td>
 
             <td style="border-top: none" class="right">
-                В резерві: <span class="badge" style="background-color: green">{{ $user->reserve_funds }}</span>
+                В резерві: <span class="badge" style="background-color: green">{{ $report->sumToReserve() - $report->sumUnReserve() }}</span>
             </td>
         </tr>
     </table>

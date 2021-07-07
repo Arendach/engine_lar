@@ -11,7 +11,8 @@
 )
 
 @section('content')
-    <form data-type="ajax" action="@uri('ReportController@actionCreateProfts')" data-after="reset">
+    <form data-type="ajax" action="@uri('ReportController@actionCreateProfits')" data-after="reset">
+        <input type="hidden" name="report_id" value="{{ $report_id }}">
         <div class="form-group">
             <label><i class="text-danger">*</i> Сума</label>
             <input class="form-control" name="sum" data-inspect="decimal">
@@ -19,7 +20,7 @@
 
         <div class="form-group">
             <label><i class="text-danger">*</i> Назва операції</label>
-            <input class="form-control" name="name_operation" value="Прибуток за <?= date_for_humans() ?>">
+            <input class="form-control" name="name_operation" value="Прибуток за <?= full_date() ?>">
         </div>
 
         <div class="form-group">

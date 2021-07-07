@@ -58,16 +58,17 @@ class ReportController extends Controller
     public function sectionReserveFunds()
     {
         $report = $this->repository->getConcreteOrFail();
-        $maxDown = user()->reserve_funds;
-        $maxUp = $report->start_month + $report->just_now;
+        $maxDown = $report->sumToReserve() - $report->sumUnReserve();
+        $maxUp = $report->sumOnHands();
 
         return view('report.reserve_funds', compact('maxUp', 'maxDown'));
     }
 
     // Створення звіту - Видатки
-    public function sectionExpenditures()
+    public function sectionExpenditures(Request $request)
     {
-        return view('report.create.expenditures');
+        $report_id = $request->report;
+        return view('report.create.expenditures', compact('report_id'));
     }
 
     // Створення звіту - Витрати на доставку
@@ -77,9 +78,10 @@ class ReportController extends Controller
     }
 
     // Створення звіту - Прибуток
-    public function sectionProfits()
+    public function sectionProfits(Request $request)
     {
-        return view('report.create.profits');
+        $report_id = $request->report;
+        return view('report.create.profits', compact('report_id'));
     }
 
     // Оновити резервний фонд
@@ -126,7 +128,7 @@ class ReportController extends Controller
     // Видатки
     public function actionCreateExpenditures(CreateExpendituresRequest $request): void
     {
-        $this->reportService->createExpenditures($request->validated());
+        $this->reportService->createExpenditures($request->all());
     }
 
     // Витрати на доставку
@@ -134,7 +136,14 @@ class ReportController extends Controller
     {
         $this->check($post);
 
-        $array = ['gasoline', 'journey', 'transport_company', 'packing_materials', 'for_auto', 'salary_courier', 'supplies'];
+        $array = ['gasoline',
+                  'journey',
+                  'transport_company',
+                  'packing_materials',
+                  'for_auto',
+                  'salary_courier',
+                  'supplies'
+        ];
         $data = [];
 
         foreach ($array as $item) {
@@ -157,19 +166,23 @@ class ReportController extends Controller
     }
 
     // Прибутки
-    public function action_create_profits($post)
+    public function actionCreateProfits(Request $request)
     {
-        $this->check($post);
-
-        Reports::createProfits($post);
-
-        $response = [
-            'message' => 'Прибутки вдало збережені!',
-            'action'  => 'redirect',
-            'uri'     => uri('reports', ['section' => 'my'])
-        ];
-
-        response(200, $response);
+        Report::create([
+            'name_operation' => $request->name_operation,
+            'sum'            => $request->sum,
+            'user_id'        => user()->id,
+            'type'           => 'profits',
+            'report_item_id' => $request->report_id,
+            'comment'        => $request->comment
+        ]);
+//        $response = [
+//            'message' => 'Прибутки вдало збережені!',
+//            'action'  => 'redirect',
+//            'uri'     => uri('reports', ['section' => 'my'])
+//        ];
+//
+//        return response($response, 200);
     }
 
 
@@ -230,7 +243,11 @@ class ReportController extends Controller
             'title'       => 'Статистика по звітах',
             'data'        => $group_reports,
             'breadcrumbs' => [
-                ['Звіти', uri('reports', ['section' => 'view', 'user' => get('user')])],
+                ['Звіти',
+                 uri('reports', ['section' => 'view',
+                                 'user'    => get('user')
+                 ])
+                ],
                 ['Статистика по звітах']
             ]
         ];

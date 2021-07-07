@@ -81,16 +81,22 @@ class ReportService
         $this->reset($newReport->id);
     }
 
-    public function createExpenditures(array $data): void
+    public function createExpenditures(array $val): void
     {
-        $dataString = collect($data['data'])->mapWithKeys(function (string $field) use ($data) {
-            return "{$field}:{$data[$field]}";
-        })->pluck('key')->implode("\n");
+        $data = $val['data'];
 
-        $report = Report::create(array_merge($data, [
+        $dataString = collect($data)->map(function ($field, $key) {
+            return (isset($field) ? $key.':'.$field : null);
+        })->implode("\n");
+        $report = Report::create([
+            'name_operation' => $val['name_operation'],
             'data' => $dataString,
-            'type' => 'expenditures'
-        ]));
+            'sum' => $val['sum'],
+            'type' => 'expenditures',
+            'report_item_id' => $val['report_id'],
+            'user_id' => user()->id,
+            'comment' => $val['comment']
+        ]);
 
         $this->reset($report->id);
     }

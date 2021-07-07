@@ -28,4 +28,51 @@ class ReportItem extends Model
     {
         return $this->hasMany(Report::class);
     }
+
+    public function sumMoving()
+    {
+        return $this->items
+            ->where('type', 'moving')
+            ->sum(function(Report $report) {
+                return $report->sum;
+            });
+
+    }
+
+    public function sumToReserve()
+    {
+        return $this->sumMoving() + $this->items
+            ->where('type', 'to_reserve')
+            ->sum(function(Report $report) {
+                return $report->sum;
+            });
+
+    }
+
+    public function sumUnReserve()
+    {
+        return $this->items
+            ->where('type', 'un_reserve')
+            ->sum(function(Report $report) {
+                return $report->sum;
+            });
+
+    }
+    public function sumProfits()
+    {
+        return $this->items
+            ->where('type', 'profits')
+            ->sum(function(Report $report) {
+                return $report->sum;
+            });
+
+    }
+
+    public function sumOnHands()
+    {
+        return $this->start_month + $this->sumProfits() + $this->sumUnReserve() - $this->sumToReserve();
+
+    }
+
+
 }

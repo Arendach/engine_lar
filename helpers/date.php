@@ -216,6 +216,10 @@ function date_to_day(string $date): string
     return '';
 }
 
+function full_date(){
+    return date('d') .' ' . int_to_month(date('m'), 1);
+}
+
 
 /**
  * @param string $str
