@@ -29,6 +29,14 @@
                                         {{ int_to_month($i) }}
                                     </a>
                                 </div>
+                            @elseif($i == date('m'))
+                                <div style="margin-bottom: 5px; color: grey">
+                                    <i class="fa fa-dot-circle-o"></i>
+                                    {{ int_to_month($i) }}
+                                    <a class="btn-sm btn-primary" href="@uri('report/view', ['year' => $year, 'month' => $i, 'user_id' => $user->id])">
+                                        Створити
+                                    </a>
+                                </div>
                             @else
                                 <div style="margin-bottom: 5px; color: grey">
                                     <i class="fa fa-dot-circle-o"></i> {{ int_to_month($i) }}

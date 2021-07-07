@@ -66,7 +66,7 @@
                         @endif
                     </td>
                     <td class="right">
-                        <a href="@uri('reports/user', ['user' => $user->id])" class="btn btn-primary btn-xs">
+                        <a href="@uri('report/user', ['id' => $user->id])" class="btn btn-primary btn-xs">
                             <i class="fa fa-dollar"></i> Звіти
                         </a>
                         <a href="@uri('user/update', ['id' => $user->id])" class="btn btn-primary btn-xs">

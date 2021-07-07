@@ -108,7 +108,7 @@
                             <li><a href="{{ uri('user/instruction') }}">Посадова інструкція</a></li>
                             <li><a href="{{ uri('schedule/view') }}">Мій графік роботи</a></li>
                             <li>
-                                <a data-type="pin_code" href="#" data-href="{{ uri('reports', ['section' => 'my']) }}">
+                                <a href="{{ uri('report/user') }}">
                                     Мої звіти
                                 </a>
                             </li>
